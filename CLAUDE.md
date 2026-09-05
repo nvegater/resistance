@@ -50,6 +50,8 @@ In scope:
 - Live updates by polling.
 - Seed data: the admin, one demo organization, one survey with the 15 real responses from
   the source material.
+- A read-only reference organization that holds the same 15 responses and shows, value by
+  value, that the app calculates what the client's CSV sheets calculate (section 10).
 
 Out of scope for the demo (do not build):
 
@@ -334,7 +336,33 @@ beats B = 8.0); with F = 0.8 it would tie. That is why the sheet's 0.85 is canon
 The seed script creates: the admin user from `ADMIN_EMAIL`/`ADMIN_PASSWORD`; a demo
 organization "Muster GmbH" with its login from `DEMO_ORG_EMAIL`/`DEMO_ORG_PASSWORD`; one
 anonymous survey "Interne Resonanzbefragung" holding the 15 responses with their original
-timestamps. The client can then demo the dashboard without collecting answers first.
+timestamps; and the reference organization below. The client can then demo the dashboard
+without collecting answers first.
+
+### The reference organization
+
+The same 15 responses again, in an organization that nothing may change. It is there so
+that anyone can see the calculation is right instead of taking a test's word for it.
+
+- Fixed ids in `lib/reference-org.ts`: organization `referenz`, survey
+  `referenz-befragung`, token `referenz`. That makes "is this the reference?" a plain
+  comparison, and the seed can rebuild it without looking anything up.
+- Name "Referenz-Auswertung", one anonymous survey "Interne Resonanzbefragung
+  (Referenzlauf)". No login of its own, so only the admin opens it.
+- Read-only in every place that writes: no new surveys, no answers through the public
+  link, no deleting it. The pages hide those buttons and the three server actions refuse
+  as well.
+- `lib/domain/reference-run.ts` holds what the client's sheets calculated, read straight
+  from the CSV files. `lib/domain/reference-check.ts` compares it with what the app
+  calculates, and `components/results/reference-check.tsx` shows the result above the
+  normal dashboard: 232 single values, per participant every block sum, every weighted
+  value, dominant, second and Ampel, plus the three Ampel totals with their percentages.
+  Values that differ show the CSV value next to the app's. `reference-check.test.ts` runs
+  the same comparison in Vitest.
+- One contradiction inside the client's own sheets: the Frühwarnsystem sheet lists
+  participant 8 as F and A, the Gewichtung and Roadmap sheets as F and B. F and A would
+  be ROT and that row says GELB, which is what F and B gives, so the second profile in
+  that one row is a slip. We follow the Gewichtung sheet, and the page says so.
 
 ## 11. Data model
 

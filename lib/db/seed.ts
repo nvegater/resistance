@@ -1,6 +1,7 @@
-// Seeds the demo: the admin login, one demo organization with its own login, and
-// one survey that already holds the 15 answers from the client's example run.
-// Run it with `pnpm db:seed`. Running it again replaces the demo organization.
+// Seeds the demo: the admin login, one demo organization with its own login and one
+// survey that already holds the 15 answers from the client's example run, plus the
+// read-only reference organization with the same 15 answers.
+// Run it with `pnpm db:seed`. Running it again replaces both organizations.
 
 import { config } from "dotenv";
 
@@ -16,6 +17,13 @@ async function main() {
   const { SURVEY_TITLE } = await import("../domain/questionnaire");
   const { createSurveyToken } = await import("../token");
   const { answersToColumns } = await import("./answers");
+  const {
+    REFERENCE_ORG_ID,
+    REFERENCE_ORG_NAME,
+    REFERENCE_SURVEY_ID,
+    REFERENCE_SURVEY_TITLE,
+    REFERENCE_SURVEY_TOKEN,
+  } = await import("../reference-org");
 
   const adminEmail = required("ADMIN_EMAIL");
   const adminPassword = required("ADMIN_PASSWORD");
@@ -82,6 +90,31 @@ async function main() {
   console.log(`Befragung angelegt: ${demoSurvey.title}`);
   console.log(`Öffentlicher Link: /s/${demoSurvey.token}`);
   console.log(`${EXAMPLE_RUN.length} Antworten eingespielt.`);
+
+  // The reference organization holds the same 15 answers, but nothing may change it.
+  // It has no login of its own; only the admin opens it, to compare the dashboard with
+  // the client's CSV sheets. Its ids are fixed, so deleting is enough to rebuild it.
+  await db.delete(organization).where(eq(organization.id, REFERENCE_ORG_ID));
+  await db
+    .insert(organization)
+    .values({ id: REFERENCE_ORG_ID, name: REFERENCE_ORG_NAME });
+  await db.insert(survey).values({
+    id: REFERENCE_SURVEY_ID,
+    organizationId: REFERENCE_ORG_ID,
+    title: REFERENCE_SURVEY_TITLE,
+    mode: "anonymous",
+    token: REFERENCE_SURVEY_TOKEN,
+  });
+  await db.insert(response).values(
+    EXAMPLE_RUN.map((entry) => ({
+      surveyId: REFERENCE_SURVEY_ID,
+      participantName: null,
+      submittedAt: new Date(entry.submittedAt),
+      ...answersToColumns(entry.answers),
+    })),
+  );
+
+  console.log(`Referenz angelegt: ${REFERENCE_ORG_NAME} (/orgs/${REFERENCE_ORG_ID})`);
 }
 
 function required(name: string): string {

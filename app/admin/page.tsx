@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AppHeader } from "@/components/app-header";
 import { CreateOrganizationDialog } from "@/components/admin/create-organization-dialog";
 import { DeleteOrganizationButton } from "@/components/admin/delete-organization-button";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -13,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { listOrganizations } from "@/lib/queries";
+import { isReferenceOrganization, REFERENCE_BADGE } from "@/lib/reference-org";
 import { requireAdmin } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -71,9 +73,16 @@ export default async function AdminPage() {
               <TableBody>
                 {organizations.map((organization) => (
                   <TableRow key={organization.id}>
-                    <TableCell className="font-medium">{organization.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <span className="flex flex-wrap items-center gap-2">
+                        {organization.name}
+                        {isReferenceOrganization(organization.id) ? (
+                          <Badge variant="outline">{REFERENCE_BADGE}</Badge>
+                        ) : null}
+                      </span>
+                    </TableCell>
                     <TableCell className="font-mono text-xs">
-                      {organization.loginEmail ?? "—"}
+                      {organization.loginEmail ?? "kein Login"}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">
                       {organization.surveyCount}
@@ -87,10 +96,12 @@ export default async function AdminPage() {
                         <Button asChild variant="outline" size="lg">
                           <Link href={`/orgs/${organization.id}`}>Dashboard öffnen</Link>
                         </Button>
-                        <DeleteOrganizationButton
-                          organizationId={organization.id}
-                          organizationName={organization.name}
-                        />
+                        {isReferenceOrganization(organization.id) ? null : (
+                          <DeleteOrganizationButton
+                            organizationId={organization.id}
+                            organizationName={organization.name}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import { getBaseUrl } from "@/lib/base-url";
 import { db } from "@/lib/db";
 import { organization, user } from "@/lib/db/schema";
+import { isReferenceOrganization } from "@/lib/reference-org";
 import { requireAdmin } from "@/lib/session";
 
 export type CreatedCredentials = {
@@ -68,6 +69,9 @@ export async function createOrganizationAction(input: {
 
 export async function deleteOrganizationAction(organizationId: string): Promise<void> {
   await requireAdmin();
+  // The reference organization is the yardstick for the calculation, so it stays.
+  // The admin page does not offer a delete button for it either.
+  if (isReferenceOrganization(organizationId)) return;
   // The user row first, then the organization. Surveys and responses go with it
   // through the cascade on their foreign keys.
   await db.delete(user).where(eq(user.organizationId, organizationId));

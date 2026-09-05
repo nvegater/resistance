@@ -2,13 +2,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
+import { ReferenceCheck } from "@/components/results/reference-check";
 import { ResultsDashboard } from "@/components/results/results-dashboard";
 import { SharePanel } from "@/components/share-panel";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getBaseUrl } from "@/lib/base-url";
+import { checkAgainstReference } from "@/lib/domain/reference-check";
 import { evaluateSurvey } from "@/lib/domain/scoring";
 import { getOrganization, getSurvey, listParticipantInputs } from "@/lib/queries";
+import { isReferenceOrganization, REFERENCE_BADGE } from "@/lib/reference-org";
 import type { ResultsPayload } from "@/lib/results";
 import { requireOrgAccess } from "@/lib/session";
 
@@ -26,6 +29,8 @@ export default async function ResultsPage({
 
   const participants = await listParticipantInputs(surveyId);
   const publicUrl = `${await getBaseUrl()}/s/${survey.token}`;
+  const results = evaluateSurvey(participants);
+  const isReference = isReferenceOrganization(orgId);
 
   const initialData: ResultsPayload = {
     survey: {
@@ -35,7 +40,7 @@ export default async function ResultsPage({
       token: survey.token,
       publicUrl,
     },
-    results: evaluateSurvey(participants),
+    results,
     generatedAt: new Date().toISOString(),
   };
 
@@ -56,14 +61,19 @@ export default async function ResultsPage({
             <Badge variant={survey.mode === "named" ? "default" : "secondary"}>
               {survey.mode === "named" ? "Mit Namen" : "Anonym"}
             </Badge>
+            {isReference ? <Badge variant="outline">{REFERENCE_BADGE}</Badge> : null}
           </div>
         </div>
 
-        <Card>
-          <CardContent className="pt-6">
-            <SharePanel url={publicUrl} title={survey.title} />
-          </CardContent>
-        </Card>
+        {isReference ? (
+          <ReferenceCheck check={checkAgainstReference(results)} />
+        ) : (
+          <Card>
+            <CardContent className="pt-6">
+              <SharePanel url={publicUrl} title={survey.title} />
+            </CardContent>
+          </Card>
+        )}
 
         <ResultsDashboard orgId={orgId} surveyId={surveyId} initialData={initialData} />
       </main>

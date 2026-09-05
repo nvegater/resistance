@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getBaseUrl } from "@/lib/base-url";
 import { getOrganization, listSurveys } from "@/lib/queries";
+import { isReferenceOrganization, REFERENCE_BADGE } from "@/lib/reference-org";
 import { requireOrgAccess } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,7 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
 
   const surveys = await listSurveys(orgId);
   const baseUrl = await getBaseUrl();
+  const isReference = isReferenceOrganization(orgId);
 
   return (
     <>
@@ -29,12 +31,19 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
       <main id="inhalt" className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{organization.name}</h1>
-            <p className="mt-1 text-muted-foreground">
-              Befragungen anlegen, Link teilen und Ergebnisse live verfolgen.
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {organization.name}
+              </h1>
+              {isReference ? <Badge variant="outline">{REFERENCE_BADGE}</Badge> : null}
+            </div>
+            <p className="mt-1 max-w-prose text-muted-foreground">
+              {isReference
+                ? "Der Beispiellauf des Kunden mit 15 Antworten. Diese Organisation lässt sich nicht ändern: keine neuen Befragungen, keine neuen Antworten. Die Ergebnisseite vergleicht jede Zahl mit seinen CSV-Tabellen."
+                : "Befragungen anlegen, Link teilen und Ergebnisse live verfolgen."}
             </p>
           </div>
-          <CreateSurveyDialog organizationId={orgId} />
+          {isReference ? null : <CreateSurveyDialog organizationId={orgId} />}
         </div>
 
         {surveys.length === 0 ? (
@@ -74,7 +83,9 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
                       <Button asChild size="lg">
                         <Link href={`/orgs/${orgId}/surveys/${survey.id}`}>Ergebnisse</Link>
                       </Button>
-                      <CopyButton value={publicUrl} label="Link kopieren" />
+                      {isReference ? null : (
+                        <CopyButton value={publicUrl} label="Link kopieren" />
+                      )}
                     </CardContent>
                   </Card>
                 </li>

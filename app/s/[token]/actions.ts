@@ -5,6 +5,7 @@ import { response } from "@/lib/db/schema";
 import { answersToColumns } from "@/lib/db/answers";
 import { ITEM_CODES, isValidAnswer, type Answers } from "@/lib/domain/questionnaire";
 import { getSurveyByToken } from "@/lib/queries";
+import { isReferenceOrganization } from "@/lib/reference-org";
 
 export type SubmitResult = { ok: true } | { ok: false; error: string };
 
@@ -15,6 +16,12 @@ export async function submitResponseAction(input: {
 }): Promise<SubmitResult> {
   const survey = await getSurveyByToken(input.token);
   if (!survey) return { ok: false, error: "Diese Befragung gibt es nicht mehr." };
+  if (isReferenceOrganization(survey.organizationId)) {
+    return {
+      ok: false,
+      error: "Diese Befragung ist eine schreibgeschützte Referenz und nimmt keine Antworten an.",
+    };
+  }
 
   const answers = {} as Answers;
   for (const code of ITEM_CODES) {

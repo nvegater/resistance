@@ -109,7 +109,7 @@ export function ProfileDistribution({ results }: { results: SurveyResults }) {
       </div>
 
       <Card>
-        <CardContent className="overflow-x-auto pt-6">
+        <CardContent className="pt-6">
           <Table>
             <TableCaption>
               Die Zahlen aus beiden Diagrammen, dazu Kernursache und interkulturelles
@@ -134,25 +134,29 @@ export function ProfileDistribution({ results }: { results: SurveyResults }) {
             <TableBody>
               {results.profileDistribution.map((entry) => (
                 <TableRow key={entry.code}>
-                  <TableCell>
+                  <TableCell className="align-top">
                     <ProfileTag code={entry.code} />
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
+                  <TableCell className="text-right align-top tabular-nums">
                     {entry.dominantCount}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
+                  <TableCell className="text-right align-top tabular-nums">
                     {entry.secondCount}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
+                  <TableCell className="text-right align-top tabular-nums">
                     {entry.averageWeighted.toLocaleString("de-DE", {
                       minimumFractionDigits: 1,
                     })}
                   </TableCell>
-                  <TableCell className="max-w-xs text-muted-foreground">
-                    {PROFILES[entry.code].kernursache}
+                  <TableCell className="align-top text-muted-foreground">
+                    <span className="block max-w-[26rem] whitespace-normal">
+                      {PROFILES[entry.code].kernursache}
+                    </span>
                   </TableCell>
-                  <TableCell className="max-w-xs text-muted-foreground">
-                    {PROFILES[entry.code].signal}
+                  <TableCell className="align-top text-muted-foreground">
+                    <span className="block max-w-[26rem] whitespace-normal">
+                      {PROFILES[entry.code].signal}
+                    </span>
                   </TableCell>
                 </TableRow>
               ))}
