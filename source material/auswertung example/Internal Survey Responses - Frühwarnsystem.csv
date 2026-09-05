@@ -1,0 +1,22 @@
+Teilnehmer,Dominantes Profil,Zweitprofil,Ampel,Farbe,,,,,
+1,E,D,GELB,,,,,,
+2,E,C,GELB,,,,,,
+3,A,E,ROT,,,,,,
+4,E,C,GELB,,,,,,
+5,C,F,GRÜN,,,,,,
+6,A,F,ROT,,,,,,
+7,C,A,GELB,,,,,,
+8,F,A,GELB,,,,,,
+9,D,A,ROT,,,,,,
+10,F,D,GELB,,,,,,
+11,A,B,GELB,,,,,,
+12,E,C,GELB,,,,,,
+13,E,F,ROT,,,,,,
+14,E,F,ROT,,,,,,
+15,E,F,ROT,,,,,,
+,,,,,,,,,
+Vulkanmodel,Farbe,Anzahl ,% von 15,% Absolut ,,,Farbe,Anzahl ,% Absolut 
+Akute Eruption,ROT,6,40.00%,40.00%,,,ROT,6,40.00%
+Brodelnde Phase,GELB,8,53.33%,53.33%,,,GELB,8,53.33%
+Inaktiver Vulkan,GRÜN,1,6.67%,6.67%,,,GRÜN,1,6.67%
+,,15,,100.00%,,,,15,100.00%
