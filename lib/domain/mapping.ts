@@ -272,22 +272,10 @@ export const AMPEL_SEVERITY: Record<Ampel, number> = { ROT: 3, GELB: 2, "GRÜN":
 export const AMPEL_ICON: Record<Ampel, string> = { ROT: "🚨", GELB: "⚠️", "GRÜN": "🟢" };
 
 /** The volcano phase each Ampel stands for in the Frühwarnsystem. */
-export const AMPEL_PHASE: Record<Ampel, { phase: string; meaning: string; image: string }> = {
-  ROT: {
-    phase: "Akute Eruption",
-    meaning: "akute Eruptionsgefahr",
-    image: "/volcano/rot.png",
-  },
-  GELB: {
-    phase: "Brodelnde Phase",
-    meaning: "brodelnde Phase",
-    image: "/volcano/gelb.png",
-  },
-  "GRÜN": {
-    phase: "Inaktiver Vulkan",
-    meaning: "stabile Phase",
-    image: "/volcano/gruen.png",
-  },
+export const AMPEL_PHASE: Record<Ampel, { phase: string; meaning: string }> = {
+  ROT: { phase: "Akute Eruption", meaning: "akute Eruptionsgefahr" },
+  GELB: { phase: "Brodelnde Phase", meaning: "brodelnde Phase" },
+  "GRÜN": { phase: "Inaktiver Vulkan", meaning: "stabile Phase" },
 };
 
 /** The vocabulary of the volcano model, shown as a legend beside the illustration. */
@@ -301,11 +289,11 @@ export const VOLCANO_LEGEND = [
     text: "Verhalten, Konflikte, Prozesse, Kommunikation, Rollen. Symptome und Ausdrucksformen.",
   },
   {
-    title: "Druckreduktion (Pfeil nach oben)",
+    title: "Druckreduktion (Pfeil nach oben, −)",
     text: "Partizipation, Transparenz, psychologische Sicherheit.",
   },
   {
-    title: "Druckerhöhung (Pfeil nach unten)",
+    title: "Druckerhöhung (Pfeil nach unten, +)",
     text: "Überlastung, Widersprüche, fehlende Sicherheit.",
   },
 ];

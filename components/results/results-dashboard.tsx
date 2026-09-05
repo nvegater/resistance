@@ -9,6 +9,7 @@ import { KpiRow } from "@/components/results/kpi-row";
 import { ParticipantsTable } from "@/components/results/participants-table";
 import { ProfileDistribution } from "@/components/results/profile-distribution";
 import { Roadmap } from "@/components/results/roadmap";
+import { VolcanoDiagram } from "@/components/results/volcano-diagram";
 import { Card, CardContent } from "@/components/ui/card";
 import { VOLCANO_LEGEND } from "@/lib/domain/mapping";
 import type { ResultsPayload } from "@/lib/results";
@@ -58,6 +59,12 @@ export function ResultsDashboard({
             </p>
             <div className="border-t pt-4">
               <h3 className="mb-3 font-medium">Das Vulkanmodell</h3>
+              <VolcanoDiagram
+                phase={null}
+                ampelCounts={results.ampelCounts}
+                total={0}
+                className="mb-4 h-auto w-full max-w-md"
+              />
               <dl className="grid gap-3 text-sm sm:grid-cols-2">
                 {VOLCANO_LEGEND.map((entry) => (
                   <div key={entry.title}>

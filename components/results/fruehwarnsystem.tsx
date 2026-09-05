@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { Cell, Pie, PieChart } from "recharts";
 import { AMPEL_STYLE } from "@/components/domain/ampel";
+import { VolcanoDiagram } from "@/components/results/volcano-diagram";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AMPEL_PHASE, VOLCANO_LEGEND } from "@/lib/domain/mapping";
+import { AMPEL_ICON, AMPEL_PHASE, VOLCANO_LEGEND } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
 import { cn } from "@/lib/utils";
 
@@ -53,26 +53,29 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
             <h3 className="font-medium">Vulkanmodell</h3>
           </CardHeader>
           <CardContent className="space-y-4">
+            <VolcanoDiagram
+              phase={phase}
+              ampelCounts={results.ampelCounts}
+              total={results.total}
+              className="h-auto w-full"
+            />
+
             {phase ? (
-              <>
-                <Image
-                  src={AMPEL_PHASE[phase].image}
-                  alt={`Vulkan in der Phase ${AMPEL_PHASE[phase].phase}: ${AMPEL_PHASE[phase].meaning}.`}
-                  width={640}
-                  height={480}
-                  className="h-auto w-full rounded-lg border"
-                  priority={false}
-                />
-                <p className={cn("text-lg font-semibold", AMPEL_STYLE[phase].text)}>
-                  {phase} · {AMPEL_PHASE[phase].phase}
-                </p>
-              </>
+              <p className={cn("text-lg font-semibold", AMPEL_STYLE[phase].text)}>
+                <span aria-hidden="true">{AMPEL_ICON[phase]}</span> {phase} ·{" "}
+                {AMPEL_PHASE[phase].phase}
+              </p>
             ) : (
               <p className="text-muted-foreground">
                 Sobald die erste Antwort eingeht, erscheint hier die Phase der
                 Organisation.
               </p>
             )}
+            <p className="text-sm text-muted-foreground">
+              Die Magmakammer ist nach Ampelwerten gefüllt, ROT unten. Wie hoch das
+              Magma im Schlot steht und was aus dem Krater kommt, zeigt die Phase der
+              ganzen Organisation.
+            </p>
 
             <dl className="space-y-3 border-t pt-4 text-sm">
               {VOLCANO_LEGEND.map((entry) => (

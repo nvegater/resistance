@@ -75,7 +75,7 @@ The client and the user agreed on this stack. Do not swap parts of it.
 | Charts | See open question 7. Default: shadcn/ui Chart components (Recharts under the hood). |
 | Auth | Better Auth, email + password only, `admin` plugin for the role and server-side user creation |
 | Database | Neon Postgres via Drizzle ORM (`neon-http` driver), `drizzle-kit push` for schema, no migration history needed |
-| Static assets | `public/` (volcano images) |
+| Static assets | none beyond the Next.js defaults; the volcano is inline SVG |
 | Hosting | Vercel |
 | Tests | Vitest, only for the scoring module (see section 10) |
 | Package manager | pnpm |
@@ -113,7 +113,7 @@ lib/
   db/schema.ts  index.ts  seed.ts
   auth.ts  auth-client.ts
 components/                     shadcn/ui plus app components
-public/volcano/gruen.png gelb.png rot.png
+  results/volcano-diagram.tsx   the Frühwarnsystem volcano, drawn from the data
 source material/                reference only, never modified, never shipped
 ```
 
@@ -262,24 +262,31 @@ Output per survey: count and percentage per Ampel, total participants. The clien
 sheet shows this as a table plus a pie chart.
 
 The client wants the same result "both as data charts and as a volcano illustration"
-(protocol item 4). The docx contains three illustrations, one per phase. Extract them
-from the docx once and commit them to `public/volcano/`:
+(protocol item 4). The docx contains three stock illustrations, one per phase, with empty
+white label boxes. They are not used. The app draws the volcano itself, as one inline SVG
+in `components/results/volcano-diagram.tsx`, so it carries the data instead of only
+standing beside it:
 
-```
-pandoc "source material/Widerstand Diagnose Tool Protokoll 09-20-26.docx" -t markdown --extract-media=/tmp/protokoll -o /tmp/protokoll/p.md
-# media/image7.png = Ausbruch (ROT)        -> public/volcano/rot.png
-# media/image9.png = Brodelnde Phase (GELB) -> public/volcano/gelb.png
-# media/image8.png = ruhige Phase (GRÜN)    -> public/volcano/gruen.png
-```
+- The **magma chamber** under the ground line is a stacked bar of the participants,
+  ROT at the bottom, GELB, then GRÜN. Same numbers as the donut and the table.
+  Every band that has participants keeps a minimum height so a single one stays visible.
+- **How high the magma stands in the conduit** and **what comes out of the crater** show
+  the phase of the whole organization: ROT erupts with a lava fountain, ejected rock and
+  an ash cloud, GELB has a small smoke cloud, GRÜN is quiet.
+- The two **pressure arrows** left of the chamber carry a minus (up, Druckreduktion) and
+  a plus (down, Druckerhöhung).
+- The diagram is `role="img"` with a `<title>` and a `<desc>` naming the phase and every
+  count. Inside the drawing only the short keys „Zone 1", „Zone 2" and the band counts
+  appear, and those hide below the `sm` breakpoint. The full vocabulary stays HTML beside
+  the diagram, so it reflows and resizes with the page.
 
-The illustrations contain empty white label boxes. The thesis gives the model's vocabulary
-for those labels; show it as a legend next to the image (overlaying text on the image is an
-optional enhancement, see open question 5):
+The thesis gives the model's vocabulary; it is the legend next to the diagram and the key
+to the labels inside it:
 
 - Zone 1, Magmakammer (unsichtbare Ebene): Emotionen, Bedürfnisse, Werte, Identität, Ängste, Machtfragen. Energiequelle und Risikoquelle.
 - Zone 2, Vulkanstruktur (sichtbare Ebene): Verhalten, Konflikte, Prozesse, Kommunikation, Rollen. Symptome und Ausdrucksformen.
-- Druckreduktion (Pfeil nach oben): Partizipation, Transparenz, psychologische Sicherheit.
-- Druckerhöhung (Pfeil nach unten): Überlastung, Widersprüche, fehlende Sicherheit.
+- Druckreduktion (Pfeil nach oben, −): Partizipation, Transparenz, psychologische Sicherheit.
+- Druckerhöhung (Pfeil nach unten, +): Überlastung, Widersprüche, fehlende Sicherheit.
 
 Which volcano to show for the whole organization: the phase with the most participants.
 On a tie the more severe phase wins (ROT > GELB > GRÜN). This rule is our assumption
@@ -417,17 +424,16 @@ everything below already computed. A small „Live · aktualisiert vor n Sekunde
 and the response counter make the real-time effect visible during a demo.
 
 Empty state (0 responses): the share panel front and center, a hint „Sobald die erste
-Antwort eingeht, erscheinen hier die Ergebnisse", and the volcano legend.
+Antwort eingeht, erscheinen hier die Ergebnisse", and the quiet volcano with its legend.
 
 Sections, top to bottom:
 
 1. **Header**: survey title, mode badge, share panel (public URL, copy button, QR code).
 2. **KPI row**: Teilnahmen (count), ROT / GELB / GRÜN counts with percentages, Gesamtphase
    of the organization (section 9 rule).
-3. **Frühwarnsystem**: the volcano illustration for the overall phase (with `alt` text
-   naming the phase) beside the zone legend, and a donut chart of the Ampel distribution
-   with a matching table (Vulkanmodell, Farbe, Anzahl, %). Reproduces the client's
-   Frühwarnsystem sheet and its pie chart.
+3. **Frühwarnsystem**: the volcano diagram for the overall phase beside the zone legend,
+   and a donut chart of the Ampel distribution with a matching table (Vulkanmodell, Farbe,
+   Anzahl, %). Reproduces the client's Frühwarnsystem sheet and its pie chart.
 4. **Profilverteilung**: bar chart of how often each profile A–F is dominant, and next to
    it how often it is second. Average weighted score per profile across participants as a
    second bar or radar chart. Profile names with icons on the axis, tooltips with
@@ -454,7 +460,7 @@ against the page background, always paired with the text ROT / GELB / GRÜN.
 ## 14. Source material map
 
 Everything under `source material/` is reference. Never edit it and never import it at
-runtime; copy what the app needs (volcano images, seed rows) into the project.
+runtime; copy what the app needs (the seed rows) into the project.
 
 | File | What it is |
 |---|---|
@@ -478,9 +484,9 @@ Decisions taken so the build can start. Each one is cheap to change later.
 3. **Tie-break on equal weighted scores**: higher impact factor wins, then alphabetical.
 4. **Overall organization phase for the volcano**: most frequent Ampel, ties go to the more
    severe phase. Alternative the client may prefer: any ROT share above a threshold.
-5. **Labels in the volcano illustrations**: the three PNGs have empty boxes. The demo shows
-   the zone legend next to the image instead of overlaying text. Ask the client what he
-   wants written in each box.
+5. **Labels in the volcano**: the client's three PNGs have empty label boxes, so the app
+   draws its own volcano (section 9) and labels it from the thesis vocabulary. Ask the
+   client whether he wants different words in the diagram.
 6. **Several surveys per organization**: allowed. Lets a team lead run a named survey while
    HR runs an anonymous one. The briefing only required one.
 7. **Charts library**: the briefing says "TanStack everything: Forms, Charts". TanStack's
