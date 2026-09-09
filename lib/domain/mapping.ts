@@ -15,7 +15,7 @@ export type MappingEntry = {
   pair: PairKey;
   profiles: [ProfileCode, ProfileCode];
   ampel: Ampel;
-  /** Only the eight patterns from the thesis have a name. */
+  /** Only the eight patterns from the thesis have this name. Not shown any more. */
   musterbezeichnung: string | null;
   bedrohung: string;
   intervention: string;
@@ -23,11 +23,13 @@ export type MappingEntry = {
   kpis: string;
   verantwortung: string;
   zeitraum: string;
-  /** Only the eight patterns from the thesis carry these two descriptions. */
+  /**
+   * Only the eight patterns from the thesis carry a name and these two descriptions.
+   * They are kept for reference but no longer shown: every card is titled with the
+   * Profil-Mustername of MUSTER instead. See CLAUDE.md section 8.
+   */
   magmakammer: string | null;
   symptom: string | null;
-  // Reserved for the "Persönliche Entwicklungsstory" texts the client may add later
-  // (one for the team, one for leadership). Left out until he supplies content.
 };
 
 /** Sorts two profile codes into the canonical pair key. */
@@ -265,6 +267,197 @@ export function lookupMapping(first: ProfileCode, second: ProfileCode): MappingE
   }
   return entry;
 }
+
+// The two columns the client added to his Mapping sheet in September 2026. Unlike
+// everything above they depend on the order: A → E and E → A have a different name
+// and a different story, because the dominant profile leads the sentence.
+
+/** Dominant profile first, then the second one, joined with ">", e.g. "A>E". */
+export type OrderedPairKey = string;
+
+/** Builds the ordered key. The order matters, so nothing is sorted here. */
+export function orderedPairKey(
+  dominant: ProfileCode,
+  second: ProfileCode,
+): OrderedPairKey {
+  return `${dominant}>${second}`;
+}
+
+export type Muster = {
+  /** Column H of the sheet: the name of the pattern, seen from the dominant profile. */
+  name: string;
+  /** Column J: what the two Entwicklungsrollen turn into once the pattern is worked on. */
+  story: string;
+};
+
+/** All 30 ordered pairs, read from the client's Mapping export. */
+export const MUSTER: Record<OrderedPairKey, Muster> = {
+  "A>E": {
+    name: "Der Bedeutsamkeits-Ängstliche",
+    story:
+      "Nach der Klärung entwickelt der Teilnehmer die Stärke eines Mentors, der Orientierung gibt, und gleichzeitig die Fähigkeit eines Beziehungs-Gestalters, der Einfluss durch Kooperation statt Status gewinnt.",
+  },
+  "E>A": {
+    name: "Der Status-Verunsicherte Experte",
+    story:
+      "Der Teilnehmer lernt, Beziehungen statt Macht zu nutzen und gewinnt Stabilität. Gleichzeitig entfaltet er die Qualitäten eines Mentors, der dem Team Sicherheit und Richtung gibt.",
+  },
+  "A>F": {
+    name: "Der Überlastete Identitäts-Träger",
+    story:
+      "Der Teilnehmer wächst in die Rolle eines Mentors hinein, der Verantwortung teilt, und entwickelt zugleich die Resilienz eines Champions, der gesunde Leistung ermöglicht.",
+  },
+  "F>A": {
+    name: "Der Überlastete Identitäts-Träger",
+    story:
+      "Der Teilnehmer stärkt seine Resilienz und lernt, Prioritäten klar zu setzen. Gleichzeitig entwickelt er die Qualitäten eines Mentors, der das Team stabilisiert.",
+  },
+  "A>D": {
+    name: "Der Werte-Blockierende Experte",
+    story:
+      "Der Teilnehmer verbindet die Stärke eines Mentors mit der Rolle eines Werte-Botschafters. Er übersetzt Kultur in die neue Welt und gibt dem Team Orientierung.",
+  },
+  "D>A": {
+    name: "Der Pflicht-Getriebene Bewahrer",
+    story:
+      "Der Teilnehmer entwickelt sich zu einem Werte-Botschafter, der Sinn stiftet, und gleichzeitig zu einem Mentor, der Veränderung stabil begleitet.",
+  },
+  "E>F": {
+    name: "Der Druck-Überlastete Performer",
+    story:
+      "Der Teilnehmer gewinnt Klarheit in Beziehungen und stärkt zugleich seine Resilienz. Er wird zu einer stabilen, kooperativen Kraft im Team.",
+  },
+  "F>E": {
+    name: "Der Überlastete Status-Sucher",
+    story:
+      "Der Teilnehmer baut Belastung ab und entwickelt Resilienz. Gleichzeitig stärkt er seine Fähigkeit, Beziehungen konstruktiv zu gestalten.",
+  },
+  "B>D": {
+    name: "Der Pflicht-Routine-Bewahrer",
+    story:
+      "Der Teilnehmer entwickelt die Fähigkeit, stabile Strukturen zu schaffen, und gleichzeitig Werte zu vermitteln. Er wird zu einer verlässlichen, kulturell verbundenen Kraft im Team.",
+  },
+  "D>B": {
+    name: "Der Werte-Routine-Träger",
+    story:
+      "Der Teilnehmer verbindet Wertebewusstsein mit struktureller Klarheit. Er schafft sowohl Sinn als auch Ordnung und stärkt damit die Teamkohäsion.",
+  },
+  "A>C": {
+    name: "Der Logik-Zerlegende Experte",
+    story:
+      "Der Teilnehmer nutzt seine Erfahrung als Mentor und verbindet sie mit der analytischen Stärke eines Qualitäts-Navigators. Kritik wird zu Qualität, Erfahrung zu Orientierung.",
+  },
+  "C>A": {
+    name: "Der Strategisch-Zerlegende Analytiker",
+    story:
+      "Der Teilnehmer entwickelt präzise Qualitätsorientierung und gleichzeitig die Fähigkeit, andere als Mentor zu unterstützen. Die Dynamik wird konstruktiv und strategisch klar.",
+  },
+  "A>B": {
+    name: "Der Routine-Erstarrte Experte",
+    story:
+      "Der Teilnehmer verbindet inspirierende Orientierung mit stabiler Struktur. Er schafft Sicherheit und Sinn und stärkt die Veränderungsfähigkeit des Teams.",
+  },
+  "B>A": {
+    name: "Der Stabilitäts-Fixierte Fachmann",
+    story:
+      "Der Teilnehmer entwickelt klare Routinen und gleichzeitig die Fähigkeit, als Mentor Richtung zu geben. Das Team gewinnt Fokus und Motivation.",
+  },
+  "C>E": {
+    name: "Der Politisch-Analytische Blockierer",
+    story:
+      "Der Teilnehmer trennt Logik von Politik und stärkt gleichzeitig seine Beziehungsfähigkeit. Entscheidungen werden klarer und vertrauensvoller.",
+  },
+  "E>C": {
+    name: "Der Status-Politiker",
+    story:
+      "Der Teilnehmer stärkt Beziehungen und entwickelt gleichzeitig analytische Klarheit. Die Zusammenarbeit wird effizient und kooperativ.",
+  },
+  "E>D": {
+    name: "Der Loyalitäts-Konfliktträger",
+    story:
+      "Der Teilnehmer gewinnt Anerkennung durch Beziehung statt Status und verbindet dies mit kultureller Klarheit. Das Team wird kohärenter.",
+  },
+  "D>E": {
+    name: "Der Anerkennungs-Suchende Bewahrer",
+    story:
+      "Der Teilnehmer bringt Werte ein und stärkt gleichzeitig Beziehungen. Die Dynamik wird vertrauensvoll und stabil.",
+  },
+  "D>C": {
+    name: "Der Kultur-Logik-Konfliktträger",
+    story:
+      "Der Teilnehmer verbindet kulturelle Stabilität mit logischer Präzision. Entscheidungen werden respektvoll und klar.",
+  },
+  "C>D": {
+    name: "Der Logik-Kultur-Analytiker",
+    story:
+      "Der Teilnehmer strukturiert komplexe Themen und vermittelt gleichzeitig Werte. Die Veränderung wird rational und kulturell getragen.",
+  },
+  "B>E": {
+    name: "Der Kreativitäts-Blockierte Anerkennungs-Sucher",
+    story:
+      "Der Teilnehmer schafft sichere Rahmen und stärkt gleichzeitig Beziehungen. Kreativität wird wieder möglich.",
+  },
+  "E>B": {
+    name: "Der Anerkennungs-Fixierte Routine-Träger",
+    story:
+      "Der Teilnehmer bringt Nähe und entwickelt gleichzeitig Struktur. Das Team gewinnt Balance und Fokus.",
+  },
+  "B>F": {
+    name: "Der Erschöpfte Routine-Träger",
+    story:
+      "Der Teilnehmer schafft Ordnung und entwickelt gleichzeitig Resilienz. Das Team wird stabil und belastbar.",
+  },
+  "F>B": {
+    name: "Der Überlastete Stabilitäts-Sucher",
+    story:
+      "Der Teilnehmer stärkt seine Belastbarkeit und entwickelt gleichzeitig Strukturkompetenz. Die Dynamik wird nachhaltig.",
+  },
+  "D>F": {
+    name: "Der Pflicht-Überlastete Bewahrer",
+    story:
+      "Der Teilnehmer verbindet Wertebewusstsein mit Resilienz. Das Team gewinnt emotionale und physische Stabilität.",
+  },
+  "F>D": {
+    name: "Der Überlastete Loyalitäts-Träger",
+    story:
+      "Der Teilnehmer entwickelt gesunde Leistungsfähigkeit und gleichzeitig kulturelle Klarheit. Die Veränderung wird tragfähig.",
+  },
+  "B>C": {
+    name: "Der Strukturierte Innovator",
+    story:
+      "Der Teilnehmer verbindet stabile Struktur mit präziser Qualität. Die produktive Spannung stärkt Innovation und Effizienz.",
+  },
+  "C>B": {
+    name: "Der Präzise Stabilitäts-Denker",
+    story:
+      "Der Teilnehmer entwickelt klare Prioritäten und gleichzeitig stabile Routinen. Das Team arbeitet fokussiert und sicher.",
+  },
+  "F>C": {
+    name: "Der Realistische Planer",
+    story:
+      "Der Teilnehmer stärkt seine Resilienz und entwickelt gleichzeitig analytische Klarheit. Deadlines werden realistisch und erreichbar.",
+  },
+  "C>F": {
+    name: "Der Analytische Belastbarkeits-Navigator",
+    story:
+      "Der Teilnehmer strukturiert Aufgaben und entwickelt gleichzeitig gesunde Leistungsfähigkeit. Die Zusammenarbeit wird nachhaltig und effizient.",
+  },};
+
+/** Looks up name and story for one ordered pair. */
+export function lookupMuster(dominant: ProfileCode, second: ProfileCode): Muster {
+  const entry = MUSTER[orderedPairKey(dominant, second)];
+  if (!entry) {
+    throw new Error(`No Profil-Mustername for the pair ${dominant} to ${second}`);
+  }
+  return entry;
+}
+
+/** All 30 ordered pairs, so MUSTER can be checked for completeness. */
+export const ALL_ORDERED_PAIR_KEYS: OrderedPairKey[] = PROFILE_CODES.flatMap((dominant) =>
+  PROFILE_CODES.filter((second) => second !== dominant).map((second) =>
+    orderedPairKey(dominant, second),
+  ),
+);
 
 /** How severe an Ampel is. Used wherever ROT has to come first. */
 export const AMPEL_SEVERITY: Record<Ampel, number> = { ROT: 3, GELB: 2, "GRÜN": 1 };

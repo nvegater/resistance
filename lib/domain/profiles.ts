@@ -10,8 +10,17 @@ export type Profile = {
   name: string;
   icon: string;
   ebene: string;
-  kernursache: string;
-  signal: string;
+  /**
+   * The first half of the client's Kernursache column, the part before the colon.
+   * Protocol item 9 asks for a "Muster" column in the profile table; this split is
+   * our reading of it and may change once the client answers
+   * (docs/rueckfragen-protokoll-09-09.md).
+   */
+  muster: string;
+  /** The second half of the Kernursache column, what the pattern means. */
+  beschreibung: string;
+  /** Was called "Interkulturelles Signal" before protocol item 9. */
+  folgen: string;
   /** Multiplier applied to the block sum. See impactRationale for why they differ. */
   impactFactor: number;
   entwicklungsrolle: string;
@@ -25,9 +34,10 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     name: "Identitäts-Experte",
     icon: "🧠",
     ebene: "Selbstwert",
-    kernursache:
-      "Kompetenzangst: Identität basiert auf Wissen, das bedroht ist. (Angst vor Bedeutsamkeitsverlust)",
-    signal: "Massive Sachkritik als Schutzschild, Wissenshortung.",
+    muster: "Kompetenzangst",
+    beschreibung:
+      "Identität basiert auf Wissen, das bedroht ist. (Angst vor Bedeutsamkeitsverlust)",
+    folgen: "Massive Sachkritik als Schutzschild, Wissenshortung.",
     impactFactor: 1.3,
     entwicklungsrolle: "Mentor & Wissensanker",
     impactRationale:
@@ -38,8 +48,9 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     name: "Besitzstandswahrer",
     icon: "🛡️",
     ebene: "Motivation",
-    kernursache: "Motivationale Resignation: innere Kündigung, Wunsch nach Ruhe.",
-    signal: "Dienst nach Vorschrift, Desinteresse, „Das haben wir immer so gemacht“.",
+    muster: "Motivationale Resignation",
+    beschreibung: "Innere Kündigung, Wunsch nach Ruhe.",
+    folgen: "Dienst nach Vorschrift, Desinteresse, „Das haben wir immer so gemacht“.",
     impactFactor: 0.8,
     entwicklungsrolle: "Stabilitäts-Architekt",
     impactRationale:
@@ -50,9 +61,9 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     name: "Strategischer Skeptiker",
     icon: "🔍",
     ebene: "Sache",
-    kernursache:
-      "Sachlicher Widerstand: glaubt nicht, dass die neue Strategie fachlich funktioniert.",
-    signal:
+    muster: "Sachlicher Widerstand",
+    beschreibung: "Glaubt nicht, dass die neue Strategie fachlich funktioniert.",
+    folgen:
       "Direkte Kritik in Low-Context-Kulturen; „technische Detailfragen“ in High-Context-Kulturen.",
     impactFactor: 0.9,
     entwicklungsrolle: "Qualitäts-Navigator",
@@ -64,8 +75,9 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     name: "Kultur-Bewahrer",
     icon: "🌱",
     ebene: "Werte",
-    kernursache: "Kultureller Widerstand: Angst vor Verlust von Werten und Identität.",
-    signal: "Verweis auf „die gute alte Zeit“, Sorge um Teamgefüge.",
+    muster: "Kultureller Widerstand",
+    beschreibung: "Angst vor Verlust von Werten und Identität.",
+    folgen: "Verweis auf „die gute alte Zeit“, Sorge um Teamgefüge.",
     impactFactor: 1.0,
     entwicklungsrolle: "Werte-Botschafter",
     impactRationale:
@@ -76,9 +88,9 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     name: "Status-Ängstlicher",
     icon: "🎯",
     ebene: "Macht",
-    kernursache:
-      "Emotionaler Widerstand: Angst vor Macht-, Einfluss- oder Sicherheitsverlust.",
-    signal: "Schweigen, Rückzug, informeller Flurfunk.",
+    muster: "Emotionaler Widerstand",
+    beschreibung: "Angst vor Macht-, Einfluss- oder Sicherheitsverlust.",
+    folgen: "Schweigen, Rückzug, informeller Flurfunk.",
     impactFactor: 1.2,
     entwicklungsrolle: "Beziehungs-Gestalter",
     impactRationale:
@@ -89,8 +101,9 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     name: "Überlasteter",
     icon: "⚡",
     ebene: "Kapazität",
-    kernursache: "Ressourcenwiderstand: will die Strategie, hat aber keine Kapazität.",
-    signal: "Hoher Krankenstand, Burnout-Anzeichen, „Das schaffen wir nie“.",
+    muster: "Ressourcenwiderstand",
+    beschreibung: "Will die Strategie, hat aber keine Kapazität.",
+    folgen: "Hoher Krankenstand, Burnout-Anzeichen, „Das schaffen wir nie“.",
     // The docx says 0.8, the client's sheet uses 0.85. Only 0.85 reproduces the
     // example run, so 0.85 is what we use. See CLAUDE.md open question 1.
     impactFactor: 0.85,

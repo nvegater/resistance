@@ -4,8 +4,16 @@
 import { describe, expect, it } from "vitest";
 import { EXAMPLE_RUN } from "./example-run";
 import { evaluateSurvey, type ParticipantInput } from "./scoring";
-import { ALL_PAIR_KEYS, MAPPING } from "./mapping";
-import { PROFILE_CODES } from "./profiles";
+import {
+  ALL_ORDERED_PAIR_KEYS,
+  ALL_PAIR_KEYS,
+  MAPPING,
+  MUSTER,
+  lookupMapping,
+  lookupMuster,
+} from "./mapping";
+import { PROFILE_CODES, type ProfileCode } from "./profiles";
+import { ITEMS, type Answers } from "./questionnaire";
 
 const INPUTS: ParticipantInput[] = EXAMPLE_RUN.map((response, position) => ({
   id: `p${position + 1}`,
@@ -95,11 +103,28 @@ describe("scoring the example run", () => {
   it("groups the participants into Roadmap cards with ROT first", () => {
     expect(results.roadmap[0].mapping.ampel).toBe("ROT");
     const counts = Object.fromEntries(
-      results.roadmap.map((card) => [card.pair, card.count]),
+      results.roadmap.map((card) => [card.orderedPair, card.count]),
     );
-    expect(counts["E+F"]).toBe(3);
-    expect(counts["C+F"]).toBe(1);
+    expect(counts["E>F"]).toBe(3);
+    expect(counts["C>F"]).toBe(1);
     expect(results.roadmap.reduce((sum, card) => sum + card.count, 0)).toBe(15);
+  });
+
+  it("puts the three E to F participants first and names their pattern", () => {
+    const first = results.roadmap[0];
+    expect(first.orderedPair).toBe("E>F");
+    expect(first.count).toBe(3);
+    expect(first.muster.name).toBe("Der Druck-Überlastete Performer");
+    expect(first.rollen.map((entry) => entry.code)).toEqual(["E", "F"]);
+  });
+
+  it("gives every participant the Profil-Mustername of the client's Roadmap export", () => {
+    const namen = results.participants.map((participant) =>
+      lookupMuster(participant.dominant, participant.second).name,
+    );
+    expect(namen[2]).toBe("Der Bedeutsamkeits-Ängstliche");
+    expect(namen[7]).toBe("Der Überlastete Stabilitäts-Sucher");
+    expect(namen[12]).toBe("Der Druck-Überlastete Performer");
   });
 
   it("summarizes every statement", () => {
@@ -118,6 +143,74 @@ describe("the mapping table", () => {
 
   it("uses every profile code", () => {
     expect(PROFILE_CODES).toHaveLength(6);
+  });
+});
+
+describe("the Profil-Mustername and the Entwicklungsstory", () => {
+  it("covers all 30 ordered pairs", () => {
+    expect(ALL_ORDERED_PAIR_KEYS).toHaveLength(30);
+    expect(Object.keys(MUSTER).sort()).toEqual([...ALL_ORDERED_PAIR_KEYS].sort());
+  });
+
+  it("has a name and a story in every row", () => {
+    for (const key of ALL_ORDERED_PAIR_KEYS) {
+      expect(MUSTER[key].name.length).toBeGreaterThan(0);
+      expect(MUSTER[key].story.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("keeps Ampel and intervention the same in both orders", () => {
+    for (const key of ALL_ORDERED_PAIR_KEYS) {
+      const [dominant, second] = key.split(">") as [ProfileCode, ProfileCode];
+      expect(lookupMapping(dominant, second)).toBe(lookupMapping(second, dominant));
+    }
+  });
+});
+
+describe("both orders of one pair", () => {
+  // Two invented participants: the first is strongest in A, the second in E, so they
+  // land on the same pair from opposite sides.
+  const answers = (high: ProfileCode, middle: ProfileCode) =>
+    Object.fromEntries(
+      ITEMS.map((item) => [
+        item.code,
+        item.profile === high ? 5 : item.profile === middle ? 4 : 1,
+      ]),
+    ) as Answers;
+
+  const both = evaluateSurvey([
+    {
+      id: "x1",
+      name: null,
+      submittedAt: "2026-09-08T09:00:00.000Z",
+      answers: answers("A", "E"),
+    },
+    {
+      id: "x2",
+      name: null,
+      submittedAt: "2026-09-08T09:05:00.000Z",
+      answers: answers("E", "A"),
+    },
+  ]);
+
+  it("makes two Roadmap cards out of A to E and E to A", () => {
+    expect(both.roadmap).toHaveLength(2);
+    expect(both.roadmap.map((card) => card.orderedPair).sort()).toEqual(["A>E", "E>A"]);
+    expect(both.combinations).toHaveLength(2);
+  });
+
+  it("shares the intervention but not the name", () => {
+    const [first, secondCard] = both.roadmap;
+    expect(first.mapping).toBe(secondCard.mapping);
+    expect(first.mapping.ampel).toBe("ROT");
+    expect(first.muster.name).not.toBe(secondCard.muster.name);
+  });
+
+  it("lists the dominant profile's Entwicklungsrolle first", () => {
+    const aFirst = both.roadmap.find((card) => card.orderedPair === "A>E");
+    expect(aFirst?.rollen.map((entry) => entry.code)).toEqual(["A", "E"]);
+    const eFirst = both.roadmap.find((card) => card.orderedPair === "E>A");
+    expect(eFirst?.rollen.map((entry) => entry.code)).toEqual(["E", "A"]);
   });
 });
 

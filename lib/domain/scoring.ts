@@ -8,10 +8,12 @@ import {
   AMPEL_SEVERITY,
   AMPEL_VALUES,
   lookupMapping,
-  pairKey,
+  lookupMuster,
+  orderedPairKey,
   type Ampel,
   type MappingEntry,
-  type PairKey,
+  type Muster,
+  type OrderedPairKey,
 } from "./mapping";
 
 /** One submitted questionnaire, as the scoring module needs it. */
@@ -45,7 +47,8 @@ export type ParticipantResult = {
   ranked: ProfileScore[];
   dominant: ProfileCode;
   second: ProfileCode;
-  pair: PairKey;
+  /** Dominant first, e.g. "A>E". The Profil-Mustername depends on this order. */
+  orderedPair: OrderedPairKey;
   ampel: Ampel;
 };
 
@@ -97,7 +100,7 @@ export function scoreParticipant(
     ranked,
     dominant,
     second,
-    pair: pairKey(dominant, second),
+    orderedPair: orderedPairKey(dominant, second),
     ampel: lookupMapping(dominant, second).ampel,
   };
 }
@@ -137,13 +140,18 @@ export type Combination = {
 };
 
 export type RoadmapCard = {
-  pair: PairKey;
+  orderedPair: OrderedPairKey;
+  dominant: ProfileCode;
+  second: ProfileCode;
+  /** Ampel, Bedrohung, Intervention and the rest. The same for both orders. */
   mapping: MappingEntry;
+  /** Profil-Mustername and Entwicklungsstory. These differ between the two orders. */
+  muster: Muster;
   count: number;
   /** Positions of the participants in this pattern, in submission order. */
   participantIndexes: number[];
   participantNames: string[];
-  /** Entwicklungsrolle of each profile in the pair, in alphabetical code order. */
+  /** Entwicklungsrolle of both profiles, the dominant one first. */
   rollen: { code: ProfileCode; rolle: string }[];
 };
 
@@ -166,7 +174,7 @@ export type SurveyResults = {
   profileDistribution: ProfileDistribution[];
   /** Ordered (dominant, second) pairs, ROT first and then by count. */
   combinations: Combination[];
-  /** One card per unordered pair that occurs, ROT first and then by count. */
+  /** One card per ordered pair that occurs, ROT first and then by count. */
   roadmap: RoadmapCard[];
   itemStats: ItemStat[];
 };
@@ -247,23 +255,26 @@ function countCombinations(participants: ParticipantResult[]): Combination[] {
 }
 
 function buildRoadmap(participants: ParticipantResult[]): RoadmapCard[] {
-  const cards = new Map<PairKey, RoadmapCard>();
+  const cards = new Map<OrderedPairKey, RoadmapCard>();
   for (const participant of participants) {
-    let card = cards.get(participant.pair);
+    const { dominant, second } = participant;
+    let card = cards.get(participant.orderedPair);
     if (!card) {
-      const mapping = lookupMapping(participant.dominant, participant.second);
       card = {
-        pair: participant.pair,
-        mapping,
+        orderedPair: participant.orderedPair,
+        dominant,
+        second,
+        mapping: lookupMapping(dominant, second),
+        muster: lookupMuster(dominant, second),
         count: 0,
         participantIndexes: [],
         participantNames: [],
-        rollen: mapping.profiles.map((code) => ({
+        rollen: [dominant, second].map((code) => ({
           code,
           rolle: PROFILES[code].entwicklungsrolle,
         })),
       };
-      cards.set(participant.pair, card);
+      cards.set(participant.orderedPair, card);
     }
     card.count += 1;
     card.participantIndexes.push(participant.index);
@@ -273,7 +284,7 @@ function buildRoadmap(participants: ParticipantResult[]): RoadmapCard[] {
     (a, b) =>
       AMPEL_SEVERITY[b.mapping.ampel] - AMPEL_SEVERITY[a.mapping.ampel] ||
       b.count - a.count ||
-      a.pair.localeCompare(b.pair),
+      a.orderedPair.localeCompare(b.orderedPair),
   );
 }
 
