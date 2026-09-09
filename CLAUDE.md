@@ -1,7 +1,9 @@
 # CLAUDE.md — Widerstandsdiagnose Demo
 
-Status (2026-09-05): requirements only. Nothing is implemented yet. This file is the
-single source of truth for what the app must do. Read it fully before touching code.
+Status (2026-09-09): built and running. The client saw the first demo and wrote protocol
+items 6–13; items 6 and 8–12 are implemented, item 7 (a more realistic volcano) was
+decided against, and item 13 (the reflection page) is deferred. This file is the single
+source of truth for what the app must do. Read it fully before touching code.
 
 ## 1. What this is
 
@@ -58,10 +60,21 @@ Out of scope for the demo (do not build):
 - Sign-up, password reset, email sending, invitations, more roles, multi-language, exports
   (CSV, PDF), editing or deleting single responses, duplicate-submission enforcement,
   rate limiting, audit logs, GDPR tooling, dark mode, a marketing landing page.
-- Story texts per profile combination ("Persönliche Entwicklungsstory" for the team and a
-  leadership version). The client mentioned these as a possible later addition to the
-  Roadmap mapping (protocol item 3). Keep the mapping constant open for extra text
-  columns, but do not add content.
+- Story texts per profile combination as a leadership version. The client asked for two
+  variants (protocol item 3); the team version arrived in September 2026 and is built (the
+  Entwicklungsstory of section 8). The leadership version has no content yet.
+- A more realistic volcano illustration (protocol item 7, Stand 08.09.2026). Decided
+  against by the user. The volcano stays exactly as section 9 describes it, because it is
+  drawn from the survey data and a picture would only stand beside the numbers. Do not
+  redraw it.
+- A "Persönliche Entwicklungsreise" page for the participants, with three reflection
+  questions (protocol item 13, Stand 08.09.2026). Deferred by decision of the user, to be
+  planned in a later round. The client's three questions, verbatim:
+  - „Wie hat der Prozess aus Befragung, Intervention und Umsetzung meine persönliche und
+    berufliche Entwicklung beeinflusst?"
+  - „Was hat sich für mich verändert? Was habe ich gelernt? Was nehme ich mit?"
+  - „Welche neue Perspektive hat sich für mich ergeben — persönlich, fachlich, im Team
+    oder in meiner Rolle?"
 
 ## 4. Tech stack and conventions
 
@@ -96,6 +109,16 @@ Conventions:
   the polling results view, dialogs.
 - Traffic-light colors are never the only carrier of meaning. Every Ampel value shows its
   text (ROT / GELB / GRÜN) and its icon (🚨 / ⚠️ / 🟢) next to the color.
+- GELB is a real traffic-light yellow (protocol item 6): `--ampel-gelb-mark` `#facc15` for
+  fills, `--ampel-gelb-bg` `#fde047` with the normal dark text for the badge, and
+  `--ampel-gelb-border` `#a16207` as the ring around it. Yellow is never text on white.
+  Wherever an Ampel value would appear as colored text, the badge is used instead.
+- One color per profile, chosen so a reader with normal color vision can tell all six
+  apart (protocol item 8): A `#6b21a8`, B `#db2777`, C `#2563eb`, D `#047857`,
+  E `#b45309`, F `#c026d3`. All are at least 4.5:1 on white, so the white letter on the
+  swatch stays readable, and none of them is a traffic-light hue. Color-blind readers are
+  covered by the letter, the icon and the profile name on every mark plus the table next
+  to every chart.
 - Respondents never see profile names, weights, Ampel values or any evaluation logic.
 
 Planned layout:
@@ -124,14 +147,20 @@ source material/                reference only, never modified, never shipped
 Canonical names come from the client's Gewichtung sheet and impact-factor table. The
 docx also uses variants ("Der Expertise Skeptiker", "Der Traditions Wahrer"); ignore those.
 
-| Code | Name | Icon | Ebene | Kernursache (Diagnose) | Interkulturelles Signal | Impact factor | Entwicklungsrolle |
-|---|---|---|---|---|---|---|---|
-| A | Identitäts-Experte | 🧠 | Selbstwert | Kompetenzangst: Identität basiert auf Wissen, das bedroht ist. (Angst vor Bedeutsamkeitsverlust) | Massive Sachkritik als Schutzschild, Wissenshortung. | 1.3 | Mentor & Wissensanker |
-| B | Besitzstandswahrer | 🛡️ | Motivation | Motivationale Resignation: innere Kündigung, Wunsch nach Ruhe. | Dienst nach Vorschrift, Desinteresse, „Das haben wir immer so gemacht". | 0.8 | Stabilitäts-Architekt |
-| C | Strategischer Skeptiker | 🔍 | Sache | Sachlicher Widerstand: glaubt nicht, dass die neue Strategie fachlich funktioniert. | Direkte Kritik in Low-Context-Kulturen; „technische Detailfragen" in High-Context-Kulturen. | 0.9 | Qualitäts-Navigator |
-| D | Kultur-Bewahrer | 🌱 | Werte | Kultureller Widerstand: Angst vor Verlust von Werten und Identität. | Verweis auf „die gute alte Zeit", Sorge um Teamgefüge. | 1.0 | Werte-Botschafter |
-| E | Status-Ängstlicher | 🎯 | Macht | Emotionaler Widerstand: Angst vor Macht-, Einfluss- oder Sicherheitsverlust. | Schweigen, Rückzug, informeller Flurfunk. | 1.2 | Beziehungs-Gestalter |
-| F | Überlasteter | ⚡ | Kapazität | Ressourcenwiderstand: will die Strategie, hat aber keine Kapazität. | Hoher Krankenstand, Burnout-Anzeichen, „Das schaffen wir nie". | 0.85 (see open question 1) | Resilienz-Champion |
+Protocol item 9 renamed two of the columns and asked for a third. The client's Kernursache
+column always had two parts separated by a colon, so we split it: the part before the colon
+is **Muster**, the part after it is **Profil-Beschreibung**, and the old "Interkulturelles
+Signal" is now **Folgen**. This split is our reading of the request and may change once the
+client answers `docs/rueckfragen-protokoll-09-09.md` (open question 11).
+
+| Code | Name | Icon | Ebene | Muster | Profil-Beschreibung | Folgen | Impact factor | Entwicklungsrolle |
+|---|---|---|---|---|---|---|---|---|
+| A | Identitäts-Experte | 🧠 | Selbstwert | Kompetenzangst | Identität basiert auf Wissen, das bedroht ist. (Angst vor Bedeutsamkeitsverlust) | Massive Sachkritik als Schutzschild, Wissenshortung. | 1.3 | Mentor & Wissensanker |
+| B | Besitzstandswahrer | 🛡️ | Motivation | Motivationale Resignation | Innere Kündigung, Wunsch nach Ruhe. | Dienst nach Vorschrift, Desinteresse, „Das haben wir immer so gemacht". | 0.8 | Stabilitäts-Architekt |
+| C | Strategischer Skeptiker | 🔍 | Sache | Sachlicher Widerstand | Glaubt nicht, dass die neue Strategie fachlich funktioniert. | Direkte Kritik in Low-Context-Kulturen; „technische Detailfragen" in High-Context-Kulturen. | 0.9 | Qualitäts-Navigator |
+| D | Kultur-Bewahrer | 🌱 | Werte | Kultureller Widerstand | Angst vor Verlust von Werten und Identität. | Verweis auf „die gute alte Zeit", Sorge um Teamgefüge. | 1.0 | Werte-Botschafter |
+| E | Status-Ängstlicher | 🎯 | Macht | Emotionaler Widerstand | Angst vor Macht-, Einfluss- oder Sicherheitsverlust. | Schweigen, Rückzug, informeller Flurfunk. | 1.2 | Beziehungs-Gestalter |
+| F | Überlasteter | ⚡ | Kapazität | Ressourcenwiderstand | Will die Strategie, hat aber keine Kapazität. | Hoher Krankenstand, Burnout-Anzeichen, „Das schaffen wir nie". | 0.85 (see open question 1) | Resilienz-Champion |
 
 Why the impact factors differ (client's text, for tooltips):
 
@@ -235,9 +264,9 @@ plus second profile's role from section 5. Do not duplicate it.
 | C+F | GRÜN | Überforderte Logik | Verzögerungen: Deadlines reißen, aber keine Sabotage | Kapazitäts-Check + Priorisierungs-Sprint | Realistische Planung: Zeitpuffer & Ressourcen für nachhaltige Umsetzung | Termintreue ↑, Überstunden ↓ | Teamleitung + PMO | 1–3 Monate |
 
 The eight patterns with a Musterbezeichnung come from the thesis and carry two extra
-descriptive fields. Use them in detail views and tooltips. The other seven pairs were
-added later in the client's sheet and have no such text; leave those fields empty
-(open question 9).
+descriptive fields. They stay in the mapping constant for reference but no longer appear
+on the dashboard: since protocol item 11 every Roadmap card is titled the same way, with
+the Profil-Mustername below. The other seven pairs never had such text.
 
 | Pair | Zustand der Magmakammer & Dynamik | Sichtbares Symptom am Vulkan |
 |---|---|---|
@@ -249,6 +278,55 @@ added later in the client's sheet and have no such text; leave those fields empt
 | A+B | Angst, nicht mehr mitzuhalten (A) → sofortige Resignation (B) | Erkaltende Lava; Innovationskraft erstarrt |
 | C+E | Angst vor Privilegverlust (E) tarnt sich als Logik-Kritik (C) | Endlose Rauchsignale; ergebnislose Meetings |
 | C+F | Positive Grundhaltung, aber reale operative Risiken (C) + Zeitmangel (F) | Leichte Erhitzung durch Alltagsreibung |
+
+### Profil-Mustername and Entwicklungsstory (protocol item 12)
+
+The client added two columns to his Mapping sheet in September 2026, and these two are the
+first that **depend on the order**: A → E and E → A have a different name and a different
+story, because the sentence is written from the dominant profile's side. Everything above
+stays the same for both orders. They live in `MUSTER` in `lib/domain/mapping.ts`, keyed
+`"A>E"`, and `lookupMuster(dominant, second)` reads them.
+
+The Profil-Mustername titles every Roadmap card and fills the Profil-Mustername column of
+the combinations table. The Entwicklungsstory sits under the Entwicklungsrollen on the
+Roadmap card and says what the two roles turn into once the pattern is worked on.
+
+The export writes names with a non-breaking hyphen (U+2011) and leaves trailing spaces
+behind, and a few stories have no final period. All three are normalized here and in the
+constant.
+
+| Dominant → Zweit | Ampel | Profil-Mustername | Entwicklungsstory |
+|---|---|---|---|
+| A → E | ROT | Der Bedeutsamkeits-Ängstliche | Nach der Klärung entwickelt der Teilnehmer die Stärke eines Mentors, der Orientierung gibt, und gleichzeitig die Fähigkeit eines Beziehungs-Gestalters, der Einfluss durch Kooperation statt Status gewinnt. |
+| E → A | ROT | Der Status-Verunsicherte Experte | Der Teilnehmer lernt, Beziehungen statt Macht zu nutzen und gewinnt Stabilität. Gleichzeitig entfaltet er die Qualitäten eines Mentors, der dem Team Sicherheit und Richtung gibt. |
+| A → F | ROT | Der Überlastete Identitäts-Träger | Der Teilnehmer wächst in die Rolle eines Mentors hinein, der Verantwortung teilt, und entwickelt zugleich die Resilienz eines Champions, der gesunde Leistung ermöglicht. |
+| F → A | ROT | Der Überlastete Identitäts-Träger | Der Teilnehmer stärkt seine Resilienz und lernt, Prioritäten klar zu setzen. Gleichzeitig entwickelt er die Qualitäten eines Mentors, der das Team stabilisiert. |
+| A → D | ROT | Der Werte-Blockierende Experte | Der Teilnehmer verbindet die Stärke eines Mentors mit der Rolle eines Werte-Botschafters. Er übersetzt Kultur in die neue Welt und gibt dem Team Orientierung. |
+| D → A | ROT | Der Pflicht-Getriebene Bewahrer | Der Teilnehmer entwickelt sich zu einem Werte-Botschafter, der Sinn stiftet, und gleichzeitig zu einem Mentor, der Veränderung stabil begleitet. |
+| E → F | ROT | Der Druck-Überlastete Performer | Der Teilnehmer gewinnt Klarheit in Beziehungen und stärkt zugleich seine Resilienz. Er wird zu einer stabilen, kooperativen Kraft im Team. |
+| F → E | ROT | Der Überlastete Status-Sucher | Der Teilnehmer baut Belastung ab und entwickelt Resilienz. Gleichzeitig stärkt er seine Fähigkeit, Beziehungen konstruktiv zu gestalten. |
+| B → D | GELB | Der Pflicht-Routine-Bewahrer | Der Teilnehmer entwickelt die Fähigkeit, stabile Strukturen zu schaffen, und gleichzeitig Werte zu vermitteln. Er wird zu einer verlässlichen, kulturell verbundenen Kraft im Team. |
+| D → B | GELB | Der Werte-Routine-Träger | Der Teilnehmer verbindet Wertebewusstsein mit struktureller Klarheit. Er schafft sowohl Sinn als auch Ordnung und stärkt damit die Teamkohäsion. |
+| A → C | GELB | Der Logik-Zerlegende Experte | Der Teilnehmer nutzt seine Erfahrung als Mentor und verbindet sie mit der analytischen Stärke eines Qualitäts-Navigators. Kritik wird zu Qualität, Erfahrung zu Orientierung. |
+| C → A | GELB | Der Strategisch-Zerlegende Analytiker | Der Teilnehmer entwickelt präzise Qualitätsorientierung und gleichzeitig die Fähigkeit, andere als Mentor zu unterstützen. Die Dynamik wird konstruktiv und strategisch klar. |
+| A → B | GELB | Der Routine-Erstarrte Experte | Der Teilnehmer verbindet inspirierende Orientierung mit stabiler Struktur. Er schafft Sicherheit und Sinn und stärkt die Veränderungsfähigkeit des Teams. |
+| B → A | GELB | Der Stabilitäts-Fixierte Fachmann | Der Teilnehmer entwickelt klare Routinen und gleichzeitig die Fähigkeit, als Mentor Richtung zu geben. Das Team gewinnt Fokus und Motivation. |
+| C → E | GELB | Der Politisch-Analytische Blockierer | Der Teilnehmer trennt Logik von Politik und stärkt gleichzeitig seine Beziehungsfähigkeit. Entscheidungen werden klarer und vertrauensvoller. |
+| E → C | GELB | Der Status-Politiker | Der Teilnehmer stärkt Beziehungen und entwickelt gleichzeitig analytische Klarheit. Die Zusammenarbeit wird effizient und kooperativ. |
+| E → D | GELB | Der Loyalitäts-Konfliktträger | Der Teilnehmer gewinnt Anerkennung durch Beziehung statt Status und verbindet dies mit kultureller Klarheit. Das Team wird kohärenter. |
+| D → E | GELB | Der Anerkennungs-Suchende Bewahrer | Der Teilnehmer bringt Werte ein und stärkt gleichzeitig Beziehungen. Die Dynamik wird vertrauensvoll und stabil. |
+| D → C | GELB | Der Kultur-Logik-Konfliktträger | Der Teilnehmer verbindet kulturelle Stabilität mit logischer Präzision. Entscheidungen werden respektvoll und klar. |
+| C → D | GELB | Der Logik-Kultur-Analytiker | Der Teilnehmer strukturiert komplexe Themen und vermittelt gleichzeitig Werte. Die Veränderung wird rational und kulturell getragen. |
+| B → E | GELB | Der Kreativitäts-Blockierte Anerkennungs-Sucher | Der Teilnehmer schafft sichere Rahmen und stärkt gleichzeitig Beziehungen. Kreativität wird wieder möglich. |
+| E → B | GELB | Der Anerkennungs-Fixierte Routine-Träger | Der Teilnehmer bringt Nähe und entwickelt gleichzeitig Struktur. Das Team gewinnt Balance und Fokus. |
+| B → F | GELB | Der Erschöpfte Routine-Träger | Der Teilnehmer schafft Ordnung und entwickelt gleichzeitig Resilienz. Das Team wird stabil und belastbar. |
+| F → B | GELB | Der Überlastete Stabilitäts-Sucher | Der Teilnehmer stärkt seine Belastbarkeit und entwickelt gleichzeitig Strukturkompetenz. Die Dynamik wird nachhaltig. |
+| D → F | GELB | Der Pflicht-Überlastete Bewahrer | Der Teilnehmer verbindet Wertebewusstsein mit Resilienz. Das Team gewinnt emotionale und physische Stabilität. |
+| F → D | GELB | Der Überlastete Loyalitäts-Träger | Der Teilnehmer entwickelt gesunde Leistungsfähigkeit und gleichzeitig kulturelle Klarheit. Die Veränderung wird tragfähig. |
+| B → C | GRÜN | Der Strukturierte Innovator | Der Teilnehmer verbindet stabile Struktur mit präziser Qualität. Die produktive Spannung stärkt Innovation und Effizienz. |
+| C → B | GRÜN | Der Präzise Stabilitäts-Denker | Der Teilnehmer entwickelt klare Prioritäten und gleichzeitig stabile Routinen. Das Team arbeitet fokussiert und sicher. |
+| F → C | GRÜN | Der Realistische Planer | Der Teilnehmer stärkt seine Resilienz und entwickelt gleichzeitig analytische Klarheit. Deadlines werden realistisch und erreichbar. |
+| C → F | GRÜN | Der Analytische Belastbarkeits-Navigator | Der Teilnehmer strukturiert Aufgaben und entwickelt gleichzeitig gesunde Leistungsfähigkeit. Die Zusammenarbeit wird nachhaltig und effizient. |
 
 ## 9. Domain: Frühwarnsystem and the volcano model
 
@@ -454,36 +532,51 @@ and the response counter make the real-time effect visible during a demo.
 Empty state (0 responses): the share panel front and center, a hint „Sobald die erste
 Antwort eingeht, erscheinen hier die Ergebnisse", and the quiet volcano with its legend.
 
-Sections, top to bottom:
+Sections, top to bottom. Protocol items 9 and 10 set this order: first what the whole
+organization looks like, then what the profiles mean, then the numbers, then the measures,
+and the single participants last.
 
 1. **Header**: survey title, mode badge, share panel (public URL, copy button, QR code).
-2. **KPI row**: Teilnahmen (count), ROT / GELB / GRÜN counts with percentages, Gesamtphase
-   of the organization (section 9 rule).
+2. **Kennzahlen (KPI row)**: Teilnahmen (count), ROT / GELB / GRÜN counts with percentages
+   as Ampel badges on cards with a colored left bar, Gesamtphase of the organization
+   (section 9 rule).
 3. **Frühwarnsystem**: the volcano diagram for the overall phase beside the zone legend,
    and a donut chart of the Ampel distribution with a matching table (Vulkanmodell, Farbe,
    Anzahl, %). Reproduces the client's Frühwarnsystem sheet and its pie chart.
-4. **Profilverteilung**: bar chart of how often each profile A–F is dominant, and next to
-   it how often it is second. Average weighted score per profile across participants as a
-   second bar or radar chart. Profile names with icons on the axis, tooltips with
-   Kernursache and Signal.
-5. **Kombinationen**: ranked list or 6×6 matrix of (dominant, second) pairs with count and
-   Ampel. Sorted ROT first, then by count.
-6. **Teilnehmer**: TanStack Table. Columns: Teilnehmer (name in named mode, otherwise
-   „Teilnehmer n" by submission order), Zeitpunkt, weighted A–F (one decimal, raw block sum
-   in a tooltip or muted secondary line), Dominant, Zweit, Ampel. Sortable. Expanding a row
-   shows the Roadmap entry for that pair. Reproduces the Gewichtung sheet.
-7. **Transformations-Roadmap**: one card per pair that occurs in the data, ROT first, with
-   participant count (and names in named mode), Musterbezeichnung if any, Bedrohung,
-   Intervention, Strategisches Ziel, Entwicklungsrollen (dominant → role / second → role),
-   KPIs, Verantwortung, Zeitraum. Reproduces the Roadmap sheet, grouped instead of one row
-   per person.
-8. **Antworten-Übersicht**: per statement the mean and the 1–5 distribution as a small
+4. **Profile**: a static glossary table of the six profiles, Profil | Muster |
+   Profil-Beschreibung | Folgen. It says nothing about this survey and explains the letters
+   used below.
+5. **Profile Gewichtung**: everything that counts profiles, in one section.
+   - „Wie oft ein Profil dominant oder zweitdominant ist": one bar pair per profile, both
+     bars in that profile's color, the Zweitprofil bar hatched and outlined so the two
+     series differ in pattern too. Value labels at the bar ends, axis ticks
+     `A · Identitäts-Experte`, and a small legend saying what solid and hatched mean.
+   - „Durchschnittlicher gewichteter Wert je Profil": same axis, same per-profile colors,
+     value labels with one decimal.
+   - „Häufigkeit je Profil": Profil | Dominant | Zweitprofil | Ø gewichtet. The text
+     alternative for both charts.
+   - „Kombinationen": Teilnehmende | Dominantes Profil | Zweitdominantes Profil |
+     Profil-Mustername | Ampel. Sorted ROT first, then by count.
+6. **Transformations-Roadmap**: one card per **ordered** pair that occurs in the data, ROT
+   first. Title is the Profil-Mustername, subtitle is dominant → second with the
+   participant count. Rows: Bedrohung / Eruptionswirkung, Intervention, Strategisches Ziel,
+   Entwicklungsrollen (dominant first), Entwicklungsstory, KPIs, Verantwortung, Zeitraum,
+   Betroffene (names in named mode). No Magmakammer or Symptom rows.
+7. **Antworten-Übersicht**: per statement the mean and the 1–5 distribution as a small
    horizontal stacked bar, grouped by block with the profile name as group heading.
    Replaces the Google Forms response summary.
+8. **Teilnehmer**, last: TanStack Table inside a `<details>` that is closed in anonymous
+   surveys and open in named ones, because the single rows are what a team lead needs and
+   what everyone else scrolls past. Columns: Teilnehmer (name in named mode, otherwise
+   „Teilnehmer n" by submission order), Zeitpunkt, weighted A–F (one decimal, raw block sum
+   as a muted secondary line), Dominant, Zweit, Ampel. Sortable. Expanding a row shows the
+   Roadmap card for that ordered pair under its Profil-Mustername. Reproduces the
+   Gewichtung sheet.
 
 Chart rules: every series has a text label and, where several series share a chart, a
-pattern or shape difference beyond color. Ampel colors are fixed tokens that pass WCAG AA
-against the page background, always paired with the text ROT / GELB / GRÜN.
+pattern or shape difference beyond color. Every chart has a table with the same numbers
+next to it. Ampel and profile colors are the fixed tokens of section 4; an Ampel value is
+always shown as the badge with its word and icon.
 
 ## 14. Source material map
 
@@ -494,8 +587,10 @@ runtime; copy what the app needs (the seed rows) into the project.
 |---|---|
 | `source_material_index.md` | The user's briefing: purpose, roles, demo-not-MVP, stack. |
 | `umfrage/index.md` | Link to the Google Form and the 18 statements as text. Canonical questionnaire. |
-| `Widerstand Diagnose Tool Protokoll 09-20-26.docx` | Client's protocol (Stand 04.09.2026): requests 1–5, profile table, impact factors, older question variant, sheet screenshots, volcano images, Ampel logic, Roadmap tables. |
+| `Widerstand Diagnose Tool Protokoll 02-09-26.docx` | Client's protocol, first round (Stand 04.09.2026): requests 1–5, profile table, impact factors, older question variant, sheet screenshots, volcano images, Ampel logic, Roadmap tables. |
+| `Widerstand Diagnose Tool Protokoll 09-09-26.docx` | Client's protocol, second round (Stand 08.09.2026): repeats requests 1–5 and adds items 6–13 after the first demo, with screenshots of the pages he is commenting on. |
 | `auswertung example/*.csv` | The 15-participant run, one CSV per sheet (section 10). |
+| `updated auswertung example/*.csv` | The same 15 responses exported again in September 2026. Responses, block sums, weighted values and Frühwarnsystem are byte-identical to the older export; only Mapping and Roadmap changed, and they carry the two new columns of section 8. |
 | `thesis/Vom Widerstand zur Strategie ... es-ES_1.pdf` | The client's certification thesis in Spanish: theory, volcano model, six profiles, Ampel, transfer architecture. Background only. Its content is copyrighted by the client; the app may use the model because the client commissioned it. |
 
 Convert the docx with `pandoc ... -t markdown --extract-media=<dir>`. Read the PDF with
@@ -514,7 +609,8 @@ Decisions taken so the build can start. Each one is cheap to change later.
    severe phase. Alternative the client may prefer: any ROT share above a threshold.
 5. **Labels in the volcano**: the client's three PNGs have empty label boxes, so the app
    draws its own volcano (section 9) and labels it from the thesis vocabulary. Ask the
-   client whether he wants different words in the diagram.
+   client whether he wants different words in the diagram. His request for a more
+   realistic volcano (item 7) is settled: the drawing stays as it is.
 6. **Several surveys per organization**: allowed. Lets a team lead run a named survey while
    HR runs an anonymous one. The briefing only required one.
 7. **Charts library**: the briefing says "TanStack everything: Forms, Charts". TanStack's
@@ -522,10 +618,24 @@ Decisions taken so the build can start. Each one is cheap to change later.
    Table; shadcn/ui's chart components wrap Recharts and match the design system. Default
    is shadcn/ui Chart. Switch if the user insists on TanStack React Charts.
 8. **Named mode**: name only, no team or department field.
-9. **Seven extended pairs** (E+F, D+E, C+D, B+E, B+F, D+F, B+C) have no Musterbezeichnung,
-   Magmakammer or Symptom text. Left empty; ask the client whether he wants to add them.
+9. **Seven extended pairs** (E+F, D+E, C+D, B+E, B+F, D+F, B+C): answered. All 30 ordered
+   pairs now have a Profil-Mustername and an Entwicklungsstory. Only the thesis fields
+   (Musterbezeichnung, Magmakammer, Symptom) are still limited to eight pairs, and those
+   are no longer shown.
 10. **Package manager and versions**: pnpm and the current stable releases of everything
     at scaffold time. No pins in this document.
+11. **What the „Muster" column of the profile table should say** (protocol item 9). The
+    client asked to move „Muster" up to the profile table, but the eight thesis names
+    describe a pair while the profile table describes one profile. Built provisionally as
+    the first half of his Kernursache text (section 5). The question, the two alternatives
+    and a recommendation are written out for him in
+    `docs/rueckfragen-protokoll-09-09.md`.
+12. **Participant table collapsed and last** (protocol item 10). He asked whether it can be
+    hidden or moved; we did both, open by default only in named mode. Confirm with him.
+13. **The exact yellow** (protocol item 6). `#facc15` for fills and `#fde047` behind the
+    badge text. Confirm the tone on his screen.
+14. **Item 13, „Persönliche Entwicklungsreise"**: deferred by decision of the user. The
+    three reflection questions are recorded in section 3.
 
 ## 16. Working rules for Claude in this repo
 
