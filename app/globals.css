@@ -47,6 +47,7 @@
   --color-ampel-gelb: var(--ampel-gelb);
   --color-ampel-gelb-mark: var(--ampel-gelb-mark);
   --color-ampel-gelb-bg: var(--ampel-gelb-bg);
+  --color-ampel-gelb-border: var(--ampel-gelb-border);
   --color-ampel-gruen: var(--ampel-gruen);
   --color-ampel-gruen-mark: var(--ampel-gruen-mark);
   --color-ampel-gruen-bg: var(--ampel-gruen-bg);
@@ -98,20 +99,30 @@
   --ampel-rot: #b91c1c;
   --ampel-rot-mark: #dc2626;
   --ampel-rot-bg: #fee2e2;
-  --ampel-gelb: #854d0e;
-  --ampel-gelb-mark: #a16207;
-  --ampel-gelb-bg: #fef3c7;
+  /* GELB is a real traffic-light yellow, because the client could not tell the old
+     brownish amber apart from the other colours. Yellow never carries text on white:
+     the badge puts dark text on the yellow and draws a darker ring around it. */
+  --ampel-gelb: #713f12;
+  --ampel-gelb-mark: #facc15;
+  --ampel-gelb-bg: #fde047;
+  --ampel-gelb-border: #a16207;
   --ampel-gruen: #15803d;
   --ampel-gruen-mark: #16a34a;
   --ampel-gruen-bg: #dcfce7;
 
-  /* One colour per profile, all at least 4.5:1 on white. */
-  --profile-a: #7c3aed;
-  --profile-b: #0f766e;
-  --profile-c: #1d4ed8;
-  --profile-d: #4d7c0f;
+  /* One colour per profile, all at least 4.5:1 on white so the white letter on the
+     swatch stays readable. Six hues that a reader with normal colour vision can tell
+     apart: profiles that sit next to each other in a chart or a table are at least
+     21.9 OKLab ΔE apart, the closest pair anywhere is 15.8. Colour-blind readers are
+     covered by the letter, the icon and the name on every mark and by the table next
+     to every chart. The traffic-light hues are left out on purpose, so a profile bar
+     is never mistaken for an Ampel value. */
+  --profile-a: #6b21a8;
+  --profile-b: #db2777;
+  --profile-c: #2563eb;
+  --profile-d: #047857;
   --profile-e: #b45309;
-  --profile-f: #be185d;
+  --profile-f: #c026d3;
 
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);

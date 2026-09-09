@@ -1,7 +1,7 @@
 "use client";
 
 import { Cell, Pie, PieChart } from "recharts";
-import { AMPEL_STYLE } from "@/components/domain/ampel";
+import { AmpelBadge, AMPEL_STYLE } from "@/components/domain/ampel";
 import { VolcanoDiagram } from "@/components/results/volcano-diagram";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -19,9 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AMPEL_ICON, AMPEL_PHASE, VOLCANO_LEGEND } from "@/lib/domain/mapping";
+import { AMPEL_PHASE, VOLCANO_LEGEND } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
-import { cn } from "@/lib/utils";
 
 const chartConfig: ChartConfig = {
   ROT: { label: "ROT · Akute Eruption", color: "var(--ampel-rot-mark)" },
@@ -61,9 +60,8 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
             />
 
             {phase ? (
-              <p className={cn("text-lg font-semibold", AMPEL_STYLE[phase].text)}>
-                <span aria-hidden="true">{AMPEL_ICON[phase]}</span> {phase} ·{" "}
-                {AMPEL_PHASE[phase].phase}
+              <p>
+                <AmpelBadge ampel={phase} withPhase className="text-base" />
               </p>
             ) : (
               <p className="text-muted-foreground">
@@ -105,7 +103,7 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
                       <Cell
                         key={entry.ampel}
                         fill={AMPEL_STYLE[entry.ampel].chart}
-                        stroke="var(--background)"
+                        stroke={AMPEL_STYLE[entry.ampel].outline}
                         strokeWidth={2}
                       />
                     ))}
@@ -135,8 +133,8 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
                 {results.ampelCounts.map((entry) => (
                   <TableRow key={entry.ampel}>
                     <TableCell>{AMPEL_PHASE[entry.ampel].phase}</TableCell>
-                    <TableCell className={cn("font-semibold", AMPEL_STYLE[entry.ampel].text)}>
-                      {entry.ampel}
+                    <TableCell>
+                      <AmpelBadge ampel={entry.ampel} />
                     </TableCell>
                     <TableCell className="text-right tabular-nums">{entry.count}</TableCell>
                     <TableCell className="text-right tabular-nums">

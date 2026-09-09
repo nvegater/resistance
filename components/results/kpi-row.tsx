@@ -2,7 +2,6 @@
 
 import { AmpelBadge, AMPEL_STYLE } from "@/components/domain/ampel";
 import { Card, CardContent } from "@/components/ui/card";
-import { AMPEL_PHASE } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
 import { cn } from "@/lib/utils";
 
@@ -23,10 +22,10 @@ export function KpiRow({ results }: { results: SurveyResults }) {
         {results.ampelCounts.map((entry) => {
           const style = AMPEL_STYLE[entry.ampel];
           return (
-            <Card key={entry.ampel} className={cn("border-l-4", style.border)}>
+            <Card key={entry.ampel} className={cn("border-l-4", style.accent)}>
               <CardContent className="py-4">
-                <dt className={cn("text-sm font-semibold", style.text)}>
-                  {entry.ampel} · {AMPEL_PHASE[entry.ampel].phase}
+                <dt>
+                  <AmpelBadge ampel={entry.ampel} withPhase />
                 </dt>
                 <dd className="mt-1 text-3xl font-semibold tabular-nums">
                   {entry.count}
