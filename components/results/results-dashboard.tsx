@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Combinations } from "@/components/results/combinations";
 import { Fruehwarnsystem } from "@/components/results/fruehwarnsystem";
 import { ItemSummary } from "@/components/results/item-summary";
 import { KpiRow } from "@/components/results/kpi-row";
 import { ParticipantsTable } from "@/components/results/participants-table";
-import { ProfileDistribution } from "@/components/results/profile-distribution";
+import { ProfileGlossary } from "@/components/results/profile-glossary";
+import { ProfileWeighting } from "@/components/results/profile-weighting";
 import { Roadmap } from "@/components/results/roadmap";
 import { VolcanoDiagram } from "@/components/results/volcano-diagram";
 import { Card, CardContent } from "@/components/ui/card";
@@ -80,11 +80,11 @@ export function ResultsDashboard({
         <>
           <KpiRow results={results} />
           <Fruehwarnsystem results={results} />
-          <ProfileDistribution results={results} />
-          <Combinations results={results} />
-          <ParticipantsTable results={results} mode={survey.mode} />
+          <ProfileGlossary />
+          <ProfileWeighting results={results} />
           <Roadmap results={results} mode={survey.mode} />
           <ItemSummary results={results} />
+          <ParticipantsTable results={results} mode={survey.mode} />
         </>
       )}
     </div>

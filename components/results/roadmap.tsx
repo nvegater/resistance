@@ -19,8 +19,8 @@ export function Roadmap({
           Transformations-Roadmap
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Für jedes vorkommende Muster die passende Intervention, das strategische Ziel und
-          die Verantwortung. Rote Muster zuerst.
+          Für jedes vorkommende Profil-Muster die passende Intervention, das strategische
+          Ziel und die Entwicklungsstory. Rote Muster zuerst.
         </p>
       </div>
 
@@ -31,7 +31,7 @@ export function Roadmap({
       ) : (
         <ul className="grid gap-4 xl:grid-cols-2">
           {results.roadmap.map((card) => (
-            <li key={card.pair}>
+            <li key={card.orderedPair}>
               <RoadmapEntry card={card} mode={mode} />
             </li>
           ))}
@@ -50,7 +50,7 @@ export function RoadmapEntry({
   mode: "anonymous" | "named";
   compact?: boolean;
 }) {
-  const { mapping } = card;
+  const { mapping, muster } = card;
   const people =
     mode === "named" && card.participantNames.length > 0
       ? card.participantNames.join(", ")
@@ -58,12 +58,6 @@ export function RoadmapEntry({
 
   const body = (
     <dl className="space-y-3 text-sm">
-      {mapping.magmakammer ? (
-        <Row term="Zustand der Magmakammer" detail={mapping.magmakammer} />
-      ) : null}
-      {mapping.symptom ? (
-        <Row term="Sichtbares Symptom am Vulkan" detail={mapping.symptom} />
-      ) : null}
       <Row term="Bedrohung / Eruptionswirkung" detail={mapping.bedrohung} />
       <Row term="Intervention" detail={mapping.intervention} />
       <Row term="Strategisches Ziel" detail={mapping.ziel} />
@@ -79,6 +73,7 @@ export function RoadmapEntry({
           ))}
         </dd>
       </div>
+      <Row term="Entwicklungsstory" detail={muster.story} />
       <Row term="KPIs / Erfolgskriterien" detail={mapping.kpis} />
       <Row term="Verantwortung" detail={mapping.verantwortung} />
       <Row term="Zeitraum" detail={mapping.zeitraum} />
@@ -95,15 +90,19 @@ export function RoadmapEntry({
     <Card className="h-full">
       <CardHeader className="space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-lg font-medium">
-            {mapping.musterbezeichnung ?? `Muster ${mapping.pair}`}
-          </h3>
+          <h3 className="text-lg font-medium">{muster.name}</h3>
           <AmpelBadge ampel={mapping.ampel} />
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-          <ProfileTag code={mapping.profiles[0]} />
-          <span aria-hidden="true">+</span>
-          <ProfileTag code={mapping.profiles[1]} />
+          <span className="inline-flex items-center gap-1.5">
+            <span className="sr-only">dominant:</span>
+            <ProfileTag code={card.dominant} />
+          </span>
+          <span aria-hidden="true">→</span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="sr-only">zweitdominant:</span>
+            <ProfileTag code={card.second} />
+          </span>
           <span>
             ·{" "}
             {card.count === 1 ? "1 Teilnehmende:r" : `${card.count} Teilnehmende`}

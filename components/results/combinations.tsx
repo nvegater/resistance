@@ -12,16 +12,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { lookupMapping } from "@/lib/domain/mapping";
+import { lookupMuster } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
 
 export function Combinations({ results }: { results: SurveyResults }) {
   return (
     <section aria-labelledby="kombinationen-titel" className="space-y-4">
       <div>
-        <h2 id="kombinationen-titel" className="text-xl font-semibold tracking-tight">
+        <h3 id="kombinationen-titel" className="text-lg font-medium">
           Kombinationen
-        </h2>
+        </h3>
         <p className="mt-1 max-w-prose text-muted-foreground">
           Welche Paare aus dominantem und zweitdominantem Profil vorkommen. Die
           gefährlichsten stehen oben.
@@ -36,34 +36,32 @@ export function Combinations({ results }: { results: SurveyResults }) {
             </TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead scope="col">Dominantes Profil</TableHead>
-                <TableHead scope="col">Zweitdominantes Profil</TableHead>
-                <TableHead scope="col">Muster</TableHead>
-                <TableHead scope="col">Ampel</TableHead>
                 <TableHead scope="col" className="text-right">
                   Teilnehmende
                 </TableHead>
+                <TableHead scope="col">Dominantes Profil</TableHead>
+                <TableHead scope="col">Zweitdominantes Profil</TableHead>
+                <TableHead scope="col">Profil-Mustername</TableHead>
+                <TableHead scope="col">Ampel</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {results.combinations.map((combination) => {
-                const mapping = lookupMapping(combination.dominant, combination.second);
+                const muster = lookupMuster(combination.dominant, combination.second);
                 return (
                   <TableRow key={`${combination.dominant}-${combination.second}`}>
+                    <TableCell className="text-right tabular-nums">
+                      {combination.count}
+                    </TableCell>
                     <TableCell>
                       <ProfileTag code={combination.dominant} />
                     </TableCell>
                     <TableCell>
                       <ProfileTag code={combination.second} />
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {mapping.musterbezeichnung ?? "—"}
-                    </TableCell>
+                    <TableCell className="font-medium">{muster.name}</TableCell>
                     <TableCell>
                       <AmpelBadge ampel={combination.ampel} />
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {combination.count}
                     </TableCell>
                   </TableRow>
                 );
