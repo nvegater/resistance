@@ -49,6 +49,12 @@ export const AMPEL_STYLE: Record<
   },
 };
 
+/**
+ * The Ampel value as a pill with icon and word. All three pills have the same
+ * width, so ROT does not look smaller than GELB and GRÜN next to it (protocol
+ * item 15). The phase name, when asked for, stands beside the pill as plain text
+ * instead of inside it, because the three phase names differ in length.
+ */
 export function AmpelBadge({
   ampel,
   className,
@@ -56,25 +62,31 @@ export function AmpelBadge({
 }: {
   ampel: Ampel;
   className?: string;
-  /** Adds the volcano phase, for example "ROT · Akute Eruption". */
+  /** Adds the volcano phase beside the pill, for example "ROT" · "Akute Eruption". */
   withPhase?: boolean;
 }) {
   const style = AMPEL_STYLE[ampel];
-  return (
+  const pill = (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-sm font-semibold",
+        "inline-flex min-w-[5.75rem] items-center justify-center gap-1.5 rounded-full border px-2.5 py-1 text-sm font-semibold",
         style.bg,
         style.border,
         style.text,
-        className,
+        !withPhase && className,
       )}
     >
       <span aria-hidden="true">{AMPEL_ICON[ampel]}</span>
-      <span>
-        {ampel}
-        {withPhase ? ` · ${AMPEL_PHASE[ampel].phase}` : ""}
-      </span>
+      <span>{ampel}</span>
+    </span>
+  );
+
+  if (!withPhase) return pill;
+
+  return (
+    <span className={cn("inline-flex flex-wrap items-center gap-x-2 gap-y-1", className)}>
+      {pill}
+      <span className="font-medium">{AMPEL_PHASE[ampel].phase}</span>
     </span>
   );
 }

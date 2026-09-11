@@ -2,6 +2,7 @@
 
 import { Cell, Pie, PieChart } from "recharts";
 import { AmpelBadge, AMPEL_STYLE } from "@/components/domain/ampel";
+import { KpiRow } from "@/components/results/kpi-row";
 import { VolcanoDiagram } from "@/components/results/volcano-diagram";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -42,9 +43,14 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
           Die Ampel jedes Teilnehmenden zu einem Bild der Organisation zusammengefasst.
-          Gezeigt wird die Phase mit den meisten Teilnehmenden.
+          Die Gesamtphase ist die Phase mit den meisten Teilnehmenden; der Vulkan zeigt
+          sie.
         </p>
       </div>
+
+      {/* The counts come first: the Ampel and the volcano are both part of the
+          warning system, so they share this section (protocol item 14). */}
+      <KpiRow results={results} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
@@ -70,9 +76,10 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
               </p>
             )}
             <p className="text-sm text-muted-foreground">
-              Die Magmakammer ist nach Ampelwerten gefüllt, ROT unten. Wie hoch das
-              Magma im Schlot steht und was aus dem Krater kommt, zeigt die Phase der
-              ganzen Organisation.
+              Der ganze Vulkan trägt die Farbe der Gesamtphase. Die Magmakammer nennt,
+              wie viele Teilnehmende in dieser Phase sind; wie hoch das Magma im Schlot
+              steht und was aus dem Krater kommt, zeigt dieselbe Phase. Die Verteilung
+              aller Ampelwerte steht rechts daneben.
             </p>
 
             <dl className="space-y-3 border-t pt-4 text-sm">

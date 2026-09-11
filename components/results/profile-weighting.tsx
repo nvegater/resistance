@@ -1,9 +1,9 @@
 "use client";
 
 import { useId } from "react";
+import { ChevronRightIcon } from "lucide-react";
 import { Bar, BarChart, Cell, LabelList, XAxis, YAxis } from "recharts";
 import { PROFILE_COLOR, ProfileTag } from "@/components/domain/profile";
-import { Combinations } from "@/components/results/combinations";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -35,7 +35,13 @@ const averageConfig: ChartConfig = {
 const oneDecimal = (value: number) =>
   value.toLocaleString("de-DE", { minimumFractionDigits: 1 });
 
-/** Each profile keeps its own colour in both charts, so the letter and the hue agree. */
+/**
+ * How often each profile leads and how strong it is on average. Each profile keeps
+ * its own colour in both charts, so the letter and the hue agree.
+ *
+ * The whole section is closed by default. The client reads the summary without
+ * these charts and wants them as detail further down (protocol item 16).
+ */
 export function ProfileWeighting({ results }: { results: SurveyResults }) {
   // Every pattern needs an id of its own, and two dashboards can share a page.
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
@@ -55,160 +61,168 @@ export function ProfileWeighting({ results }: { results: SurveyResults }) {
           Profile Gewichtung
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Welche Widerstandsprofile im Unternehmen am häufigsten führen, wie stark sie im
-          Durchschnitt ausgeprägt sind und welche Paare daraus entstehen.
+          Welche Widerstandsprofile im Unternehmen am häufigsten führen und wie stark sie
+          im Durchschnitt ausgeprägt sind. Detailinformation zur Zusammenfassung oben.
         </p>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <h3 className="font-medium">
-              Wie oft ein Profil dominant oder zweitdominant ist
-            </h3>
-          </CardHeader>
-          <CardContent className="space-y-3 overflow-x-auto">
-            <div className="min-w-[420px]">
-              <ChartContainer config={countsConfig} className="h-[280px] w-full">
-                <BarChart data={data} layout="vertical" margin={{ left: 4, right: 32 }}>
-                  <defs>
-                    {/* The second bar of a profile keeps its colour but is hatched,
-                        so the two series differ in pattern as well. */}
-                    {data.map((entry) => (
-                      <pattern
-                        key={entry.code}
-                        id={hatchId(entry.code)}
-                        width={6}
-                        height={6}
-                        patternUnits="userSpaceOnUse"
-                        patternTransform="rotate(45)"
-                      >
-                        <rect width={6} height={6} fill={PROFILE_COLOR[entry.code]} />
-                        <rect width={2.5} height={6} fill="var(--background)" />
-                      </pattern>
-                    ))}
-                  </defs>
-                  <XAxis type="number" allowDecimals={false} />
-                  <YAxis
-                    type="category"
-                    dataKey="code"
-                    width={160}
-                    tickLine={false}
-                    tickFormatter={tick}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent labelKey="label" />} />
-                  <Bar dataKey="dominantCount" radius={3}>
-                    {data.map((entry) => (
-                      <Cell key={entry.code} fill={PROFILE_COLOR[entry.code]} />
-                    ))}
-                    <LabelList
-                      dataKey="dominantCount"
-                      position="right"
-                      className="fill-foreground"
-                      fontSize={12}
+      <details className="group">
+        <summary className="inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+          <ChevronRightIcon
+            aria-hidden="true"
+            className="size-4 transition-transform group-open:rotate-90"
+          />
+          Profile Gewichtung anzeigen
+        </summary>
+
+        <div className="mt-4 grid gap-4 xl:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <h3 className="font-medium">
+                Wie oft ein Profil dominant oder zweitdominant ist
+              </h3>
+            </CardHeader>
+            <CardContent className="space-y-3 overflow-x-auto">
+              <div className="min-w-[420px]">
+                <ChartContainer config={countsConfig} className="h-[280px] w-full">
+                  <BarChart data={data} layout="vertical" margin={{ left: 4, right: 32 }}>
+                    <defs>
+                      {/* The second bar of a profile keeps its colour but is hatched,
+                          so the two series differ in pattern as well. */}
+                      {data.map((entry) => (
+                        <pattern
+                          key={entry.code}
+                          id={hatchId(entry.code)}
+                          width={6}
+                          height={6}
+                          patternUnits="userSpaceOnUse"
+                          patternTransform="rotate(45)"
+                        >
+                          <rect width={6} height={6} fill={PROFILE_COLOR[entry.code]} />
+                          <rect width={2.5} height={6} fill="var(--background)" />
+                        </pattern>
+                      ))}
+                    </defs>
+                    <XAxis type="number" allowDecimals={false} />
+                    <YAxis
+                      type="category"
+                      dataKey="code"
+                      width={160}
+                      tickLine={false}
+                      tickFormatter={tick}
                     />
-                  </Bar>
-                  <Bar dataKey="secondCount" radius={3}>
-                    {data.map((entry) => (
-                      <Cell
-                        key={entry.code}
-                        fill={`url(#${hatchId(entry.code)})`}
-                        stroke={PROFILE_COLOR[entry.code]}
+                    <ChartTooltip content={<ChartTooltipContent labelKey="label" />} />
+                    <Bar dataKey="dominantCount" radius={3}>
+                      {data.map((entry) => (
+                        <Cell key={entry.code} fill={PROFILE_COLOR[entry.code]} />
+                      ))}
+                      <LabelList
+                        dataKey="dominantCount"
+                        position="right"
+                        className="fill-foreground"
+                        fontSize={12}
                       />
-                    ))}
-                    <LabelList
-                      dataKey="secondCount"
-                      position="right"
-                      className="fill-foreground"
-                      fontSize={12}
-                    />
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            </div>
-            <SeriesLegend />
-          </CardContent>
-        </Card>
+                    </Bar>
+                    <Bar dataKey="secondCount" radius={3}>
+                      {data.map((entry) => (
+                        <Cell
+                          key={entry.code}
+                          fill={`url(#${hatchId(entry.code)})`}
+                          stroke={PROFILE_COLOR[entry.code]}
+                        />
+                      ))}
+                      <LabelList
+                        dataKey="secondCount"
+                        position="right"
+                        className="fill-foreground"
+                        fontSize={12}
+                      />
+                    </Bar>
+                  </BarChart>
+                </ChartContainer>
+              </div>
+              <SeriesLegend />
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <h3 className="font-medium">Durchschnittlicher gewichteter Wert je Profil</h3>
-          </CardHeader>
-          <CardContent className="overflow-x-auto">
-            <div className="min-w-[420px]">
-              <ChartContainer config={averageConfig} className="h-[280px] w-full">
-                <BarChart data={data} layout="vertical" margin={{ left: 4, right: 40 }}>
-                  <XAxis type="number" />
-                  <YAxis
-                    type="category"
-                    dataKey="code"
-                    width={160}
-                    tickLine={false}
-                    tickFormatter={tick}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent labelKey="label" />} />
-                  <Bar dataKey="averageWeighted" radius={3}>
-                    {data.map((entry) => (
-                      <Cell key={entry.code} fill={PROFILE_COLOR[entry.code]} />
-                    ))}
-                    <LabelList
-                      dataKey="averageWeighted"
-                      position="right"
-                      className="fill-foreground"
-                      fontSize={12}
-                      formatter={(value) => oneDecimal(Number(value))}
+          <Card>
+            <CardHeader>
+              <h3 className="font-medium">Durchschnittlicher gewichteter Wert je Profil</h3>
+            </CardHeader>
+            <CardContent className="overflow-x-auto">
+              <div className="min-w-[420px]">
+                <ChartContainer config={averageConfig} className="h-[280px] w-full">
+                  <BarChart data={data} layout="vertical" margin={{ left: 4, right: 40 }}>
+                    <XAxis type="number" />
+                    <YAxis
+                      type="category"
+                      dataKey="code"
+                      width={160}
+                      tickLine={false}
+                      tickFormatter={tick}
                     />
-                  </Bar>
-                </BarChart>
-              </ChartContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                    <ChartTooltip content={<ChartTooltipContent labelKey="label" />} />
+                    <Bar dataKey="averageWeighted" radius={3}>
+                      {data.map((entry) => (
+                        <Cell key={entry.code} fill={PROFILE_COLOR[entry.code]} />
+                      ))}
+                      <LabelList
+                        dataKey="averageWeighted"
+                        position="right"
+                        className="fill-foreground"
+                        fontSize={12}
+                        formatter={(value) => oneDecimal(Number(value))}
+                      />
+                    </Bar>
+                  </BarChart>
+                </ChartContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      <Card>
-        <CardContent className="overflow-x-auto pt-6">
-          <Table>
-            <TableCaption>
-              Häufigkeit je Profil. Dieselben Zahlen wie in den beiden Diagrammen.
-            </TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead scope="col">Profil</TableHead>
-                <TableHead scope="col" className="text-right">
-                  Dominant
-                </TableHead>
-                <TableHead scope="col" className="text-right">
-                  Zweitprofil
-                </TableHead>
-                <TableHead scope="col" className="text-right">
-                  Ø gewichtet
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {results.profileDistribution.map((entry) => (
-                <TableRow key={entry.code}>
-                  <TableCell>
-                    <ProfileTag code={entry.code} />
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {entry.dominantCount}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {entry.secondCount}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {oneDecimal(entry.averageWeighted)}
-                  </TableCell>
+        <Card className="mt-4">
+          <CardContent className="overflow-x-auto pt-6">
+            <Table>
+              <TableCaption>
+                Häufigkeit je Profil. Dieselben Zahlen wie in den beiden Diagrammen.
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead scope="col">Profil</TableHead>
+                  <TableHead scope="col" className="text-right">
+                    Dominant
+                  </TableHead>
+                  <TableHead scope="col" className="text-right">
+                    Zweitprofil
+                  </TableHead>
+                  <TableHead scope="col" className="text-right">
+                    Ø gewichtet
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      <Combinations results={results} />
+              </TableHeader>
+              <TableBody>
+                {results.profileDistribution.map((entry) => (
+                  <TableRow key={entry.code}>
+                    <TableCell>
+                      <ProfileTag code={entry.code} />
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {entry.dominantCount}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {entry.secondCount}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {oneDecimal(entry.averageWeighted)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </details>
     </section>
   );
 }

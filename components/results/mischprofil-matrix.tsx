@@ -15,16 +15,23 @@ import {
 import { lookupMuster } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
 
-export function Combinations({ results }: { results: SurveyResults }) {
+/**
+ * Every ordered pair of dominant and second profile that occurs, with the
+ * Mischprofil it forms. The client named this table and wrote its description
+ * (protocol item 17). "Mischprofil" is his word for what the mapping calls the
+ * Profil-Mustername.
+ */
+export function MischprofilMatrix({ results }: { results: SurveyResults }) {
   return (
-    <section aria-labelledby="kombinationen-titel" className="space-y-4">
+    <section aria-labelledby="mischprofil-titel" className="space-y-4">
       <div>
-        <h3 id="kombinationen-titel" className="text-lg font-medium">
-          Kombinationen
-        </h3>
+        <h2 id="mischprofil-titel" className="text-xl font-semibold tracking-tight">
+          Mischprofil-Matrix
+        </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Welche Paare aus dominantem und zweitdominantem Profil vorkommen. Die
-          gefährlichsten stehen oben.
+          Diese Matrix zeigt, wie aus dem dominanten und zweitdominanten Profil eines
+          Teilnehmers ein neues Mischprofil entsteht. Dieses Mischprofil bestimmt die
+          Bedrohung, Intervention, Entwicklungsrolle, Story und KPIs.
         </p>
       </div>
 
@@ -32,7 +39,8 @@ export function Combinations({ results }: { results: SurveyResults }) {
         <CardContent className="overflow-x-auto pt-6">
           <Table>
             <TableCaption>
-              Alle vorkommenden Kombinationen, sortiert nach Ampel und Häufigkeit.
+              Alle vorkommenden Mischprofile, sortiert nach Ampel und Häufigkeit. Die
+              gefährlichsten stehen oben.
             </TableCaption>
             <TableHeader>
               <TableRow>
@@ -41,7 +49,7 @@ export function Combinations({ results }: { results: SurveyResults }) {
                 </TableHead>
                 <TableHead scope="col">Dominantes Profil</TableHead>
                 <TableHead scope="col">Zweitdominantes Profil</TableHead>
-                <TableHead scope="col">Profil-Mustername</TableHead>
+                <TableHead scope="col">Mischprofil</TableHead>
                 <TableHead scope="col">Ampel</TableHead>
               </TableRow>
             </TableHeader>

@@ -1,8 +1,10 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { AmpelBadge } from "@/components/domain/ampel";
 import { ProfileTag } from "@/components/domain/profile";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { PROFILES } from "@/lib/domain/profiles";
 import type { RoadmapCard, SurveyResults } from "@/lib/domain/scoring";
 
 export function Roadmap({
@@ -16,11 +18,12 @@ export function Roadmap({
     <section aria-labelledby="roadmap-titel" className="space-y-4">
       <div>
         <h2 id="roadmap-titel" className="text-xl font-semibold tracking-tight">
-          Transformations-Roadmap
+          Change-Risiko-Roadmap
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Für jedes vorkommende Profil-Muster die passende Intervention, das strategische
-          Ziel und die Entwicklungsstory. Rote Muster zuerst.
+          Für jedes vorkommende Mischprofil zwei Kapitel nebeneinander: links die
+          Risikoanalyse mit Bedrohung und Intervention, rechts der Entwicklungsweg mit
+          den neuen Rollen und der Entwicklungsstory. Rote Mischprofile zuerst.
         </p>
       </div>
 
@@ -29,7 +32,7 @@ export function Roadmap({
           Sobald die erste Antwort eingeht, erscheinen hier die Maßnahmen.
         </p>
       ) : (
-        <ul className="grid gap-4 xl:grid-cols-2">
+        <ul className="space-y-4">
           {results.roadmap.map((card) => (
             <li key={card.orderedPair}>
               <RoadmapEntry card={card} mode={mode} />
@@ -41,6 +44,13 @@ export function Roadmap({
   );
 }
 
+/**
+ * One Mischprofil as two chapters side by side, the way the client sketched it
+ * (protocol item 18): the risk analysis on the left, the development path on the
+ * right. The first row of each chapter is the profile change itself: „vom
+ * Status-Ängstlichen“ on the left becomes „zum Beziehungs-Gestalter“ on the right.
+ * Below the md breakpoint the two chapters stack, left chapter first.
+ */
 export function RoadmapEntry({
   card,
   mode,
@@ -55,62 +65,77 @@ export function RoadmapEntry({
     mode === "named" && card.participantNames.length > 0
       ? card.participantNames.join(", ")
       : card.participantIndexes.map((index) => `Teilnehmer ${index}`).join(", ");
+  const peopleTerm = mode === "named" ? "Betroffene" : "Betroffene Teilnehmende";
 
   const body = (
-    <dl className="space-y-3 text-sm">
-      <Row term="Bedrohung / Eruptionswirkung" detail={mapping.bedrohung} />
-      <Row term="Intervention" detail={mapping.intervention} />
-      <Row term="Strategisches Ziel" detail={mapping.ziel} />
-      <div>
-        <dt className="font-medium">Entwicklungsrollen</dt>
-        <dd className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground">
-          {card.rollen.map((entry) => (
-            <span key={entry.code} className="inline-flex items-center gap-2">
-              <ProfileTag code={entry.code} withName={false} />
-              <span aria-hidden="true">→</span>
-              {entry.rolle}
-            </span>
-          ))}
-        </dd>
-      </div>
-      <Row term="Entwicklungsstory" detail={muster.story} />
-      <Row term="KPIs / Erfolgskriterien" detail={mapping.kpis} />
-      <Row term="Verantwortung" detail={mapping.verantwortung} />
-      <Row term="Zeitraum" detail={mapping.zeitraum} />
-      <Row
-        term={mode === "named" ? "Betroffene" : "Betroffene Teilnehmende"}
-        detail={people}
-      />
-    </dl>
+    <div className="grid gap-6 md:grid-cols-2 md:gap-8">
+      <Chapter title="Mischprofil – Risikoanalyse">
+        <div>
+          <dt className="font-medium">Profil dominant + zweitdominant</dt>
+          <dd className="mt-1 flex flex-col gap-1 text-muted-foreground">
+            {card.rollen.map((entry) => (
+              <span key={entry.code} className="inline-flex flex-wrap items-center gap-x-1.5">
+                <span>vom</span>
+                <ProfileTag code={entry.code} name={PROFILES[entry.code].nameDative} />
+              </span>
+            ))}
+          </dd>
+        </div>
+        <Row term="Bedrohung (Eruptionswirkung)" detail={mapping.bedrohung} />
+        <Row term="Intervention" detail={mapping.intervention} />
+        <Row term="Verantwortliche" detail={mapping.verantwortung} />
+        <Row term="Strategisches Ziel" detail={mapping.ziel} />
+      </Chapter>
+
+      <Chapter title="Journey – Entwicklungsweg">
+        <div>
+          <dt className="font-medium">Entwicklungsrollen (Profil-Wandel)</dt>
+          <dd className="mt-1 flex flex-col gap-1 text-muted-foreground">
+            {card.rollen.map((entry) => (
+              <span key={entry.code} className="inline-flex flex-wrap items-center gap-x-1.5">
+                <span>zum</span>
+                <ProfileTag
+                  code={entry.code}
+                  withIcon={false}
+                  name={PROFILES[entry.code].rolleDative}
+                />
+              </span>
+            ))}
+          </dd>
+        </div>
+        <Row term="Entwicklungsstory" detail={muster.story} />
+        <Row term="Erfolgskriterien (KPIs)" detail={mapping.kpis} />
+        <Row term={`${peopleTerm} (${card.count})`} detail={people} />
+        <Row term="Zeitraum" detail={mapping.zeitraum} />
+      </Chapter>
+    </div>
   );
 
   if (compact) return body;
 
   return (
-    <Card className="h-full">
-      <CardHeader className="space-y-2">
+    <Card>
+      <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-lg font-medium">{muster.name}</h3>
+          <h3 className="text-lg font-medium">
+            <span className="sr-only">Mischprofil: </span>
+            {muster.name}
+          </h3>
           <AmpelBadge ampel={mapping.ampel} />
-        </div>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <span className="sr-only">dominant:</span>
-            <ProfileTag code={card.dominant} />
-          </span>
-          <span aria-hidden="true">→</span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="sr-only">zweitdominant:</span>
-            <ProfileTag code={card.second} />
-          </span>
-          <span>
-            ·{" "}
-            {card.count === 1 ? "1 Teilnehmende:r" : `${card.count} Teilnehmende`}
-          </span>
         </div>
       </CardHeader>
       <CardContent>{body}</CardContent>
     </Card>
+  );
+}
+
+/** One of the two chapters of a Roadmap card: a heading and its rows. */
+function Chapter({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="space-y-3">
+      <h4 className="border-b pb-2 font-semibold">{title}</h4>
+      <dl className="space-y-3 text-sm">{children}</dl>
+    </div>
   );
 }
 

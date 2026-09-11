@@ -1,8 +1,12 @@
 # CLAUDE.md — Widerstandsdiagnose Demo
 
-Status (2026-09-09): built and running. The client saw the first demo and wrote protocol
+Status (2026-09-11): built and running. The client saw the first demo and wrote protocol
 items 6–13; items 6 and 8–12 are implemented, item 7 (a more realistic volcano) was
-decided against, and item 13 (the reflection page) is deferred. This file is the single
+decided against, and item 13 (the reflection page) is deferred. His third round (Stand
+10.09.2026) added items 14–18, all implemented: the Ampel counts sit inside the
+Frühwarnsystem, the volcano carries the colour of the overall phase, the weighting charts
+are collapsed detail, the combinations table is the Mischprofil-Matrix, and the Roadmap
+is the Change-Risiko-Roadmap with two chapters side by side. This file is the single
 source of truth for what the app must do. Read it fully before touching code.
 
 ## 1. What this is
@@ -48,7 +52,8 @@ In scope:
 - Public survey with good mobile UX: 6 blocks, 18 statements, 5-point scale.
 - Results dashboard that reproduces every step of the client's sheets: per-participant
   scores, dominant and second profile, Ampel, Frühwarnsystem aggregate, Roadmap.
-- Volcano illustration of the organization's overall phase (client request, protocol item 4).
+- Volcano illustration of the organization's overall phase (client request, protocol item 4),
+  drawn entirely in the colour of that phase (protocol item 15).
 - Live updates by polling.
 - Seed data: the admin, one demo organization, one survey with the 15 real responses from
   the source material.
@@ -108,7 +113,10 @@ Conventions:
 - Prefer Server Components. Client Components only where needed: the survey form, charts,
   the polling results view, dialogs.
 - Traffic-light colors are never the only carrier of meaning. Every Ampel value shows its
-  text (ROT / GELB / GRÜN) and its icon (🚨 / ⚠️ / 🟢) next to the color.
+  text (ROT / GELB / GRÜN) and its icon (🚨 / ⚠️ / 🟢) next to the color. The three
+  badges have the same width, so ROT never looks smaller than GELB or GRÜN (protocol
+  item 15). When the phase name is shown, it stands beside the badge as plain text, not
+  inside it.
 - GELB is a real traffic-light yellow (protocol item 6): `--ampel-gelb-mark` `#facc15` for
   fills, `--ampel-gelb-bg` `#fde047` with the normal dark text for the badge, and
   `--ampel-gelb-border` `#a16207` as the ring around it. Yellow is never text on white.
@@ -281,15 +289,20 @@ the Profil-Mustername below. The other seven pairs never had such text.
 
 ### Profil-Mustername and Entwicklungsstory (protocol item 12)
 
+In the UI the Profil-Mustername is called **Mischprofil** since protocol item 17: the
+client's word for the new profile that dominant and second profile form together. The
+code and the constant keep the name Muster / Profil-Mustername.
+
 The client added two columns to his Mapping sheet in September 2026, and these two are the
 first that **depend on the order**: A → E and E → A have a different name and a different
 story, because the sentence is written from the dominant profile's side. Everything above
 stays the same for both orders. They live in `MUSTER` in `lib/domain/mapping.ts`, keyed
 `"A>E"`, and `lookupMuster(dominant, second)` reads them.
 
-The Profil-Mustername titles every Roadmap card and fills the Profil-Mustername column of
-the combinations table. The Entwicklungsstory sits under the Entwicklungsrollen on the
-Roadmap card and says what the two roles turn into once the pattern is worked on.
+The Profil-Mustername titles every Roadmap card and fills the Mischprofil column of the
+Mischprofil-Matrix. The Entwicklungsstory sits under the Entwicklungsrollen in the
+Journey chapter of the Roadmap card and says what the two roles turn into once the
+pattern is worked on.
 
 The export writes names with a non-breaking hyphen (U+2011) and leaves trailing spaces
 behind, and a few stories have no final period. All three are normalized here and in the
@@ -345,20 +358,23 @@ The client wants the same result "both as data charts and as a volcano illustrat
 (protocol item 4). The docx contains three stock illustrations, one per phase, with empty
 white label boxes. They are not used. The app draws the volcano itself, as one inline SVG
 in `components/results/volcano-diagram.tsx`, so it carries the data instead of only
-standing beside it:
+standing beside it. Protocol item 15 fixed what it shows: the whole volcano has the colour
+of the overall phase, "in diesem Fall sollte alles Gelb sein". The distribution of all
+three Ampel values stays in the donut and the table beside it.
 
-- The **magma chamber** under the ground line is a stacked bar of the participants,
-  ROT at the bottom, GELB, then GRÜN. Same numbers as the donut and the table.
-  Every band that has participants keeps a minimum height so a single one stays visible.
+- The **magma chamber** under the ground line is one solid block in the colour of the
+  overall phase, labelled with the number of participants in that phase, for example
+  „8 · GELB". It was a stacked bar of all three Ampel values until item 15; the client
+  wants it to look like the overall result, not like the distribution.
 - **How high the magma stands in the conduit** and **what comes out of the crater** show
-  the phase of the whole organization: ROT erupts with a lava fountain, ejected rock and
-  an ash cloud, GELB has a small smoke cloud, GRÜN is quiet.
+  the same phase: ROT erupts with a lava fountain, ejected rock and an ash cloud, GELB
+  has a small smoke cloud, GRÜN is quiet.
 - The two **pressure arrows** left of the chamber carry a minus (up, Druckreduktion) and
   a plus (down, Druckerhöhung).
-- The diagram is `role="img"` with a `<title>` and a `<desc>` naming the phase and every
-  count. Inside the drawing only the short keys „Zone 1", „Zone 2" and the band counts
-  appear, and those hide below the `sm` breakpoint. The full vocabulary stays HTML beside
-  the diagram, so it reflows and resizes with the page.
+- The diagram is `role="img"` with a `<title>` and a `<desc>` naming the phase and its
+  count out of the total. Inside the drawing only the short keys „Zone 1", „Zone 2" and
+  the chamber label appear, and those hide below the `sm` breakpoint. The full vocabulary
+  stays HTML beside the diagram, so it reflows and resizes with the page.
 
 The thesis gives the model's vocabulary; it is the legend next to the diagram and the key
 to the labels inside it:
@@ -532,21 +548,51 @@ and the response counter make the real-time effect visible during a demo.
 Empty state (0 responses): the share panel front and center, a hint „Sobald die erste
 Antwort eingeht, erscheinen hier die Ergebnisse", and the quiet volcano with its legend.
 
-Sections, top to bottom. Protocol items 9 and 10 set this order: first what the whole
-organization looks like, then what the profiles mean, then the numbers, then the measures,
-and the single participants last.
+Sections, top to bottom. Protocol items 9, 10, 14 and 16 set this order: first the
+warning system as a whole, then what the profiles mean, then the Mischprofile and their
+measures, then the answers, and the two detail sections closed at the end.
 
 1. **Header**: survey title, mode badge, share panel (public URL, copy button, QR code).
-2. **Kennzahlen (KPI row)**: Teilnahmen (count), ROT / GELB / GRÜN counts with percentages
-   as Ampel badges on cards with a colored left bar, Gesamtphase of the organization
-   (section 9 rule).
-3. **Frühwarnsystem**: the volcano diagram for the overall phase beside the zone legend,
-   and a donut chart of the Ampel distribution with a matching table (Vulkanmodell, Farbe,
-   Anzahl, %). Reproduces the client's Frühwarnsystem sheet and its pie chart.
-4. **Profile**: a static glossary table of the six profiles, Profil | Muster |
+2. **Frühwarnsystem**: the heading comes first because the client counts the Ampel and
+   the volcano as one warning system (protocol item 14). Inside it, top to bottom:
+   - **Kennzahlen (KPI row)**: Teilnahmen (count), ROT / GELB / GRÜN counts with
+     percentages as Ampel badges on cards with a colored left bar, Gesamtphase of the
+     organization (section 9 rule). The phase name stands beside each badge.
+   - the volcano diagram in the colour of the overall phase beside the zone legend, and a
+     donut chart of the Ampel distribution with a matching table (Vulkanmodell, Farbe,
+     Anzahl, %). Reproduces the client's Frühwarnsystem sheet and its pie chart.
+3. **Profile**: a static glossary table of the six profiles, Profil | Muster |
    Profil-Beschreibung | Folgen. It says nothing about this survey and explains the letters
    used below.
-5. **Profile Gewichtung**: everything that counts profiles, in one section.
+4. **Mischprofil-Matrix** (protocol item 17, was „Kombinationen"): Teilnehmende |
+   Dominantes Profil | Zweitdominantes Profil | Mischprofil | Ampel. Sorted ROT first, then
+   by count. The description under the heading is the client's own sentence: „Diese
+   Matrix zeigt, wie aus dem dominanten und zweitdominanten Profil eines Teilnehmers ein
+   neues Mischprofil entsteht. Dieses Mischprofil bestimmt die Bedrohung, Intervention,
+   Entwicklungsrolle, Story und KPIs."
+5. **Change-Risiko-Roadmap** (protocol item 18, was „Transformations-Roadmap"): one card
+   per **ordered** pair that occurs in the data, ROT first, full width. Title is the
+   Mischprofil name with the Ampel badge. The body is two chapters side by side (stacked
+   below `md`), in the client's own layout, so that a leader reads the change from left to
+   right:
+
+   | Mischprofil – Risikoanalyse | Journey – Entwicklungsweg |
+   |---|---|
+   | Profil dominant + zweitdominant: „vom Status-Ängstlichen", „vom Überlasteten" | Entwicklungsrollen (Profil-Wandel): „zum Beziehungs-Gestalter", „zum Resilienz-Champion" |
+   | Bedrohung (Eruptionswirkung) | Entwicklungsstory |
+   | Intervention | Erfolgskriterien (KPIs) |
+   | Verantwortliche | Betroffene Teilnehmende (count; names in named mode) |
+   | Strategisches Ziel | Zeitraum |
+
+   The declined forms („vom Identitäts-Experten", „zum Stabilitäts-Architekten") are the
+   `nameDative` and `rolleDative` fields of `lib/domain/profiles.ts`. Each role carries the
+   letter swatch of its profile, so the reader can match left and right. No Magmakammer or
+   Symptom rows. No change to the client's Mapping or Roadmap sheets was needed for this.
+6. **Antworten-Übersicht**: per statement the mean and the 1–5 distribution as a small
+   horizontal stacked bar, grouped by block with the profile name as group heading.
+   Replaces the Google Forms response summary.
+7. **Profile Gewichtung**, closed by default inside a `<details>` (protocol item 16: the
+   client reads the summary without these charts and wants them as detail further down).
    - „Wie oft ein Profil dominant oder zweitdominant ist": one bar pair per profile, both
      bars in that profile's color, the Zweitprofil bar hatched and outlined so the two
      series differ in pattern too. Value labels at the bar ends, axis ticks
@@ -555,22 +601,12 @@ and the single participants last.
      value labels with one decimal.
    - „Häufigkeit je Profil": Profil | Dominant | Zweitprofil | Ø gewichtet. The text
      alternative for both charts.
-   - „Kombinationen": Teilnehmende | Dominantes Profil | Zweitdominantes Profil |
-     Profil-Mustername | Ampel. Sorted ROT first, then by count.
-6. **Transformations-Roadmap**: one card per **ordered** pair that occurs in the data, ROT
-   first. Title is the Profil-Mustername, subtitle is dominant → second with the
-   participant count. Rows: Bedrohung / Eruptionswirkung, Intervention, Strategisches Ziel,
-   Entwicklungsrollen (dominant first), Entwicklungsstory, KPIs, Verantwortung, Zeitraum,
-   Betroffene (names in named mode). No Magmakammer or Symptom rows.
-7. **Antworten-Übersicht**: per statement the mean and the 1–5 distribution as a small
-   horizontal stacked bar, grouped by block with the profile name as group heading.
-   Replaces the Google Forms response summary.
 8. **Teilnehmer**, last: TanStack Table inside a `<details>` that is closed in anonymous
    surveys and open in named ones, because the single rows are what a team lead needs and
    what everyone else scrolls past. Columns: Teilnehmer (name in named mode, otherwise
    „Teilnehmer n" by submission order), Zeitpunkt, weighted A–F (one decimal, raw block sum
    as a muted secondary line), Dominant, Zweit, Ampel. Sortable. Expanding a row shows the
-   Roadmap card for that ordered pair under its Profil-Mustername. Reproduces the
+   two Roadmap chapters for that ordered pair under its Mischprofil name. Reproduces the
    Gewichtung sheet.
 
 Chart rules: every series has a text label and, where several series share a chart, a
@@ -589,6 +625,7 @@ runtime; copy what the app needs (the seed rows) into the project.
 | `umfrage/index.md` | Link to the Google Form and the 18 statements as text. Canonical questionnaire. |
 | `Widerstand Diagnose Tool Protokoll 02-09-26.docx` | Client's protocol, first round (Stand 04.09.2026): requests 1–5, profile table, impact factors, older question variant, sheet screenshots, volcano images, Ampel logic, Roadmap tables. |
 | `Widerstand Diagnose Tool Protokoll 09-09-26.docx` | Client's protocol, second round (Stand 08.09.2026): repeats requests 1–5 and adds items 6–13 after the first demo, with screenshots of the pages he is commenting on. |
+| `Widerstand Diagnose Tool Protokoll 10-09-2026.docx` | Client's protocol, third round (Stand 10.09.2026): items 14–18 after the second demo. Frühwarnsystem heading above the Ampel cards, volcano in one colour, badges of equal size, weighting charts as collapsed detail, „Mischprofil-Matrix", „Change-Risiko-Roadmap" with two chapters side by side, and his question whether the sheets have to change for it (they do not). |
 | `auswertung example/*.csv` | The 15-participant run, one CSV per sheet (section 10). |
 | `updated auswertung example/*.csv` | The same 15 responses exported again in September 2026. Responses, block sums, weighted values and Frühwarnsystem are byte-identical to the older export; only Mapping and Roadmap changed, and they carry the two new columns of section 8. |
 | `thesis/Vom Widerstand zur Strategie ... es-ES_1.pdf` | The client's certification thesis in Spanish: theory, volcano model, six profiles, Ampel, transfer architecture. Background only. Its content is copyrighted by the client; the app may use the model because the client commissioned it. |
@@ -610,7 +647,9 @@ Decisions taken so the build can start. Each one is cheap to change later.
 5. **Labels in the volcano**: the client's three PNGs have empty label boxes, so the app
    draws its own volcano (section 9) and labels it from the thesis vocabulary. Ask the
    client whether he wants different words in the diagram. His request for a more
-   realistic volcano (item 7) is settled: the drawing stays as it is.
+   realistic volcano (item 7) is settled: the drawing stays as it is. Item 15 changed only
+   its colour: the whole volcano shows the overall phase, and the chamber label is the
+   count of that phase („8 · GELB"), as in his sketch („2 · ROT").
 6. **Several surveys per organization**: allowed. Lets a team lead run a named survey while
    HR runs an anonymous one. The briefing only required one.
 7. **Charts library**: the briefing says "TanStack everything: Forms, Charts". TanStack's
@@ -636,6 +675,16 @@ Decisions taken so the build can start. Each one is cheap to change later.
     badge text. Confirm the tone on his screen.
 14. **Item 13, „Persönliche Entwicklungsreise"**: deferred by decision of the user. The
     three reflection questions are recorded in section 3.
+15. **Item 18, the two-chapter Roadmap**: the client asked whether his layout is possible
+    or whether the Mapping and Roadmap sheets have to change. It is possible as is: every
+    field of both chapters already exists (mapping, Muster, the roles of section 5). Only
+    the declined German forms („vom Status-Ängstlichen", „zum Stabilitäts-Architekten")
+    were added in code. The answer is written out for him in
+    `docs/rueckfragen-protokoll-10-09.md`.
+16. **Item 16, which tables move down**: he wrote „beide Tabellen" under a screenshot of
+    the two weighting charts. We moved the two charts and their „Häufigkeit je Profil" table
+    into one closed section at the end; the combinations table stayed up as the
+    Mischprofil-Matrix, because item 17 renames it without asking to hide it. Confirm.
 
 ## 16. Working rules for Claude in this repo
 

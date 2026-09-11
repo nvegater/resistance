@@ -15,10 +15,15 @@ export const PROFILE_COLOR: Record<ProfileCode, string> = {
 export function ProfileTag({
   code,
   withName = true,
+  withIcon = true,
+  name,
   className,
 }: {
   code: ProfileCode;
   withName?: boolean;
+  withIcon?: boolean;
+  /** Text shown instead of the profile name, for example its declined form or its role. */
+  name?: string;
   className?: string;
 }) {
   const profile = PROFILES[code];
@@ -31,8 +36,8 @@ export function ProfileTag({
       >
         {code}
       </span>
-      <span aria-hidden="true">{profile.icon}</span>
-      <span className={withName ? undefined : "sr-only"}>{profile.name}</span>
+      {withIcon ? <span aria-hidden="true">{profile.icon}</span> : null}
+      <span className={withName ? undefined : "sr-only"}>{name ?? profile.name}</span>
     </span>
   );
 }

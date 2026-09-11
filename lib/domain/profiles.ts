@@ -8,6 +8,11 @@ export type ProfileCode = (typeof PROFILE_CODES)[number];
 export type Profile = {
   code: ProfileCode;
   name: string;
+  /**
+   * The name as it reads after „vom“, for the Roadmap card: „vom Status-Ängstlichen“.
+   * German changes the ending of some nouns there, so it cannot be built from name.
+   */
+  nameDative: string;
   icon: string;
   ebene: string;
   /**
@@ -24,6 +29,8 @@ export type Profile = {
   /** Multiplier applied to the block sum. See impactRationale for why they differ. */
   impactFactor: number;
   entwicklungsrolle: string;
+  /** The role as it reads after „zum“: „zum Stabilitäts-Architekten“. */
+  rolleDative: string;
   /** The client's explanation of the factor, shown in tooltips. */
   impactRationale: string;
 };
@@ -32,6 +39,7 @@ export const PROFILES: Record<ProfileCode, Profile> = {
   A: {
     code: "A",
     name: "Identitäts-Experte",
+    nameDative: "Identitäts-Experten",
     icon: "🧠",
     ebene: "Selbstwert",
     muster: "Kompetenzangst",
@@ -40,12 +48,14 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     folgen: "Massive Sachkritik als Schutzschild, Wissenshortung.",
     impactFactor: 1.3,
     entwicklungsrolle: "Mentor & Wissensanker",
+    rolleDative: "Mentor & Wissensanker",
     impactRationale:
       "130 %: höchste Wirkung. Bedroht das Selbstbild der deutschen Expertenkultur. Wird es ignoriert, wird daraus verdeckte, hochintelligente Sabotage.",
   },
   B: {
     code: "B",
     name: "Besitzstandswahrer",
+    nameDative: "Besitzstandswahrer",
     icon: "🛡️",
     ebene: "Motivation",
     muster: "Motivationale Resignation",
@@ -53,12 +63,14 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     folgen: "Dienst nach Vorschrift, Desinteresse, „Das haben wir immer so gemacht“.",
     impactFactor: 0.8,
     entwicklungsrolle: "Stabilitäts-Architekt",
+    rolleDative: "Stabilitäts-Architekten",
     impactRationale:
       "80 %: geringere Wirkung. Führt zu passivem Rückzug statt aktiver Zerstörung.",
   },
   C: {
     code: "C",
     name: "Strategischer Skeptiker",
+    nameDative: "Strategischen Skeptiker",
     icon: "🔍",
     ebene: "Sache",
     muster: "Sachlicher Widerstand",
@@ -67,12 +79,14 @@ export const PROFILES: Record<ProfileCode, Profile> = {
       "Direkte Kritik in Low-Context-Kulturen; „technische Detailfragen“ in High-Context-Kulturen.",
     impactFactor: 0.9,
     entwicklungsrolle: "Qualitäts-Navigator",
+    rolleDative: "Qualitäts-Navigator",
     impactRationale:
       "90 %: dämpfend. Reine Sachkritik, wertvolle Daten, emotional gut zu handhaben.",
   },
   D: {
     code: "D",
     name: "Kultur-Bewahrer",
+    nameDative: "Kultur-Bewahrer",
     icon: "🌱",
     ebene: "Werte",
     muster: "Kultureller Widerstand",
@@ -80,12 +94,14 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     folgen: "Verweis auf „die gute alte Zeit“, Sorge um Teamgefüge.",
     impactFactor: 1.0,
     entwicklungsrolle: "Werte-Botschafter",
+    rolleDative: "Werte-Botschafter",
     impactRationale:
       "100 %: neutral. Wichtig auf der Werteebene; gutes Sense-Making stabilisiert es.",
   },
   E: {
     code: "E",
     name: "Status-Ängstlicher",
+    nameDative: "Status-Ängstlichen",
     icon: "🎯",
     ebene: "Macht",
     muster: "Emotionaler Widerstand",
@@ -93,12 +109,14 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     folgen: "Schweigen, Rückzug, informeller Flurfunk.",
     impactFactor: 1.2,
     entwicklungsrolle: "Beziehungs-Gestalter",
+    rolleDative: "Beziehungs-Gestalter",
     impactRationale:
       "120 %: sehr hohe Wirkung. Löst informelle Machtkämpfe aus, die ganze Teams blockieren.",
   },
   F: {
     code: "F",
     name: "Überlasteter",
+    nameDative: "Überlasteten",
     icon: "⚡",
     ebene: "Kapazität",
     muster: "Ressourcenwiderstand",
@@ -108,6 +126,7 @@ export const PROFILES: Record<ProfileCode, Profile> = {
     // example run, so 0.85 is what we use. See CLAUDE.md open question 1.
     impactFactor: 0.85,
     entwicklungsrolle: "Resilienz-Champion",
+    rolleDative: "Resilienz-Champion",
     impactRationale:
       "85 %: geringere Wirkung. Ein reines Ressourcenproblem; ein Projektstopp oder mehr Budget lösen es schnell.",
   },

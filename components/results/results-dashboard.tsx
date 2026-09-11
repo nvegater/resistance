@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Fruehwarnsystem } from "@/components/results/fruehwarnsystem";
 import { ItemSummary } from "@/components/results/item-summary";
-import { KpiRow } from "@/components/results/kpi-row";
+import { MischprofilMatrix } from "@/components/results/mischprofil-matrix";
 import { ParticipantsTable } from "@/components/results/participants-table";
 import { ProfileGlossary } from "@/components/results/profile-glossary";
 import { ProfileWeighting } from "@/components/results/profile-weighting";
@@ -78,12 +78,15 @@ export function ResultsDashboard({
         </Card>
       ) : (
         <>
-          <KpiRow results={results} />
+          {/* Protocol items 14 and 16 set this order: the warning system first,
+              then what the letters mean, the Mischprofil-Matrix, the measures, the
+              answers, and the two detail sections closed at the end. */}
           <Fruehwarnsystem results={results} />
           <ProfileGlossary />
-          <ProfileWeighting results={results} />
+          <MischprofilMatrix results={results} />
           <Roadmap results={results} mode={survey.mode} />
           <ItemSummary results={results} />
+          <ProfileWeighting results={results} />
           <ParticipantsTable results={results} mode={survey.mode} />
         </>
       )}

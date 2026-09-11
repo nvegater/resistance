@@ -2,15 +2,19 @@
 
 import { AmpelBadge, AMPEL_STYLE } from "@/components/domain/ampel";
 import { Card, CardContent } from "@/components/ui/card";
+import { AMPEL_PHASE, type Ampel } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
 import { cn } from "@/lib/utils";
 
+/**
+ * The counts of the Frühwarnsystem: participants, the three Ampel values and the
+ * overall phase. Rendered inside the Frühwarnsystem section, because the client
+ * counts the Ampel as part of the warning system (protocol item 14).
+ */
 export function KpiRow({ results }: { results: SurveyResults }) {
   return (
-    <section aria-labelledby="kpi-titel">
-      <h2 id="kpi-titel" className="sr-only">
-        Kennzahlen der Befragung
-      </h2>
+    <div>
+      <h3 className="sr-only">Kennzahlen der Befragung</h3>
       <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Card>
           <CardContent className="py-4">
@@ -25,7 +29,7 @@ export function KpiRow({ results }: { results: SurveyResults }) {
             <Card key={entry.ampel} className={cn("border-l-4", style.accent)}>
               <CardContent className="py-4">
                 <dt>
-                  <AmpelBadge ampel={entry.ampel} withPhase />
+                  <BadgeWithPhaseBelow ampel={entry.ampel} />
                 </dt>
                 <dd className="mt-1 text-3xl font-semibold tabular-nums">
                   {entry.count}
@@ -38,12 +42,17 @@ export function KpiRow({ results }: { results: SurveyResults }) {
           );
         })}
 
-        <Card>
+        <Card
+          className={cn(
+            "border-l-4",
+            results.overallAmpel ? AMPEL_STYLE[results.overallAmpel].accent : "border-l-border",
+          )}
+        >
           <CardContent className="py-4">
             <dt className="text-sm text-muted-foreground">Gesamtphase</dt>
             <dd className="mt-2">
               {results.overallAmpel ? (
-                <AmpelBadge ampel={results.overallAmpel} withPhase />
+                <BadgeWithPhaseBelow ampel={results.overallAmpel} />
               ) : (
                 <span className="text-muted-foreground">Noch keine Antworten</span>
               )}
@@ -51,6 +60,20 @@ export function KpiRow({ results }: { results: SurveyResults }) {
           </CardContent>
         </Card>
       </dl>
-    </section>
+    </div>
+  );
+}
+
+/**
+ * The pill with the phase name always on the line below it. Beside the pill the
+ * name would fit for ROT but wrap for GELB and GRÜN, and the five cards would
+ * then look different from each other.
+ */
+function BadgeWithPhaseBelow({ ampel }: { ampel: Ampel }) {
+  return (
+    <span className="flex flex-col items-start gap-1.5">
+      <AmpelBadge ampel={ampel} />
+      <span className="text-sm font-medium">{AMPEL_PHASE[ampel].phase}</span>
+    </span>
   );
 }
