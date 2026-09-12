@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { fill, t } from "@/lib/i18n";
 import { createPassword } from "@/lib/token";
 import {
   createOrganizationAction,
@@ -62,23 +63,23 @@ export function CreateOrganizationDialog() {
       <DialogTrigger asChild>
         <Button size="lg">
           <PlusIcon aria-hidden="true" />
-          Neue Organisation
+          {t.admin.newOrganization}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         {credentials ? (
           <>
             <DialogHeader>
-              <DialogTitle>{credentials.organizationName} angelegt</DialogTitle>
-              <DialogDescription>
-                Die Organisation kann sich ab sofort anmelden.
-              </DialogDescription>
+              <DialogTitle>
+                {fill(t.admin.createdTitle, { name: credentials.organizationName })}
+              </DialogTitle>
+              <DialogDescription>{t.admin.createdDescription}</DialogDescription>
             </DialogHeader>
             <CredentialsCard credentials={credentials} />
             <DialogFooter>
               <DialogClose asChild>
                 <Button size="lg" variant="outline">
-                  Schließen
+                  {t.app.close}
                 </Button>
               </DialogClose>
             </DialogFooter>
@@ -92,17 +93,14 @@ export function CreateOrganizationDialog() {
             }}
           >
             <DialogHeader>
-              <DialogTitle>Neue Organisation</DialogTitle>
-              <DialogDescription>
-                Name und Login für einen Kunden. Die Zugangsdaten erscheinen danach zum
-                Kopieren.
-              </DialogDescription>
+              <DialogTitle>{t.admin.newOrganization}</DialogTitle>
+              <DialogDescription>{t.admin.newOrganizationDescription}</DialogDescription>
             </DialogHeader>
 
             <div className="my-6 space-y-5">
               {serverError ? (
                 <Alert variant="destructive">
-                  <AlertTitle>Anlegen fehlgeschlagen</AlertTitle>
+                  <AlertTitle>{t.admin.createFailedTitle}</AlertTitle>
                   <AlertDescription>{serverError}</AlertDescription>
                 </Alert>
               ) : null}
@@ -111,16 +109,16 @@ export function CreateOrganizationDialog() {
                 name="name"
                 validators={{
                   onSubmit: ({ value }) =>
-                    value.trim().length === 0 ? "Bitte einen Namen eingeben." : undefined,
+                    value.trim().length === 0 ? t.admin.nameRequired : undefined,
                 }}
               >
                 {(field) => (
-                  <FieldShell field={field} label="Name der Organisation">
+                  <FieldShell field={field} label={t.admin.nameLabel}>
                     <Input
                       id={field.name}
                       name={field.name}
                       className="h-11"
-                      placeholder="SAP"
+                      placeholder={t.admin.namePlaceholder}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(event) => field.handleChange(event.target.value)}
@@ -141,18 +139,18 @@ export function CreateOrganizationDialog() {
                   onSubmit: ({ value }) =>
                     /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value.trim())
                       ? undefined
-                      : "Bitte eine gültige E-Mail-Adresse eingeben.",
+                      : t.admin.emailInvalid,
                 }}
               >
                 {(field) => (
-                  <FieldShell field={field} label="Login-E-Mail">
+                  <FieldShell field={field} label={t.admin.emailLabel}>
                     <Input
                       id={field.name}
                       name={field.name}
                       type="email"
                       autoComplete="off"
                       className="h-11"
-                      placeholder="transformation@sap.com"
+                      placeholder={t.admin.emailPlaceholder}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(event) => field.handleChange(event.target.value)}
@@ -172,12 +170,12 @@ export function CreateOrganizationDialog() {
                 validators={{
                   onSubmit: ({ value }) =>
                     value.length < 8
-                      ? "Das Passwort muss mindestens 8 Zeichen haben."
+                      ? t.admin.passwordTooShort
                       : undefined,
                 }}
               >
                 {(field) => (
-                  <FieldShell field={field} label="Passwort">
+                  <FieldShell field={field} label={t.admin.passwordLabel}>
                     <div className="flex gap-2">
                       <Input
                         id={field.name}
@@ -201,7 +199,7 @@ export function CreateOrganizationDialog() {
                         onClick={() => field.handleChange(createPassword())}
                       >
                         <RefreshCwIcon aria-hidden="true" />
-                        Generieren
+                        {t.admin.generatePassword}
                       </Button>
                     </div>
                   </FieldShell>
@@ -212,13 +210,13 @@ export function CreateOrganizationDialog() {
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="outline" size="lg">
-                  Abbrechen
+                  {t.app.cancel}
                 </Button>
               </DialogClose>
               <form.Subscribe selector={(state) => state.isSubmitting}>
                 {(isSubmitting) => (
                   <Button type="submit" size="lg" disabled={isSubmitting}>
-                    {isSubmitting ? "Wird angelegt …" : "Organisation anlegen"}
+                    {isSubmitting ? t.admin.creating : t.admin.createSubmit}
                   </Button>
                 )}
               </form.Subscribe>

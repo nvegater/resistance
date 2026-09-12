@@ -4,6 +4,7 @@ import { AmpelBadge, AMPEL_STYLE } from "@/components/domain/ampel";
 import { Card, CardContent } from "@/components/ui/card";
 import { AMPEL_PHASE, type Ampel } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
+import { LOCALE, t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 /**
@@ -14,11 +15,11 @@ import { cn } from "@/lib/utils";
 export function KpiRow({ results }: { results: SurveyResults }) {
   return (
     <div>
-      <h3 className="sr-only">Kennzahlen der Befragung</h3>
+      <h3 className="sr-only">{t.results.kpi.heading}</h3>
       <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Card>
           <CardContent className="py-4">
-            <dt className="text-sm text-muted-foreground">Teilnahmen</dt>
+            <dt className="text-sm text-muted-foreground">{t.results.kpi.participants}</dt>
             <dd className="mt-1 text-3xl font-semibold tabular-nums">{results.total}</dd>
           </CardContent>
         </Card>
@@ -34,7 +35,7 @@ export function KpiRow({ results }: { results: SurveyResults }) {
                 <dd className="mt-1 text-3xl font-semibold tabular-nums">
                   {entry.count}
                   <span className="ml-2 text-base font-normal text-muted-foreground">
-                    {entry.percent.toLocaleString("de-DE", { minimumFractionDigits: 1 })} %
+                    {entry.percent.toLocaleString(LOCALE, { minimumFractionDigits: 1 })} %
                   </span>
                 </dd>
               </CardContent>
@@ -49,12 +50,12 @@ export function KpiRow({ results }: { results: SurveyResults }) {
           )}
         >
           <CardContent className="py-4">
-            <dt className="text-sm text-muted-foreground">Gesamtphase</dt>
+            <dt className="text-sm text-muted-foreground">{t.results.kpi.overallPhase}</dt>
             <dd className="mt-2">
               {results.overallAmpel ? (
                 <BadgeWithPhaseBelow ampel={results.overallAmpel} />
               ) : (
-                <span className="text-muted-foreground">Noch keine Antworten</span>
+                <span className="text-muted-foreground">{t.results.kpi.noResponses}</span>
               )}
             </dd>
           </CardContent>

@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getBaseUrl } from "@/lib/base-url";
 import { checkAgainstReference } from "@/lib/domain/reference-check";
 import { evaluateSurvey } from "@/lib/domain/scoring";
+import { fill, t } from "@/lib/i18n";
 import { getOrganization, getSurvey, listParticipantInputs } from "@/lib/queries";
 import { isReferenceOrganization, REFERENCE_BADGE } from "@/lib/reference-org";
 import type { ResultsPayload } from "@/lib/results";
@@ -54,12 +55,12 @@ export default async function ResultsPage({
             className="inline-flex items-center gap-1.5 rounded-sm text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             <ArrowLeftIcon className="size-4" aria-hidden="true" />
-            Zurück zu {organization.name}
+            {fill(t.results.backTo, { name: organization.name })}
           </Link>
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold tracking-tight">{survey.title}</h1>
             <Badge variant={survey.mode === "named" ? "default" : "secondary"}>
-              {survey.mode === "named" ? "Mit Namen" : "Anonym"}
+              {survey.mode === "named" ? t.app.modeNamed : t.app.modeAnonymous}
             </Badge>
             {isReference ? <Badge variant="outline">{REFERENCE_BADGE}</Badge> : null}
           </div>

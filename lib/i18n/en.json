@@ -1,0 +1,693 @@
+{
+  "language": "en",
+  "locale": "en-GB",
+  "app": {
+    "name": "Resistance Diagnosis",
+    "description": "Internal Resonance Survey: recognise resistance during change, sort it and turn it into concrete measures.",
+    "skipToContent": "Skip to content",
+    "navLabel": "Areas",
+    "signOut": "Sign out",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "loading": "Loading …",
+    "noResponsesYet": "No responses yet.",
+    "copiedToClipboard": "{label}: copied to the clipboard",
+    "modeAnonymous": "Anonymous",
+    "modeNamed": "With names",
+    "responseOne": "1 response",
+    "responseMany": "{count} responses"
+  },
+  "api": {
+    "notSignedIn": "Not signed in.",
+    "noAccess": "No access.",
+    "surveyNotFound": "Survey not found."
+  },
+  "login": {
+    "description": "Evaluate the Internal Resonance Survey and turn it into concrete measures.",
+    "failedTitle": "Sign-in failed",
+    "wrongCredentials": "The email address or password is wrong. Please try again.",
+    "emailLabel": "Email address",
+    "emailRequired": "Please enter an email address.",
+    "passwordLabel": "Password",
+    "passwordRequired": "Please enter a password.",
+    "submit": "Sign in",
+    "submitting": "Signing in …"
+  },
+  "admin": {
+    "title": "Organizations",
+    "description": "Create customers, hand over their credentials and open their dashboards.",
+    "emptyTitle": "No organization yet",
+    "emptyText": "Create an organization. You then get an email address and a password to hand over to the customer.",
+    "tableCaption": "All organizations with their login, number of surveys and number of responses.",
+    "colOrganization": "Organization",
+    "colLoginEmail": "Login email",
+    "colSurveys": "Surveys",
+    "colResponses": "Responses",
+    "colCreated": "Created",
+    "colActions": "Actions",
+    "noLogin": "no login",
+    "openDashboard": "Open dashboard",
+    "newOrganization": "New organization",
+    "newOrganizationDescription": "Name and login for one customer. The credentials appear afterwards, ready to copy.",
+    "createdTitle": "{name} created",
+    "createdDescription": "The organization can sign in from now on.",
+    "createFailedTitle": "Creating failed",
+    "nameLabel": "Name of the organization",
+    "namePlaceholder": "SAP",
+    "nameRequired": "Please enter a name.",
+    "emailLabel": "Login email",
+    "emailPlaceholder": "transformation@sap.com",
+    "emailInvalid": "Please enter a valid email address.",
+    "emailTaken": "This email address is already in use.",
+    "passwordLabel": "Password",
+    "passwordTooShort": "The password must have at least 8 characters.",
+    "generatePassword": "Generate",
+    "createSubmit": "Create organization",
+    "creating": "Creating …",
+    "deleteTitle": "Delete {name}?",
+    "deleteDescription": "The login, all surveys and all responses of this organization are deleted. This cannot be undone.",
+    "deleteConfirm": "Delete permanently",
+    "deleting": "Deleting …",
+    "deleted": "{name} was deleted."
+  },
+  "credentials": {
+    "title": "Credentials",
+    "hint": "Hand these credentials to the customer. The password is shown here only.",
+    "organization": "Organization",
+    "loginPage": "Login page",
+    "email": "Email",
+    "password": "Password",
+    "copy": "Copy credentials"
+  },
+  "share": {
+    "linkLabel": "Public link to the survey",
+    "copyLink": "Copy link",
+    "hint": "Pass this link to the employees. No sign-in is needed.",
+    "qrTitle": "QR code for the survey {title}",
+    "qrCaption": "For scanning"
+  },
+  "org": {
+    "description": "Create surveys, share the link and follow the results live.",
+    "emptyTitle": "No survey yet",
+    "emptyIntro": "Two steps to get going:",
+    "emptyStep1": "Create a survey.",
+    "emptyStep2": "Send the link it produces to the employees. The results then appear on their own.",
+    "createdOn": "created on {date}",
+    "results": "Results",
+    "newSurvey": "New survey",
+    "newSurveyDescription": "After saving you get the link to pass on to your employees.",
+    "saveFailedTitle": "Saving failed",
+    "titleLabel": "Title of the survey",
+    "titleRequired": "Please enter a title.",
+    "modeLegend": "Kind of survey",
+    "modeAnonymousHint": "The normal case. No names are stored.",
+    "modeNamedHint": "For team leads of small organizations, so they can discuss and defuse personal situations with their employees.",
+    "createSubmit": "Create survey",
+    "creating": "Creating …"
+  },
+  "survey": {
+    "fallbackTitle": "Survey",
+    "alreadyAnsweredTitle": "You have already filled in this survey",
+    "alreadyAnsweredText": "Thank you. If you would like to answer once more anyway, you can do that here.",
+    "answerAgain": "Fill it in again anyway",
+    "intro1": "We want to understand how you experience the current changes in the company.",
+    "intro2": "There are no right or wrong answers. Answer the way it applies to your working day.",
+    "intro3": "The results help to spot strain early and to choose fitting measures.",
+    "privacyTitle": "Data protection",
+    "privacyAnonymous": "No names, email addresses or device information are stored.",
+    "privacyNamed": "Your name is stored together with your answers and is visible to your manager.",
+    "nameLabel": "Your name",
+    "nameRequired": "Please enter your name.",
+    "scaleTitle": "The answer scale",
+    "scaleSummary": "What the numbers 1 to 5 mean",
+    "duration": "18 statements in 6 parts, about 5 minutes.",
+    "start": "Start the survey",
+    "step": "Part {step} of {total}",
+    "progressLabel": "Progress: part {step} of {total}",
+    "answeredCount": "{done} of {total} answered",
+    "missingTitle": "Some answers are still missing",
+    "missingText": "Please answer every statement of this part before you go on.",
+    "sendFailedTitle": "Sending failed",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "submitting": "Sending …",
+    "answerOption": "{value} – {label}",
+    "errorGone": "This survey does not exist any more.",
+    "errorAllRequired": "Please answer every statement."
+  },
+  "thanks": {
+    "title": "Thank you",
+    "text": "Your answers have arrived. You can close this window now."
+  },
+  "reference": {
+    "orgName": "Reference evaluation",
+    "surveyTitle": "Internal Resonance Survey (reference run)",
+    "badge": "Read-only",
+    "orgDescription": "The customer's example run with 15 responses. Nothing about this organization can be changed: no new surveys, no new responses. The results page compares every number with his CSV sheets.",
+    "publicNotice": "This survey is a read-only reference. It holds the 15 responses of the example evaluation and takes no further responses.",
+    "readOnlySurvey": "The reference evaluation is read-only and takes no new surveys.",
+    "readOnlyResponse": "This survey is a read-only reference and takes no responses."
+  },
+  "seed": {
+    "demoOrganizationName": "Example Ltd"
+  },
+  "results": {
+    "backTo": "Back to {name}",
+    "loadFailed": "The results could not be loaded.",
+    "live": "Live",
+    "updatedSecondsAgo": "updated {seconds} seconds ago",
+    "updatedOneSecondAgo": "updated 1 second ago",
+    "refreshing": "refreshing",
+    "emptyTitle": "No responses yet",
+    "emptyText": "As soon as the first response arrives, the results appear here. Share the link above with your employees.",
+    "kpi": {
+      "heading": "Key figures of the survey",
+      "participants": "Participants",
+      "overallPhase": "Overall phase",
+      "noResponses": "No responses yet"
+    },
+    "fruehwarnsystem": {
+      "title": "Early Warning System",
+      "description": "The traffic-light rating of each participant is consolidated into a single picture of the organization. The overall phase is determined by the phase with the highest number of participants, and the volcano displays that phase.",
+      "phasePending": "As soon as the first response arrives, the phase of the organization appears here.",
+      "distributionTitle": "Distribution of the traffic-light values",
+      "tableCaption": "Number and share of participants per phase of the volcano model. The same numbers as in the donut chart.",
+      "colVolcanoModel": "Volcano model",
+      "colColor": "Color",
+      "colCount": "Count",
+      "colPercent": "%",
+      "total": "Total"
+    },
+    "profiles": {
+      "title": "Profiles",
+      "description": "The six resistance profiles referenced by the survey.",
+      "tableCaption": "Pattern, description and consequences of the six profiles. This table is always the same and does not depend on the answers.",
+      "colProfile": "Profile",
+      "colMuster": "Pattern",
+      "colBeschreibung": "Profile description",
+      "colFolgen": "Consequences"
+    },
+    "matrix": {
+      "title": "Mixed Profile Matrix",
+      "description": "This matrix shows how a participant's dominant and second-dominant profiles combine to form a new mixed profile. This mixed profile determines the threat, the intervention, the development role, the story and the KPIs.",
+      "tableCaption": "Every mixed profile that occurs, sorted by traffic light and frequency. The most dangerous stand at the top.",
+      "colParticipants": "Participants",
+      "colDominant": "Dominant profile",
+      "colSecond": "Second-dominant profile",
+      "colMischprofil": "Mixed profile",
+      "colAmpel": "Traffic light"
+    },
+    "roadmap": {
+      "title": "Change Risk Roadmap",
+      "description": "For each mixed profile that occurs, two chapters side by side: on the left the risk analysis with threat and intervention, on the right the development path with the new roles and the development story. Red mixed profiles come first.",
+      "pending": "As soon as the first response arrives, the measures appear here.",
+      "srMischprofil": "Mixed profile: ",
+      "chapterRisk": "Mixed profile – risk analysis",
+      "chapterJourney": "Journey – development path",
+      "rowProfiles": "Dominant + second-dominant profile",
+      "rowRoles": "Development roles (profile change)",
+      "from": "from the",
+      "to": "to the",
+      "rowThreat": "Threat (eruption effect)",
+      "rowIntervention": "Intervention",
+      "rowResponsible": "Responsible",
+      "rowGoal": "Strategic goal",
+      "rowStory": "Development story",
+      "rowKpis": "Success criteria (KPIs)",
+      "rowAffected": "Participants affected",
+      "rowAffectedNamed": "Affected",
+      "rowTimeframe": "Timeframe"
+    },
+    "items": {
+      "title": "Answer overview",
+      "description": "Mean and distribution of every single statement, grouped by profile.",
+      "tableCaption": "Statements of the profile {name} with the mean and the distribution of the answers from 1 to 5.",
+      "colStatement": "Statement",
+      "colMean": "Ø",
+      "colDistribution": "Distribution",
+      "srAnswer": "Answer {value}: {label}",
+      "distributionLabel": "Distribution of the answers. {description}."
+    },
+    "weighting": {
+      "title": "Profile weighting",
+      "description": "Which resistance profiles lead most often in the company and how strong they are on average. Detail for the summary above.",
+      "toggle": "Show profile weighting",
+      "chartCountsTitle": "How often a profile is dominant or second-dominant",
+      "chartAverageTitle": "Average weighted value per profile",
+      "seriesDominant": "Dominant",
+      "seriesSecond": "Second profile",
+      "seriesAverage": "Ø weighted value",
+      "tableCaption": "Frequency per profile. The same numbers as in the two charts.",
+      "colProfile": "Profile",
+      "colDominant": "Dominant",
+      "colSecond": "Second profile",
+      "colAverage": "Ø weighted"
+    },
+    "participants": {
+      "title": "Participants",
+      "description": "The single evaluation is meant above all for managers running surveys with names. It shows the weighted values per profile with the raw block sum below them; expanding a row shows the matching measure.",
+      "toggleOne": "Show single evaluation (1 participant)",
+      "toggleMany": "Show single evaluation ({count} participants)",
+      "tableCaption": "All participants with the weighted values for the profiles A to F, the dominant and second-dominant profile and the traffic light. The columns can be sorted.",
+      "colDetails": "Details",
+      "colParticipant": "Participant",
+      "colTime": "Time",
+      "colDominant": "Dominant",
+      "colSecond": "Second",
+      "colAmpel": "Traffic light",
+      "participantLabel": "Participant {index}",
+      "srProfile": "Profile {code}, {name}",
+      "rawBlockSum": "raw {value}",
+      "showMeasures": "Show measures",
+      "hideMeasures": "Hide measures",
+      "sort": "sort"
+    },
+    "referenceCheck": {
+      "title": "Comparison with the reference evaluation",
+      "description": "Every number on this page is checked against the customer's sheets. On the left stands what the app calculates; where something differs, the value from the sheet stands next to it.",
+      "allMatch": "Every value matches the CSV files",
+      "mismatchOne": "1 value differs",
+      "mismatchMany": "{count} values differ",
+      "summary": "{matching} of {checked} compared values · {actual} of {expected} participants",
+      "participantsCaption": "Block sums and weighted values per profile, plus the dominant profile, the second-dominant profile and the traffic light. Every cell shows the app's value; where it differs from the customer's sheet, the sheet value stands below it.",
+      "colParticipant": "Participant",
+      "colBlockSum": "Block sum",
+      "colWeighted": "Weighted",
+      "colDominant": "Dominant",
+      "colSecond": "Second",
+      "colAmpel": "Traffic light",
+      "colCheck": "Comparison",
+      "matches": "matches",
+      "deviates": "Deviation",
+      "csvValue": "CSV: {value}",
+      "fruehwarnsystemTitle": "Early Warning System",
+      "ampelCaption": "The totals from the Frühwarnsystem sheet. The sheet shows two decimals, the app one; the comparison uses one decimal.",
+      "colVolcanoModel": "Volcano model",
+      "colCount": "Count",
+      "colPercent": "Percent",
+      "sourcesTitle": "Where the comparison values come from",
+      "sourceEvaluation": "Internal Survey Responses Evaluation.csv — the block sums",
+      "sourceWeighting": "Internal Survey Responses Weighting.csv — the weighted values, the dominant and the second-dominant profile and the traffic light",
+      "sourceFruehwarnsystem": "Internal Survey Responses - Frühwarnsystem.csv — the totals per traffic-light value",
+      "contradiction": "One place contradicts itself inside the customer's own sheets: the Frühwarnsystem sheet lists participant 8 with F and A, the weighting and roadmap sheets with F and B. F and A would be RED, but that row says YELLOW, and YELLOW is exactly what F and B gives. The comparison therefore follows the weighting sheet."
+    }
+  },
+  "volcano": {
+    "cardTitle": "Volcano model",
+    "emptyHeading": "The volcano model",
+    "explanation": "The whole volcano carries the color of the overall phase. The magma chamber says how many participants are in that phase; how high the magma stands in the vent and what comes out of the crater show the same phase. The distribution of all traffic-light values stands beside it on the right.",
+    "srTitle": "Volcano model: {ampel} · {phase}",
+    "srTitleEmpty": "Volcano model: no responses yet",
+    "srDescription": "Cross-section through a volcano. The magma chamber below the ground carries the color of the overall phase: {chamber}. At the crater the drawing shows {crater}. Every number also stands in the table beside it.",
+    "chamber": "{ampel}, {phase}, {count} of {total} participants",
+    "chamberEmpty": "still empty, because no responses have arrived yet",
+    "zone1Short": "Zone 1",
+    "zone2Short": "Zone 2",
+    "crater": {
+      "ROT": "an eruption with a lava fountain, ejected rock and an ash cloud",
+      "GELB": "a small cloud of smoke above the crater",
+      "GRÜN": "a quiet crater without smoke"
+    },
+    "legend": [
+      {
+        "title": "Zone 1 — Magma chamber (invisible layer)",
+        "text": "Emotions, needs, values, identity, fears, power dynamics. Source of energy and source of risk."
+      },
+      {
+        "title": "Zone 2 — Volcano structure (visible layer)",
+        "text": "Behaviour, conflicts, processes, communication, roles. Symptoms and forms of expression."
+      },
+      {
+        "title": "Pressure reduction (arrow upward, −)",
+        "text": "Participation, transparency, psychological safety."
+      },
+      {
+        "title": "Pressure increase (arrow downward, +)",
+        "text": "Overload, contradictions, lack of safety."
+      }
+    ]
+  },
+  "questionnaire": {
+    "title": "Internal Resonance Survey",
+    "subtitleAnonymous": "Anonymous survey on perceptions of collaboration, change and work culture",
+    "subtitleNamed": "Survey on perceptions of collaboration, change and work culture",
+    "scale": {
+      "1": "does not apply at all",
+      "2": "rather does not apply",
+      "3": "neutral",
+      "4": "rather applies",
+      "5": "fully applies"
+    },
+    "items": {
+      "A1": "I feel that my existing expertise is less valued within the new strategy.",
+      "A2": "It is unclear how my specific expert role will look within the future organizational structure.",
+      "A3": "The new processes/technologies undermine what has made us successful as specialists so far.",
+      "B1": "I would prefer my daily work routines to remain as they currently are and have proven to work.",
+      "B2": "I personally see no meaningful benefit in learning completely new systems at this point.",
+      "B3": "I deliver my solid contribution, but the big strategic leaps should be made by younger/other colleagues.",
+      "C1": "I doubt that the measures planned by top management are sufficient to secure our market position long-term.",
+      "C2": "The new strategy overlooks important logical or operational issues from our real day-to-day work.",
+      "C3": "I consider the defined milestones and strategic goals unrealistic and misaligned with the market.",
+      "D1": "I fear that rapid growth and internationalization will cause us to lose our familiar, family-like culture.",
+      "D2": "The new strategic company values no longer align with my personal values and convictions.",
+      "D3": "I worry that the changes will make us abandon our roots and what defines us as an SME.",
+      "E1": "I am concerned that restructuring will reduce my influence or decision-making power within the team.",
+      "E2": "There is a risk that my previous achievements and informal role in the company will matter less in the future.",
+      "E3": "I feel threatened by the unclear redistribution of tasks and responsibilities.",
+      "F1": "Our daily business is already so dense that I simply have no capacity for additional transformation projects.",
+      "F2": "I feel emotionally exhausted by the speed and amount of simultaneous changes happening in the company.",
+      "F3": "We lack the personnel, financial and time resources needed to implement this new strategy properly."
+    }
+  },
+  "profiles": {
+    "A": {
+      "name": "Identity Expert",
+      "nameDative": "Identity Expert",
+      "ebene": "Self-worth",
+      "muster": "Fear of Losing Competence",
+      "beschreibung": "Identity rests on knowledge that is under threat. (Fear of losing significance)",
+      "folgen": "Massive factual criticism as a shield, hoarding of knowledge.",
+      "entwicklungsrolle": "Mentor & Knowledge Anchor",
+      "rolleDative": "Mentor & Knowledge Anchor",
+      "impactRationale": "130 %: highest impact. It threatens the self-image of the German expert culture. Ignored, it turns into hidden, highly intelligent sabotage."
+    },
+    "B": {
+      "name": "Preservation-Oriented Employee",
+      "nameDative": "Preservation-Oriented Employee",
+      "ebene": "Motivation",
+      "muster": "Motivational Resignation",
+      "beschreibung": "Inner resignation, a wish for quiet.",
+      "folgen": "Working strictly to rule, disinterest, „We have always done it this way“.",
+      "entwicklungsrolle": "Stability Architect",
+      "rolleDative": "Stability Architect",
+      "impactRationale": "80 %: lower impact. It leads to passive withdrawal rather than active destruction."
+    },
+    "C": {
+      "name": "Strategic Skeptic",
+      "nameDative": "Strategic Skeptic",
+      "ebene": "Facts",
+      "muster": "Rational/Technical Resistance",
+      "beschreibung": "Does not believe that the new strategy works in technical terms.",
+      "folgen": "Direct criticism in low-context cultures; „technical detail questions“ in high-context cultures.",
+      "entwicklungsrolle": "Quality Navigator",
+      "rolleDative": "Quality Navigator",
+      "impactRationale": "90 %: dampening. Pure factual criticism, valuable data, emotionally manageable."
+    },
+    "D": {
+      "name": "Culture Keeper",
+      "nameDative": "Culture Keeper",
+      "ebene": "Values",
+      "muster": "Cultural Resistance",
+      "beschreibung": "Fear of losing values and identity.",
+      "folgen": "Pointing back to „the good old days“, worry about the fabric of the team.",
+      "entwicklungsrolle": "Values Ambassador",
+      "rolleDative": "Values Ambassador",
+      "impactRationale": "100 %: neutral. Important on the values level; good sense-making stabilises it."
+    },
+    "E": {
+      "name": "Status-Anxious Employee",
+      "nameDative": "Status-Anxious Employee",
+      "ebene": "Power",
+      "muster": "Emotional Resistance",
+      "beschreibung": "Fear of losing power, influence or security.",
+      "folgen": "Silence, withdrawal, informal corridor talk.",
+      "entwicklungsrolle": "Relationship Builder",
+      "rolleDative": "Relationship Builder",
+      "impactRationale": "120 %: very high impact. It triggers informal power struggles that block whole teams."
+    },
+    "F": {
+      "name": "The Overloaded",
+      "nameDative": "The Overloaded",
+      "ebene": "Capacity",
+      "muster": "Resource Resistance",
+      "beschreibung": "Wants the strategy but has no capacity.",
+      "folgen": "High sick leave, signs of burnout, „We will never manage that“.",
+      "entwicklungsrolle": "Resilience Champion",
+      "rolleDative": "Resilience Champion",
+      "impactRationale": "85 %: lower impact. A pure resource problem; stopping a project or more budget solves it quickly."
+    }
+  },
+  "ampel": {
+    "ROT": {
+      "label": "RED",
+      "phase": "Acute Eruption",
+      "meaning": "acute risk of eruption"
+    },
+    "GELB": {
+      "label": "YELLOW",
+      "phase": "Simmering Phase",
+      "meaning": "simmering phase"
+    },
+    "GRÜN": {
+      "label": "GREEN",
+      "phase": "Inactive Volcano",
+      "meaning": "stable phase"
+    }
+  },
+  "mapping": {
+    "A+B": {
+      "bedrohung": "Inner Resignation: Loss of creativity, mechanical execution of tasks",
+      "intervention": "Future Tandem + Competence Path",
+      "ziel": "Competence Building & Self-Efficacy: Revitalizing innovation power",
+      "kpis": "Learning progress ↑, innovation rate ↑",
+      "verantwortung": "HR + Team Lead",
+      "zeitraum": "4–8 months"
+    },
+    "A+C": {
+      "bedrohung": "Creeping Standstill: Strategy is logically dismantled, workforce gets pulled into skepticism",
+      "intervention": "Quality Gate Committee",
+      "ziel": "Strategic Precision: Using expertise for improvement instead of blockage",
+      "kpis": "Error rate ↓, strategy commitment ↑",
+      "verantwortung": "Department Lead + PMO",
+      "zeitraum": "3–6 months"
+    },
+    "A+D": {
+      "bedrohung": "Cultural Rebellion: Blocking new initiatives out of moral obligation",
+      "intervention": "Culture Heritage Lab",
+      "ziel": "Preserve Cultural Identity: Translating core values into the new organizational future",
+      "kpis": "Culture index ↑, conflicts ↓",
+      "verantwortung": "Executive Management + Culture Team",
+      "zeitraum": "2–4 months"
+    },
+    "A+E": {
+      "bedrohung": "Destructive Explosion: Highly intelligent sabotage, open power struggles, project breakdown",
+      "intervention": "Role Clarification Workshop + Executive Mediation",
+      "ziel": "Clarity of Power & Stability: Resolving hidden power struggles, restoring leadership effectiveness",
+      "kpis": "Escalations ↓, decision time < 48h",
+      "verantwortung": "Executive Management + HR + OE",
+      "zeitraum": "1–3 months"
+    },
+    "A+F": {
+      "bedrohung": "Systemic Collapse: Loss of key personnel (burnout, resignation)",
+      "intervention": "Stop-Doing Session + Resource Rebalancing",
+      "ziel": "Resilience & Capacity Building: Relief as a prerequisite for change readiness",
+      "kpis": "Sick leave ↓, focus time ↑",
+      "verantwortung": "HR + Team Lead",
+      "zeitraum": "1–2 months"
+    },
+    "B+C": {
+      "bedrohung": "Productive Tension: Creativity meets logic; no escalation",
+      "intervention": "Innovation Sprint; Structure Co-Creation",
+      "ziel": "Synergy of Creativity & Logic",
+      "kpis": "Innovation rate ↑, decision quality ↑",
+      "verantwortung": "Team Lead + PMO",
+      "zeitraum": "2–4 months"
+    },
+    "B+D": {
+      "bedrohung": "Thick Lava Flow: Sarcasm, cynicism, working strictly to rule",
+      "intervention": "Island Design Workshop",
+      "ziel": "Stability & Psychological Safety: Defining routines, reducing pressure",
+      "kpis": "Satisfaction ↑, turnover ↓",
+      "verantwortung": "Team Lead + HR",
+      "zeitraum": "2–6 months"
+    },
+    "B+E": {
+      "bedrohung": "Showcase Tension: Creativity distorted by status pressure; frustration & withdrawal",
+      "intervention": "Creative Impact Alignment; Role Clarification; Protected Spaces for Creativity",
+      "ziel": "Balance between Creativity & Recognition; genuine effectiveness",
+      "kpis": "Clarity of recognition ↑, frustration ↓",
+      "verantwortung": "Manager + OE",
+      "zeitraum": "2–4 months"
+    },
+    "B+F": {
+      "bedrohung": "Creativity Erosion: Exhaustion slows ideas; frustration & withdrawal",
+      "intervention": "Resource Rebalancing; Stop-Doing; Protected Creativity Phases",
+      "ziel": "Sustainable Creativity & Stable Capacity",
+      "kpis": "Exhaustion ↓, idea rate ↑",
+      "verantwortung": "HR + OE",
+      "zeitraum": "2–5 months"
+    },
+    "C+D": {
+      "bedrohung": "Delays from Logic-Culture Conflict: Subtle tensions, mistrust, devaluation",
+      "intervention": "Sense-Making & Decision Alignment; Role Clarification; Shared Decision Principles; Team Norms Workshop",
+      "ziel": "Integration of Logic & Culture; respectful decision processes; clear principles; cohesive team identity",
+      "kpis": "Decision quality ↑, tensions ↓",
+      "verantwortung": "Leadership Team + PMO",
+      "zeitraum": "3–6 months"
+    },
+    "C+E": {
+      "bedrohung": "Paralyzing Process Gridlock: Political pseudo-debates block decisions",
+      "intervention": "Moderated Decision Forums",
+      "ziel": "Strengthening Decision-Making: Separating logic from politics",
+      "kpis": "Decision time ↓, meeting time ↓",
+      "verantwortung": "Leadership Team + PMO",
+      "zeitraum": "1–4 months"
+    },
+    "C+F": {
+      "bedrohung": "Delays: Deadlines slip, but no sabotage",
+      "intervention": "Capacity Check + Prioritization Sprint",
+      "ziel": "Realistic Planning: Time buffers & resources for sustainable implementation",
+      "kpis": "Deadline reliability ↑, overtime ↓",
+      "verantwortung": "Team Lead + PMO",
+      "zeitraum": "1–3 months"
+    },
+    "D+E": {
+      "bedrohung": "Status Collides with Culture: Hidden loyalty conflicts, misunderstandings, declining cohesion",
+      "intervention": "Values Alignment; Role Clarification; Team Norms Workshop; Feedback Rituals; Moderated Dialogue",
+      "ziel": "Balance between Recognition & Culture; psychological safety; cohesive team",
+      "kpis": "Misunderstandings ↓, team cohesion ↑",
+      "verantwortung": "Manager + Culture Team",
+      "zeitraum": "2–5 months"
+    },
+    "D+F": {
+      "bedrohung": "Loyalty Overload: Sense of duty collides with exhaustion; guilt & overwhelm",
+      "intervention": "Team Care; Role Clarification; Healthy Team Norms",
+      "ziel": "Psychological Safety & Resilience",
+      "kpis": "Resilience ↑, loyalty conflicts ↓",
+      "verantwortung": "Manager + HR",
+      "zeitraum": "3–6 months"
+    },
+    "E+F": {
+      "bedrohung": "Burnout Escalation: Performance pressure meets overload; breakdown, withdrawal, errors, conflicts",
+      "intervention": "Capacity Reset; Resource Rebalancing; Stop-Doing; Expectation Alignment; Psychological Safety",
+      "ziel": "Sustainable Performance; clear priorities; balance between expectations & capacity; stable resilience",
+      "kpis": "Resilience ↑, clarity of priorities ↑, error rate ↓",
+      "verantwortung": "Manager + HR + OE",
+      "zeitraum": "3–6 months"
+    }
+  },
+  "muster": {
+    "A>E": {
+      "name": "The Significance-Anxious",
+      "story": "After clarification, the participant develops the strength of a Mentor who provides orientation, and simultaneously the capability of a Relationship Builder who gains influence through cooperation rather than status."
+    },
+    "E>A": {
+      "name": "The Status-Insecure Expert",
+      "story": "The participant learns to use relationships instead of power and gains stability. At the same time, they unfold the qualities of a Mentor who gives the team safety and direction."
+    },
+    "A>F": {
+      "name": "The Overloaded Identity Holder",
+      "story": "The participant grows into the role of a Mentor who shares responsibility and simultaneously develops the resilience of a Champion who enables healthy performance."
+    },
+    "F>A": {
+      "name": "The Overloaded Identity Holder",
+      "story": "The participant strengthens their resilience and learns to set clear priorities. At the same time, they develop the qualities of a Mentor who stabilizes the team."
+    },
+    "A>D": {
+      "name": "The Values-Blocking Expert",
+      "story": "The participant combines the strength of a Mentor with the role of a Values Ambassador. They translate culture into the new organizational world and give the team orientation."
+    },
+    "D>A": {
+      "name": "The Duty-Driven Preserver",
+      "story": "The participant develops into a Values Ambassador who creates meaning, and simultaneously into a Mentor who supports change with stability."
+    },
+    "E>F": {
+      "name": "The Pressure-Overloaded Performer",
+      "story": "The participant gains clarity in relationships and strengthens their resilience. They become a stable, cooperative force within the team."
+    },
+    "F>E": {
+      "name": "The Overloaded Status Seeker",
+      "story": "The participant reduces overload and develops resilience. At the same time, they strengthen their ability to shape relationships constructively."
+    },
+    "B>D": {
+      "name": "The Duty-Routine Preserver",
+      "story": "The participant develops the ability to create stable structures while also conveying values. They become a reliable, culturally grounded force in the team."
+    },
+    "D>B": {
+      "name": "The Values-Routine Carrier",
+      "story": "The participant combines value awareness with structural clarity. They create both meaning and order, strengthening team cohesion."
+    },
+    "A>C": {
+      "name": "The Logic-Dismantling Expert",
+      "story": "The participant uses their experience as a Mentor and combines it with the analytical strength of a Quality Navigator. Critique becomes quality, experience becomes orientation."
+    },
+    "C>A": {
+      "name": "The Strategic-Dismantling Analyst",
+      "story": "The participant develops precise quality orientation and simultaneously the ability to support others as a Mentor. The dynamic becomes constructive and strategically clear."
+    },
+    "A>B": {
+      "name": "The Routine-Frozen Expert",
+      "story": "The participant combines inspiring orientation with stable structure. They create safety and meaning, strengthening the team’s ability to change."
+    },
+    "B>A": {
+      "name": "The Stability-Focused Specialist",
+      "story": "The participant develops clear routines and simultaneously the ability to provide direction as a Mentor. The team gains focus and motivation."
+    },
+    "C>E": {
+      "name": "The Political-Analytical Blocker",
+      "story": "The participant separates logic from politics and simultaneously strengthens their relational capability. Decisions become clearer and more trustworthy."
+    },
+    "E>C": {
+      "name": "The Status Politician",
+      "story": "The participant strengthens relationships and simultaneously develops analytical clarity. Collaboration becomes efficient and cooperative."
+    },
+    "E>D": {
+      "name": "The Loyalty-Conflict Carrier",
+      "story": "The participant gains recognition through relationships rather than status and combines this with cultural clarity. The team becomes more cohesive."
+    },
+    "D>E": {
+      "name": "The Recognition-Seeking Preserver",
+      "story": "The participant brings values into the team and simultaneously strengthens relationships. The dynamic becomes trusting and stable."
+    },
+    "D>C": {
+      "name": "The Culture-Logic Conflict Carrier",
+      "story": "The participant combines cultural stability with logical precision. Decisions become respectful and clear."
+    },
+    "C>D": {
+      "name": "The Logic-Culture Analyst",
+      "story": "The participant structures complex topics while simultaneously conveying values. Change becomes both rational and culturally supported."
+    },
+    "B>E": {
+      "name": "The Creativity-Blocked Recognition Seeker",
+      "story": "The participant creates safe frameworks and simultaneously strengthens relationships. Creativity becomes possible again."
+    },
+    "E>B": {
+      "name": "The Recognition-Focused Routine Carrier",
+      "story": "The participant brings closeness and simultaneously develops structure. The team gains balance and focus."
+    },
+    "B>F": {
+      "name": "The Exhausted Routine Carrier",
+      "story": "The participant creates order and simultaneously develops resilience. The team becomes stable and robust."
+    },
+    "F>B": {
+      "name": "The Overloaded Stability Seeker",
+      "story": "The participant strengthens their resilience and simultaneously develops structural competence. The dynamic becomes sustainable."
+    },
+    "D>F": {
+      "name": "The Duty-Overloaded Preserver",
+      "story": "The participant combines value awareness with resilience. The team gains emotional and physical stability."
+    },
+    "F>D": {
+      "name": "The Overloaded Loyalty Carrier",
+      "story": "The participant develops healthy performance capability and simultaneously cultural clarity. Change becomes sustainable."
+    },
+    "B>C": {
+      "name": "The Structured Innovator",
+      "story": "The participant combines stable structure with precise quality. The productive tension strengthens innovation and efficiency."
+    },
+    "C>B": {
+      "name": "The Precise Stability Thinker",
+      "story": "The participant develops clear priorities and simultaneously stable routines. The team works focused and safely."
+    },
+    "F>C": {
+      "name": "The Realistic Planner",
+      "story": "The participant strengthens their resilience and simultaneously develops analytical clarity. Deadlines become realistic and achievable."
+    },
+    "C>F": {
+      "name": "The Analytical Resilience Navigator",
+      "story": "The participant structures tasks and simultaneously develops healthy performance capability. Collaboration becomes sustainable and efficient."
+    }
+  }
+}

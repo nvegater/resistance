@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getBaseUrl } from "@/lib/base-url";
 import { evaluateSurvey } from "@/lib/domain/scoring";
+import { t } from "@/lib/i18n";
 import { getSurvey, listParticipantInputs } from "@/lib/queries";
 import type { ResultsPayload } from "@/lib/results";
 import { getCurrentUser } from "@/lib/session";
@@ -15,15 +16,15 @@ export async function GET(
 
   const user = await getCurrentUser();
   if (!user) {
-    return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
+    return NextResponse.json({ error: t.api.notSignedIn }, { status: 401 });
   }
   if (user.role !== "admin" && user.organizationId !== orgId) {
-    return NextResponse.json({ error: "Kein Zugriff." }, { status: 403 });
+    return NextResponse.json({ error: t.api.noAccess }, { status: 403 });
   }
 
   const survey = await getSurvey(surveyId);
   if (!survey || survey.organizationId !== orgId) {
-    return NextResponse.json({ error: "Befragung nicht gefunden." }, { status: 404 });
+    return NextResponse.json({ error: t.api.surveyNotFound }, { status: 404 });
   }
 
   const participants = await listParticipantInputs(surveyId);

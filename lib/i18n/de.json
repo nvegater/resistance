@@ -1,0 +1,693 @@
+{
+  "language": "de",
+  "locale": "de-DE",
+  "app": {
+    "name": "Widerstandsdiagnose",
+    "description": "Interne Resonanzbefragung: Widerstände im Wandel erkennen, einordnen und in konkrete Maßnahmen übersetzen.",
+    "skipToContent": "Zum Inhalt springen",
+    "navLabel": "Bereiche",
+    "signOut": "Abmelden",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "delete": "Löschen",
+    "loading": "Wird geladen …",
+    "noResponsesYet": "Noch keine Antworten.",
+    "copiedToClipboard": "{label}: in die Zwischenablage kopiert",
+    "modeAnonymous": "Anonym",
+    "modeNamed": "Mit Namen",
+    "responseOne": "1 Antwort",
+    "responseMany": "{count} Antworten"
+  },
+  "api": {
+    "notSignedIn": "Nicht angemeldet.",
+    "noAccess": "Kein Zugriff.",
+    "surveyNotFound": "Befragung nicht gefunden."
+  },
+  "login": {
+    "description": "Interne Resonanzbefragung auswerten und in konkrete Maßnahmen übersetzen.",
+    "failedTitle": "Anmeldung fehlgeschlagen",
+    "wrongCredentials": "E-Mail oder Passwort ist falsch. Bitte erneut versuchen.",
+    "emailLabel": "E-Mail-Adresse",
+    "emailRequired": "Bitte E-Mail-Adresse eingeben.",
+    "passwordLabel": "Passwort",
+    "passwordRequired": "Bitte Passwort eingeben.",
+    "submit": "Anmelden",
+    "submitting": "Wird angemeldet …"
+  },
+  "admin": {
+    "title": "Organisationen",
+    "description": "Kunden anlegen, Zugangsdaten weitergeben und deren Dashboards öffnen.",
+    "emptyTitle": "Noch keine Organisation",
+    "emptyText": "Legen Sie eine Organisation an. Sie erhalten danach eine E-Mail-Adresse und ein Passwort, die Sie an den Kunden weitergeben.",
+    "tableCaption": "Alle angelegten Organisationen mit Login, Anzahl der Befragungen und Antworten.",
+    "colOrganization": "Organisation",
+    "colLoginEmail": "Login-E-Mail",
+    "colSurveys": "Befragungen",
+    "colResponses": "Antworten",
+    "colCreated": "Angelegt",
+    "colActions": "Aktionen",
+    "noLogin": "kein Login",
+    "openDashboard": "Dashboard öffnen",
+    "newOrganization": "Neue Organisation",
+    "newOrganizationDescription": "Name und Login für einen Kunden. Die Zugangsdaten erscheinen danach zum Kopieren.",
+    "createdTitle": "{name} angelegt",
+    "createdDescription": "Die Organisation kann sich ab sofort anmelden.",
+    "createFailedTitle": "Anlegen fehlgeschlagen",
+    "nameLabel": "Name der Organisation",
+    "namePlaceholder": "SAP",
+    "nameRequired": "Bitte einen Namen eingeben.",
+    "emailLabel": "Login-E-Mail",
+    "emailPlaceholder": "transformation@sap.com",
+    "emailInvalid": "Bitte eine gültige E-Mail-Adresse eingeben.",
+    "emailTaken": "Diese E-Mail-Adresse wird bereits verwendet.",
+    "passwordLabel": "Passwort",
+    "passwordTooShort": "Das Passwort muss mindestens 8 Zeichen haben.",
+    "generatePassword": "Generieren",
+    "createSubmit": "Organisation anlegen",
+    "creating": "Wird angelegt …",
+    "deleteTitle": "{name} löschen?",
+    "deleteDescription": "Der Zugang, alle Befragungen und alle Antworten dieser Organisation werden gelöscht. Das lässt sich nicht rückgängig machen.",
+    "deleteConfirm": "Endgültig löschen",
+    "deleting": "Wird gelöscht …",
+    "deleted": "{name} wurde gelöscht."
+  },
+  "credentials": {
+    "title": "Zugangsdaten",
+    "hint": "Diese Zugangsdaten an den Kunden weitergeben. Das Passwort wird nur hier angezeigt.",
+    "organization": "Organisation",
+    "loginPage": "Login-Seite",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "copy": "Zugangsdaten kopieren"
+  },
+  "share": {
+    "linkLabel": "Öffentlicher Link zur Befragung",
+    "copyLink": "Link kopieren",
+    "hint": "Diesen Link an die Mitarbeitenden weitergeben. Es ist keine Anmeldung nötig.",
+    "qrTitle": "QR-Code zur Befragung {title}",
+    "qrCaption": "Zum Scannen"
+  },
+  "org": {
+    "description": "Befragungen anlegen, Link teilen und Ergebnisse live verfolgen.",
+    "emptyTitle": "Noch keine Befragung",
+    "emptyIntro": "In zwei Schritten los:",
+    "emptyStep1": "Eine Befragung anlegen.",
+    "emptyStep2": "Den entstandenen Link an die Mitarbeitenden schicken. Die Ergebnisse erscheinen danach automatisch.",
+    "createdOn": "angelegt am {date}",
+    "results": "Ergebnisse",
+    "newSurvey": "Neue Befragung",
+    "newSurveyDescription": "Nach dem Speichern erhalten Sie den Link, den Sie an Ihre Mitarbeitenden weitergeben.",
+    "saveFailedTitle": "Speichern fehlgeschlagen",
+    "titleLabel": "Titel der Befragung",
+    "titleRequired": "Bitte einen Titel eingeben.",
+    "modeLegend": "Art der Befragung",
+    "modeAnonymousHint": "Der Normalfall. Es werden keine Namen gespeichert.",
+    "modeNamedHint": "Für Teamleiter kleiner Organisationen, um persönliche Situationen mit Mitarbeitenden besprechen und deeskalieren zu können.",
+    "createSubmit": "Befragung anlegen",
+    "creating": "Wird angelegt …"
+  },
+  "survey": {
+    "fallbackTitle": "Befragung",
+    "alreadyAnsweredTitle": "Sie haben diese Befragung bereits ausgefüllt",
+    "alreadyAnsweredText": "Vielen Dank. Wenn Sie trotzdem noch einmal antworten möchten, geht das hier.",
+    "answerAgain": "Trotzdem noch einmal ausfüllen",
+    "intro1": "Wir möchten verstehen, wie Sie die aktuellen Veränderungen im Unternehmen erleben.",
+    "intro2": "Es gibt keine richtigen oder falschen Antworten. Antworten Sie so, wie es für Ihren Arbeitsalltag zutrifft.",
+    "intro3": "Die Ergebnisse helfen dabei, Belastungen früh zu erkennen und passende Maßnahmen zu wählen.",
+    "privacyTitle": "Datenschutz",
+    "privacyAnonymous": "Es werden keine Namen, E-Mail-Adressen oder Geräteinformationen gespeichert.",
+    "privacyNamed": "Ihr Name wird zusammen mit Ihren Antworten gespeichert und ist für Ihre Führungskraft sichtbar.",
+    "nameLabel": "Ihr Name",
+    "nameRequired": "Bitte geben Sie Ihren Namen an.",
+    "scaleTitle": "Die Antwortskala",
+    "scaleSummary": "Bedeutung der Zahlen 1 bis 5",
+    "duration": "18 Aussagen in 6 Teilen, ca. 5 Minuten.",
+    "start": "Befragung starten",
+    "step": "Teil {step} von {total}",
+    "progressLabel": "Fortschritt: Teil {step} von {total}",
+    "answeredCount": "{done} von {total} beantwortet",
+    "missingTitle": "Es fehlen noch Antworten",
+    "missingText": "Bitte beantworten Sie alle Aussagen dieses Teils, bevor Sie weitergehen.",
+    "sendFailedTitle": "Senden fehlgeschlagen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "submitting": "Wird gesendet …",
+    "answerOption": "{value} – {label}",
+    "errorGone": "Diese Befragung gibt es nicht mehr.",
+    "errorAllRequired": "Bitte alle Aussagen beantworten."
+  },
+  "thanks": {
+    "title": "Vielen Dank",
+    "text": "Ihre Antworten sind angekommen. Sie können dieses Fenster jetzt schließen."
+  },
+  "reference": {
+    "orgName": "Referenz-Auswertung",
+    "surveyTitle": "Interne Resonanzbefragung (Referenzlauf)",
+    "badge": "Schreibgeschützt",
+    "orgDescription": "Der Beispiellauf des Kunden mit 15 Antworten. Diese Organisation lässt sich nicht ändern: keine neuen Befragungen, keine neuen Antworten. Die Ergebnisseite vergleicht jede Zahl mit seinen CSV-Tabellen.",
+    "publicNotice": "Diese Befragung ist eine schreibgeschützte Referenz. Sie enthält die 15 Antworten aus der Beispielauswertung und nimmt keine weiteren Antworten an.",
+    "readOnlySurvey": "Die Referenz-Auswertung ist schreibgeschützt und nimmt keine neuen Befragungen auf.",
+    "readOnlyResponse": "Diese Befragung ist eine schreibgeschützte Referenz und nimmt keine Antworten an."
+  },
+  "seed": {
+    "demoOrganizationName": "Muster GmbH"
+  },
+  "results": {
+    "backTo": "Zurück zu {name}",
+    "loadFailed": "Die Ergebnisse konnten nicht geladen werden.",
+    "live": "Live",
+    "updatedSecondsAgo": "aktualisiert vor {seconds} Sekunden",
+    "updatedOneSecondAgo": "aktualisiert vor 1 Sekunde",
+    "refreshing": "wird aktualisiert",
+    "emptyTitle": "Noch keine Antworten",
+    "emptyText": "Sobald die erste Antwort eingeht, erscheinen hier die Ergebnisse. Teilen Sie dafür den Link oben mit Ihren Mitarbeitenden.",
+    "kpi": {
+      "heading": "Kennzahlen der Befragung",
+      "participants": "Teilnahmen",
+      "overallPhase": "Gesamtphase",
+      "noResponses": "Noch keine Antworten"
+    },
+    "fruehwarnsystem": {
+      "title": "Frühwarnsystem",
+      "description": "Die Ampel jedes Teilnehmenden zu einem Bild der Organisation zusammengefasst. Die Gesamtphase ist die Phase mit den meisten Teilnehmenden; der Vulkan zeigt sie.",
+      "phasePending": "Sobald die erste Antwort eingeht, erscheint hier die Phase der Organisation.",
+      "distributionTitle": "Verteilung der Ampelwerte",
+      "tableCaption": "Anzahl und Anteil der Teilnehmenden je Phase des Vulkanmodells. Dieselben Zahlen wie im Ringdiagramm.",
+      "colVolcanoModel": "Vulkanmodell",
+      "colColor": "Farbe",
+      "colCount": "Anzahl",
+      "colPercent": "%",
+      "total": "Gesamt"
+    },
+    "profiles": {
+      "title": "Profile",
+      "description": "Die sechs Widerstandsprofile, auf die die Befragung verweist.",
+      "tableCaption": "Muster, Beschreibung und Folgen der sechs Profile. Diese Tabelle ist immer gleich und hängt nicht von den Antworten ab.",
+      "colProfile": "Profil",
+      "colMuster": "Muster",
+      "colBeschreibung": "Profil-Beschreibung",
+      "colFolgen": "Folgen"
+    },
+    "matrix": {
+      "title": "Mischprofil-Matrix",
+      "description": "Diese Matrix zeigt, wie aus dem dominanten und zweitdominanten Profil eines Teilnehmers ein neues Mischprofil entsteht. Dieses Mischprofil bestimmt die Bedrohung, Intervention, Entwicklungsrolle, Story und KPIs.",
+      "tableCaption": "Alle vorkommenden Mischprofile, sortiert nach Ampel und Häufigkeit. Die gefährlichsten stehen oben.",
+      "colParticipants": "Teilnehmende",
+      "colDominant": "Dominantes Profil",
+      "colSecond": "Zweitdominantes Profil",
+      "colMischprofil": "Mischprofil",
+      "colAmpel": "Ampel"
+    },
+    "roadmap": {
+      "title": "Change-Risiko-Roadmap",
+      "description": "Für jedes vorkommende Mischprofil zwei Kapitel nebeneinander: links die Risikoanalyse mit Bedrohung und Intervention, rechts der Entwicklungsweg mit den neuen Rollen und der Entwicklungsstory. Rote Mischprofile zuerst.",
+      "pending": "Sobald die erste Antwort eingeht, erscheinen hier die Maßnahmen.",
+      "srMischprofil": "Mischprofil: ",
+      "chapterRisk": "Mischprofil – Risikoanalyse",
+      "chapterJourney": "Journey – Entwicklungsweg",
+      "rowProfiles": "Profil dominant + zweitdominant",
+      "rowRoles": "Entwicklungsrollen (Profil-Wandel)",
+      "from": "vom",
+      "to": "zum",
+      "rowThreat": "Bedrohung (Eruptionswirkung)",
+      "rowIntervention": "Intervention",
+      "rowResponsible": "Verantwortliche",
+      "rowGoal": "Strategisches Ziel",
+      "rowStory": "Entwicklungsstory",
+      "rowKpis": "Erfolgskriterien (KPIs)",
+      "rowAffected": "Betroffene Teilnehmende",
+      "rowAffectedNamed": "Betroffene",
+      "rowTimeframe": "Zeitraum"
+    },
+    "items": {
+      "title": "Antworten-Übersicht",
+      "description": "Mittelwert und Verteilung jeder einzelnen Aussage, gruppiert nach Profil.",
+      "tableCaption": "Aussagen des Profils {name} mit Mittelwert und Verteilung der Antworten von 1 bis 5.",
+      "colStatement": "Aussage",
+      "colMean": "Ø",
+      "colDistribution": "Verteilung",
+      "srAnswer": "Antwort {value}: {label}",
+      "distributionLabel": "Verteilung der Antworten. {description}."
+    },
+    "weighting": {
+      "title": "Profile Gewichtung",
+      "description": "Welche Widerstandsprofile im Unternehmen am häufigsten führen und wie stark sie im Durchschnitt ausgeprägt sind. Detailinformation zur Zusammenfassung oben.",
+      "toggle": "Profile Gewichtung anzeigen",
+      "chartCountsTitle": "Wie oft ein Profil dominant oder zweitdominant ist",
+      "chartAverageTitle": "Durchschnittlicher gewichteter Wert je Profil",
+      "seriesDominant": "Dominant",
+      "seriesSecond": "Zweitprofil",
+      "seriesAverage": "Ø gewichteter Wert",
+      "tableCaption": "Häufigkeit je Profil. Dieselben Zahlen wie in den beiden Diagrammen.",
+      "colProfile": "Profil",
+      "colDominant": "Dominant",
+      "colSecond": "Zweitprofil",
+      "colAverage": "Ø gewichtet"
+    },
+    "participants": {
+      "title": "Teilnehmer",
+      "description": "Die Einzelauswertung ist vor allem für Führungskräfte bei Befragungen mit Namen gedacht. Sie zeigt die gewichteten Werte je Profil, darunter die rohe Blocksumme; eine Zeile aufklappen zeigt die passende Maßnahme.",
+      "toggleOne": "Einzelauswertung anzeigen (1 Teilnehmende:r)",
+      "toggleMany": "Einzelauswertung anzeigen ({count} Teilnehmende)",
+      "tableCaption": "Alle Teilnehmenden mit gewichteten Werten für die Profile A bis F, dem dominanten und zweitdominanten Profil und der Gefahrenampel. Die Spalten lassen sich sortieren.",
+      "colDetails": "Details",
+      "colParticipant": "Teilnehmer",
+      "colTime": "Zeitpunkt",
+      "colDominant": "Dominant",
+      "colSecond": "Zweit",
+      "colAmpel": "Ampel",
+      "participantLabel": "Teilnehmer {index}",
+      "srProfile": "Profil {code}, {name}",
+      "rawBlockSum": "roh {value}",
+      "showMeasures": "Maßnahmen anzeigen",
+      "hideMeasures": "Maßnahmen ausblenden",
+      "sort": "sortieren"
+    },
+    "referenceCheck": {
+      "title": "Abgleich mit der Referenz-Auswertung",
+      "description": "Jede Zahl auf dieser Seite wird gegen die Tabellen des Kunden geprüft. Links steht, was die App rechnet; wo etwas abweicht, steht der Wert aus der Tabelle daneben.",
+      "allMatch": "Alle Werte stimmen mit den CSV-Dateien überein",
+      "mismatchOne": "1 Wert weicht ab",
+      "mismatchMany": "{count} Werte weichen ab",
+      "summary": "{matching} von {checked} verglichenen Werten · {actual} von {expected} Teilnehmenden",
+      "participantsCaption": "Blocksummen und gewichtete Werte je Profil, dazu dominantes Profil, zweitdominantes Profil und Gefahrenampel. Jede Zelle zeigt den Wert der App; weicht er von der Tabelle des Kunden ab, steht der Tabellenwert darunter.",
+      "colParticipant": "Teilnehmer",
+      "colBlockSum": "Blocksumme",
+      "colWeighted": "Gewichtet",
+      "colDominant": "Dominant",
+      "colSecond": "Zweit",
+      "colAmpel": "Ampel",
+      "colCheck": "Abgleich",
+      "matches": "stimmt",
+      "deviates": "Abweichung",
+      "csvValue": "CSV: {value}",
+      "fruehwarnsystemTitle": "Frühwarnsystem",
+      "ampelCaption": "Die Summen aus dem Frühwarnsystem-Blatt. Das Blatt zeigt zwei Nachkommastellen, die App eine; verglichen wird auf eine Nachkommastelle.",
+      "colVolcanoModel": "Vulkanmodell",
+      "colCount": "Anzahl",
+      "colPercent": "Prozent",
+      "sourcesTitle": "Woher die Vergleichswerte kommen",
+      "sourceEvaluation": "Internal Survey Responses Evaluation.csv — die Blocksummen",
+      "sourceWeighting": "Internal Survey Responses Weighting.csv — die gewichteten Werte, das dominante und das zweitdominante Profil und die Gefahrenampel",
+      "sourceFruehwarnsystem": "Internal Survey Responses - Frühwarnsystem.csv — die Summen je Ampel",
+      "contradiction": "Eine Stelle widerspricht sich in den Tabellen des Kunden selbst: das Frühwarnsystem-Blatt führt Teilnehmer 8 mit F und A, das Gewichtungs- und das Roadmap-Blatt mit F und B. F und A wäre ROT, das Blatt nennt aber GELB, und GELB ist genau das Ergebnis von F und B. Der Abgleich folgt deshalb dem Gewichtungsblatt."
+    }
+  },
+  "volcano": {
+    "cardTitle": "Vulkanmodell",
+    "emptyHeading": "Das Vulkanmodell",
+    "explanation": "Der ganze Vulkan trägt die Farbe der Gesamtphase. Die Magmakammer nennt, wie viele Teilnehmende in dieser Phase sind; wie hoch das Magma im Schlot steht und was aus dem Krater kommt, zeigt dieselbe Phase. Die Verteilung aller Ampelwerte steht rechts daneben.",
+    "srTitle": "Vulkanmodell: {ampel} · {phase}",
+    "srTitleEmpty": "Vulkanmodell: noch keine Antworten",
+    "srDescription": "Querschnitt durch einen Vulkan. Die Magmakammer unter der Erdoberfläche trägt die Farbe der Gesamtphase: {chamber}. Am Krater zeigt die Darstellung {crater}. Alle Zahlen stehen auch in der Tabelle daneben.",
+    "chamber": "{ampel}, {phase}, {count} von {total} Teilnehmenden",
+    "chamberEmpty": "noch leer, weil noch keine Antworten vorliegen",
+    "zone1Short": "Zone 1",
+    "zone2Short": "Zone 2",
+    "crater": {
+      "ROT": "eine Eruption mit Lavafontäne, ausgeworfenem Gestein und einer Aschewolke",
+      "GELB": "eine kleine Rauchwolke über dem Krater",
+      "GRÜN": "einen ruhigen Krater ohne Rauch"
+    },
+    "legend": [
+      {
+        "title": "Zone 1 — Magmakammer (unsichtbare Ebene)",
+        "text": "Emotionen, Bedürfnisse, Werte, Identität, Ängste, Machtfragen. Energiequelle und Risikoquelle."
+      },
+      {
+        "title": "Zone 2 — Vulkanstruktur (sichtbare Ebene)",
+        "text": "Verhalten, Konflikte, Prozesse, Kommunikation, Rollen. Symptome und Ausdrucksformen."
+      },
+      {
+        "title": "Druckreduktion (Pfeil nach oben, −)",
+        "text": "Partizipation, Transparenz, psychologische Sicherheit."
+      },
+      {
+        "title": "Druckerhöhung (Pfeil nach unten, +)",
+        "text": "Überlastung, Widersprüche, fehlende Sicherheit."
+      }
+    ]
+  },
+  "questionnaire": {
+    "title": "Interne Resonanzbefragung",
+    "subtitleAnonymous": "Anonyme Befragung zur Wahrnehmung von Zusammenarbeit, Veränderung und Arbeitskultur",
+    "subtitleNamed": "Befragung zur Wahrnehmung von Zusammenarbeit, Veränderung und Arbeitskultur",
+    "scale": {
+      "1": "trifft gar nicht zu",
+      "2": "trifft eher nicht zu",
+      "3": "neutral",
+      "4": "trifft eher zu",
+      "5": "trifft voll zu"
+    },
+    "items": {
+      "A1": "Ich habe das Gefühl, dass mein bisheriges Fachwissen in der neuen Strategie weniger wertgeschätzt wird.",
+      "A2": "Es ist unklar, wie meine konkrete Expertenrolle in der veränderten Struktur in Zukunft aussehen soll.",
+      "A3": "Die neuen Prozesse/Technologien entwerten das, was uns bisher als Spezialisten erfolgreich gemacht hat.",
+      "B1": "Ich möchte am liebsten, dass meine täglichen Arbeitsabläufe so bleiben, wie sie aktuell und bewährt sind.",
+      "B2": "Ich sehe für mich persönlich keinen Sinn oder Nutzen darin, mich jetzt noch in komplett neue Systeme einzuarbeiten.",
+      "B3": "Ich leiste meinen festen Beitrag, aber die großen strategischen Sprünge sollen die jüngeren/anderen machen.",
+      "C1": "Ich bezweifle, dass die von der Geschäftsführung geplanten Maßnahmen ausreichen, um unsere Marktposition langfristig zu sichern.",
+      "C2": "In der neuen Strategie wurden wichtige logische oder operative Probleme aus unserem realen Arbeitsalltag übersehen.",
+      "C3": "Ich halte die gesetzten Meilensteine und strategischen Ziele für unrealistisch und am Markt vorbei geplant.",
+      "D1": "Ich habe die Befürchtung, dass durch das schnelle Wachstum und die Internationalisierung das familiäre Miteinander verloren geht.",
+      "D2": "Die neuen strategischen Werte der Firma passen nicht mehr zu meinen persönlichen Werten und Überzeugungen.",
+      "D3": "Ich sorge mich, dass wir durch die Veränderungen unsere Wurzeln und das, was uns als KMU ausmacht, aufgeben.",
+      "E1": "Durch die Umstrukturierung befürchte ich, dass mein Mitspracherecht oder mein Einfluss im Team schrumpfen werden.",
+      "E2": "Es besteht das Risiko, dass meine bisherigen Leistungen und meine informelle Rolle im Unternehmen künftig weniger zählen.",
+      "E3": "Ich fühle mich durch die unklare Neuverteilung von Aufgaben und Verantwortlichkeiten in meiner Position bedroht.",
+      "F1": "Unser Tagesgeschäft ist bereits so dicht, dass ich schlichtweg keine Kapazität für zusätzliche Transformations-Projekte habe.",
+      "F2": "Ich fühle mich durch die Geschwindigkeit und die Menge der gleichzeitigen Veränderungen im Unternehmen emotional erschöpft.",
+      "F3": "Es fehlen uns die personellen, finanziellen und zeitlichen Ressourcen, um diese neue Strategie überhaupt sauber umsetzen zu können."
+    }
+  },
+  "profiles": {
+    "A": {
+      "name": "Identitäts-Experte",
+      "nameDative": "Identitäts-Experten",
+      "ebene": "Selbstwert",
+      "muster": "Kompetenzangst",
+      "beschreibung": "Identität basiert auf Wissen, das bedroht ist. (Angst vor Bedeutsamkeitsverlust)",
+      "folgen": "Massive Sachkritik als Schutzschild, Wissenshortung.",
+      "entwicklungsrolle": "Mentor & Wissensanker",
+      "rolleDative": "Mentor & Wissensanker",
+      "impactRationale": "130 %: höchste Wirkung. Bedroht das Selbstbild der deutschen Expertenkultur. Wird es ignoriert, wird daraus verdeckte, hochintelligente Sabotage."
+    },
+    "B": {
+      "name": "Besitzstandswahrer",
+      "nameDative": "Besitzstandswahrer",
+      "ebene": "Motivation",
+      "muster": "Motivationale Resignation",
+      "beschreibung": "Innere Kündigung, Wunsch nach Ruhe.",
+      "folgen": "Dienst nach Vorschrift, Desinteresse, „Das haben wir immer so gemacht“.",
+      "entwicklungsrolle": "Stabilitäts-Architekt",
+      "rolleDative": "Stabilitäts-Architekten",
+      "impactRationale": "80 %: geringere Wirkung. Führt zu passivem Rückzug statt aktiver Zerstörung."
+    },
+    "C": {
+      "name": "Strategischer Skeptiker",
+      "nameDative": "Strategischen Skeptiker",
+      "ebene": "Sache",
+      "muster": "Sachlicher Widerstand",
+      "beschreibung": "Glaubt nicht, dass die neue Strategie fachlich funktioniert.",
+      "folgen": "Direkte Kritik in Low-Context-Kulturen; „technische Detailfragen“ in High-Context-Kulturen.",
+      "entwicklungsrolle": "Qualitäts-Navigator",
+      "rolleDative": "Qualitäts-Navigator",
+      "impactRationale": "90 %: dämpfend. Reine Sachkritik, wertvolle Daten, emotional gut zu handhaben."
+    },
+    "D": {
+      "name": "Kultur-Bewahrer",
+      "nameDative": "Kultur-Bewahrer",
+      "ebene": "Werte",
+      "muster": "Kultureller Widerstand",
+      "beschreibung": "Angst vor Verlust von Werten und Identität.",
+      "folgen": "Verweis auf „die gute alte Zeit“, Sorge um Teamgefüge.",
+      "entwicklungsrolle": "Werte-Botschafter",
+      "rolleDative": "Werte-Botschafter",
+      "impactRationale": "100 %: neutral. Wichtig auf der Werteebene; gutes Sense-Making stabilisiert es."
+    },
+    "E": {
+      "name": "Status-Ängstlicher",
+      "nameDative": "Status-Ängstlichen",
+      "ebene": "Macht",
+      "muster": "Emotionaler Widerstand",
+      "beschreibung": "Angst vor Macht-, Einfluss- oder Sicherheitsverlust.",
+      "folgen": "Schweigen, Rückzug, informeller Flurfunk.",
+      "entwicklungsrolle": "Beziehungs-Gestalter",
+      "rolleDative": "Beziehungs-Gestalter",
+      "impactRationale": "120 %: sehr hohe Wirkung. Löst informelle Machtkämpfe aus, die ganze Teams blockieren."
+    },
+    "F": {
+      "name": "Überlasteter",
+      "nameDative": "Überlasteten",
+      "ebene": "Kapazität",
+      "muster": "Ressourcenwiderstand",
+      "beschreibung": "Will die Strategie, hat aber keine Kapazität.",
+      "folgen": "Hoher Krankenstand, Burnout-Anzeichen, „Das schaffen wir nie“.",
+      "entwicklungsrolle": "Resilienz-Champion",
+      "rolleDative": "Resilienz-Champion",
+      "impactRationale": "85 %: geringere Wirkung. Ein reines Ressourcenproblem; ein Projektstopp oder mehr Budget lösen es schnell."
+    }
+  },
+  "ampel": {
+    "ROT": {
+      "label": "ROT",
+      "phase": "Akute Eruption",
+      "meaning": "akute Eruptionsgefahr"
+    },
+    "GELB": {
+      "label": "GELB",
+      "phase": "Brodelnde Phase",
+      "meaning": "brodelnde Phase"
+    },
+    "GRÜN": {
+      "label": "GRÜN",
+      "phase": "Inaktiver Vulkan",
+      "meaning": "stabile Phase"
+    }
+  },
+  "mapping": {
+    "A+B": {
+      "bedrohung": "Innere Kündigung: Verlust von Kreativität, mechanisches Abarbeiten",
+      "intervention": "Zukunfts-Tandem + Kompetenz-Pfad",
+      "ziel": "Kompetenzaufbau & Selbstwirksamkeit: Wiederbelebung der Innovationskraft",
+      "kpis": "Lernfortschritt ↑, Innovationsrate ↑",
+      "verantwortung": "HR + Teamleitung",
+      "zeitraum": "4–8 Monate"
+    },
+    "A+C": {
+      "bedrohung": "Schleichender Stillstand: Strategie wird logisch zerlegt, Belegschaft wird mitgerissen",
+      "intervention": "Quality-Gate-Gremium",
+      "ziel": "Strategische Präzision: Nutzung der Expertise zur Verbesserung statt Blockade",
+      "kpis": "Fehlerquote ↓, Strategie-Commitment ↑",
+      "verantwortung": "Fachbereichsleitung + PMO",
+      "zeitraum": "3–6 Monate"
+    },
+    "A+D": {
+      "bedrohung": "Kulturelle Rebellion: Blockade des Neuen aus moralischem Pflichtgefühl",
+      "intervention": "Culture-Heritage-Lab",
+      "ziel": "Kulturelle Identität sichern: Werte in die neue Welt übersetzen",
+      "kpis": "Kulturindex ↑, Konflikte ↓",
+      "verantwortung": "Geschäftsführung + Kulturteam",
+      "zeitraum": "2–4 Monate"
+    },
+    "A+E": {
+      "bedrohung": "Zerstörerische Explosion: Hochintelligente Sabotage, offene Machtkämpfe, Projektabbruch",
+      "intervention": "Rollen-Klärungs-Workshop + Executive Mediation",
+      "ziel": "Machtklarheit & Stabilität: Auflösung verdeckter Machtkämpfe, Wiederherstellung der Führungsfähigkeit",
+      "kpis": "Eskalationen ↓, Entscheidungszeit < 48h",
+      "verantwortung": "Geschäftsführung + HR + OE",
+      "zeitraum": "1–3 Monate"
+    },
+    "A+F": {
+      "bedrohung": "Systemischer Kollaps: Ausfall von Schlüsselpersonen (Burnout, Kündigung)",
+      "intervention": "Stop-Doing-Session + Ressourcen-Rebalancing",
+      "ziel": "Resilienz & Kapazitätsaufbau: Entlastung als Voraussetzung für Veränderungsfähigkeit",
+      "kpis": "Krankenstand ↓, Fokuszeiten ↑",
+      "verantwortung": "HR + Teamleitung",
+      "zeitraum": "1–2 Monate"
+    },
+    "B+C": {
+      "bedrohung": "Produktive Spannung: Kreativität trifft Logik; keine Eskalation",
+      "intervention": "Innovation-Sprint; Struktur-Co-Creation",
+      "ziel": "Synergie von Kreativität & Logik",
+      "kpis": "Innovationsrate ↑, Entscheidungsqualität ↑",
+      "verantwortung": "Teamleitung + PMO",
+      "zeitraum": "2–4 Monate"
+    },
+    "B+D": {
+      "bedrohung": "Zähflüssiger Lavafluss: Sarkasmus, Zynismus, Dienst nach Vorschrift",
+      "intervention": "Insel-Design-Workshop",
+      "ziel": "Stabilität & psychologische Sicherheit: Routinen definieren, Druck reduzieren",
+      "kpis": "Zufriedenheit ↑, Fluktuation ↓",
+      "verantwortung": "Teamleitung + HR",
+      "zeitraum": "2–6 Monate"
+    },
+    "B+E": {
+      "bedrohung": "Showcase-Spannung: Kreativität wird durch Statusdruck verzerrt; Frust & Rückzug",
+      "intervention": "Creative-Impact-Alignment; Rollenklärung; Schutzräume für Kreativität",
+      "ziel": "Balance zwischen Kreativität & Anerkennung; echte Wirksamkeit",
+      "kpis": "Anerkennungsklarheit ↑, Frustration ↓",
+      "verantwortung": "Führungskraft + OE",
+      "zeitraum": "2–4 Monate"
+    },
+    "B+F": {
+      "bedrohung": "Kreativitäts-Erosion: Erschöpfung bremst Ideen; Frust & Rückzug",
+      "intervention": "Ressourcen-Rebalancing; Stop-Doing; geschützte Kreativphasen",
+      "ziel": "Nachhaltige Kreativität & stabile Kapazitäten",
+      "kpis": "Erschöpfung ↓, Ideenrate ↑",
+      "verantwortung": "HR + OE",
+      "zeitraum": "2–5 Monate"
+    },
+    "C+D": {
+      "bedrohung": "Verzögerungen durch Konflikt zwischen Logik und Kultur; unterschwellige Spannungen, Misstrauen, Abwertung",
+      "intervention": "Sense-Making & Entscheidungs-Alignment; Rollenklärung; gemeinsame Entscheidungsprinzipien; Teamnormen-Workshop",
+      "ziel": "Integration von Logik & Kultur; respektvolle Entscheidungsprozesse; klare Prinzipien; kohärente Teamidentität",
+      "kpis": "Entscheidungsqualität ↑, Spannungen ↓",
+      "verantwortung": "Führungsteam + PMO",
+      "zeitraum": "3–6 Monate"
+    },
+    "C+E": {
+      "bedrohung": "Lähmender Prozessstau: Politische Scheindebatten blockieren Entscheidungen",
+      "intervention": "Moderierte Entscheidungs-Foren",
+      "ziel": "Entscheidungsfähigkeit stärken: Trennung von Logik & Politik",
+      "kpis": "Entscheidungsdauer ↓, Meetingzeit ↓",
+      "verantwortung": "Führungsteam + PMO",
+      "zeitraum": "1–4 Monate"
+    },
+    "C+F": {
+      "bedrohung": "Verzögerungen: Deadlines reißen, aber keine Sabotage",
+      "intervention": "Kapazitäts-Check + Priorisierungs-Sprint",
+      "ziel": "Realistische Planung: Zeitpuffer & Ressourcen für nachhaltige Umsetzung",
+      "kpis": "Termintreue ↑, Überstunden ↓",
+      "verantwortung": "Teamleitung + PMO",
+      "zeitraum": "1–3 Monate"
+    },
+    "D+E": {
+      "bedrohung": "Status kollidiert mit Kulturwerten: verdeckte Loyalitätskonflikte, Missverständnisse, sinkende Kohäsion",
+      "intervention": "Werte-Alignment, Rollenklärung, Teamnormen-Workshop, Feedback-Rituale, moderierter Dialog",
+      "ziel": "Balance zwischen Anerkennung & Kultur; psychologische Sicherheit; kohärentes Team",
+      "kpis": "Missverständnisse ↓, Teamkohäsion ↑",
+      "verantwortung": "Führungskraft + Kulturteam",
+      "zeitraum": "2–5 Monate"
+    },
+    "D+F": {
+      "bedrohung": "Loyalitäts-Überlastung: Pflichtgefühl kollidiert mit Erschöpfung; Schuld & Überforderung",
+      "intervention": "Team-Care; Rollenklärung; gesunde Teamnormen",
+      "ziel": "Psychologische Sicherheit & Belastbarkeit",
+      "kpis": "Belastbarkeit ↑, Loyalitätskonflikte ↓",
+      "verantwortung": "Führungskraft + HR",
+      "zeitraum": "3–6 Monate"
+    },
+    "E+F": {
+      "bedrohung": "Burnout-Eskalation: Leistungsdruck trifft Überlastung; Zusammenbruch, Rückzug, Fehler, Konflikte",
+      "intervention": "Kapazitäts-Reset; Ressourcen-Rebalancing; Stop-Doing; Erwartungs-Alignment; psychologische Sicherheit",
+      "ziel": "Nachhaltige Leistungsfähigkeit; klare Prioritäten; Balance zwischen Anspruch & Kapazität; stabile Belastbarkeit",
+      "kpis": "Belastbarkeit ↑, Prioritätenklarheit ↑, Fehlerquote ↓",
+      "verantwortung": "Führungskraft + HR + OE",
+      "zeitraum": "3–6 Monate"
+    }
+  },
+  "muster": {
+    "A>E": {
+      "name": "Der Bedeutsamkeits-Ängstliche",
+      "story": "Nach der Klärung entwickelt der Teilnehmer die Stärke eines Mentors, der Orientierung gibt, und gleichzeitig die Fähigkeit eines Beziehungs-Gestalters, der Einfluss durch Kooperation statt Status gewinnt."
+    },
+    "E>A": {
+      "name": "Der Status-Verunsicherte Experte",
+      "story": "Der Teilnehmer lernt, Beziehungen statt Macht zu nutzen und gewinnt Stabilität. Gleichzeitig entfaltet er die Qualitäten eines Mentors, der dem Team Sicherheit und Richtung gibt."
+    },
+    "A>F": {
+      "name": "Der Überlastete Identitäts-Träger",
+      "story": "Der Teilnehmer wächst in die Rolle eines Mentors hinein, der Verantwortung teilt, und entwickelt zugleich die Resilienz eines Champions, der gesunde Leistung ermöglicht."
+    },
+    "F>A": {
+      "name": "Der Überlastete Identitäts-Träger",
+      "story": "Der Teilnehmer stärkt seine Resilienz und lernt, Prioritäten klar zu setzen. Gleichzeitig entwickelt er die Qualitäten eines Mentors, der das Team stabilisiert."
+    },
+    "A>D": {
+      "name": "Der Werte-Blockierende Experte",
+      "story": "Der Teilnehmer verbindet die Stärke eines Mentors mit der Rolle eines Werte-Botschafters. Er übersetzt Kultur in die neue Welt und gibt dem Team Orientierung."
+    },
+    "D>A": {
+      "name": "Der Pflicht-Getriebene Bewahrer",
+      "story": "Der Teilnehmer entwickelt sich zu einem Werte-Botschafter, der Sinn stiftet, und gleichzeitig zu einem Mentor, der Veränderung stabil begleitet."
+    },
+    "E>F": {
+      "name": "Der Druck-Überlastete Performer",
+      "story": "Der Teilnehmer gewinnt Klarheit in Beziehungen und stärkt zugleich seine Resilienz. Er wird zu einer stabilen, kooperativen Kraft im Team."
+    },
+    "F>E": {
+      "name": "Der Überlastete Status-Sucher",
+      "story": "Der Teilnehmer baut Belastung ab und entwickelt Resilienz. Gleichzeitig stärkt er seine Fähigkeit, Beziehungen konstruktiv zu gestalten."
+    },
+    "B>D": {
+      "name": "Der Pflicht-Routine-Bewahrer",
+      "story": "Der Teilnehmer entwickelt die Fähigkeit, stabile Strukturen zu schaffen, und gleichzeitig Werte zu vermitteln. Er wird zu einer verlässlichen, kulturell verbundenen Kraft im Team."
+    },
+    "D>B": {
+      "name": "Der Werte-Routine-Träger",
+      "story": "Der Teilnehmer verbindet Wertebewusstsein mit struktureller Klarheit. Er schafft sowohl Sinn als auch Ordnung und stärkt damit die Teamkohäsion."
+    },
+    "A>C": {
+      "name": "Der Logik-Zerlegende Experte",
+      "story": "Der Teilnehmer nutzt seine Erfahrung als Mentor und verbindet sie mit der analytischen Stärke eines Qualitäts-Navigators. Kritik wird zu Qualität, Erfahrung zu Orientierung."
+    },
+    "C>A": {
+      "name": "Der Strategisch-Zerlegende Analytiker",
+      "story": "Der Teilnehmer entwickelt präzise Qualitätsorientierung und gleichzeitig die Fähigkeit, andere als Mentor zu unterstützen. Die Dynamik wird konstruktiv und strategisch klar."
+    },
+    "A>B": {
+      "name": "Der Routine-Erstarrte Experte",
+      "story": "Der Teilnehmer verbindet inspirierende Orientierung mit stabiler Struktur. Er schafft Sicherheit und Sinn und stärkt die Veränderungsfähigkeit des Teams."
+    },
+    "B>A": {
+      "name": "Der Stabilitäts-Fixierte Fachmann",
+      "story": "Der Teilnehmer entwickelt klare Routinen und gleichzeitig die Fähigkeit, als Mentor Richtung zu geben. Das Team gewinnt Fokus und Motivation."
+    },
+    "C>E": {
+      "name": "Der Politisch-Analytische Blockierer",
+      "story": "Der Teilnehmer trennt Logik von Politik und stärkt gleichzeitig seine Beziehungsfähigkeit. Entscheidungen werden klarer und vertrauensvoller."
+    },
+    "E>C": {
+      "name": "Der Status-Politiker",
+      "story": "Der Teilnehmer stärkt Beziehungen und entwickelt gleichzeitig analytische Klarheit. Die Zusammenarbeit wird effizient und kooperativ."
+    },
+    "E>D": {
+      "name": "Der Loyalitäts-Konfliktträger",
+      "story": "Der Teilnehmer gewinnt Anerkennung durch Beziehung statt Status und verbindet dies mit kultureller Klarheit. Das Team wird kohärenter."
+    },
+    "D>E": {
+      "name": "Der Anerkennungs-Suchende Bewahrer",
+      "story": "Der Teilnehmer bringt Werte ein und stärkt gleichzeitig Beziehungen. Die Dynamik wird vertrauensvoll und stabil."
+    },
+    "D>C": {
+      "name": "Der Kultur-Logik-Konfliktträger",
+      "story": "Der Teilnehmer verbindet kulturelle Stabilität mit logischer Präzision. Entscheidungen werden respektvoll und klar."
+    },
+    "C>D": {
+      "name": "Der Logik-Kultur-Analytiker",
+      "story": "Der Teilnehmer strukturiert komplexe Themen und vermittelt gleichzeitig Werte. Die Veränderung wird rational und kulturell getragen."
+    },
+    "B>E": {
+      "name": "Der Kreativitäts-Blockierte Anerkennungs-Sucher",
+      "story": "Der Teilnehmer schafft sichere Rahmen und stärkt gleichzeitig Beziehungen. Kreativität wird wieder möglich."
+    },
+    "E>B": {
+      "name": "Der Anerkennungs-Fixierte Routine-Träger",
+      "story": "Der Teilnehmer bringt Nähe und entwickelt gleichzeitig Struktur. Das Team gewinnt Balance und Fokus."
+    },
+    "B>F": {
+      "name": "Der Erschöpfte Routine-Träger",
+      "story": "Der Teilnehmer schafft Ordnung und entwickelt gleichzeitig Resilienz. Das Team wird stabil und belastbar."
+    },
+    "F>B": {
+      "name": "Der Überlastete Stabilitäts-Sucher",
+      "story": "Der Teilnehmer stärkt seine Belastbarkeit und entwickelt gleichzeitig Strukturkompetenz. Die Dynamik wird nachhaltig."
+    },
+    "D>F": {
+      "name": "Der Pflicht-Überlastete Bewahrer",
+      "story": "Der Teilnehmer verbindet Wertebewusstsein mit Resilienz. Das Team gewinnt emotionale und physische Stabilität."
+    },
+    "F>D": {
+      "name": "Der Überlastete Loyalitäts-Träger",
+      "story": "Der Teilnehmer entwickelt gesunde Leistungsfähigkeit und gleichzeitig kulturelle Klarheit. Die Veränderung wird tragfähig."
+    },
+    "B>C": {
+      "name": "Der Strukturierte Innovator",
+      "story": "Der Teilnehmer verbindet stabile Struktur mit präziser Qualität. Die produktive Spannung stärkt Innovation und Effizienz."
+    },
+    "C>B": {
+      "name": "Der Präzise Stabilitäts-Denker",
+      "story": "Der Teilnehmer entwickelt klare Prioritäten und gleichzeitig stabile Routinen. Das Team arbeitet fokussiert und sicher."
+    },
+    "F>C": {
+      "name": "Der Realistische Planer",
+      "story": "Der Teilnehmer stärkt seine Resilienz und entwickelt gleichzeitig analytische Klarheit. Deadlines werden realistisch und erreichbar."
+    },
+    "C>F": {
+      "name": "Der Analytische Belastbarkeits-Navigator",
+      "story": "Der Teilnehmer strukturiert Aufgaben und entwickelt gleichzeitig gesunde Leistungsfähigkeit. Die Zusammenarbeit wird nachhaltig und effizient."
+    }
+  }
+}

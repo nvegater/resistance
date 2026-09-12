@@ -15,6 +15,7 @@ async function main() {
   const { auth } = await import("../auth");
   const { EXAMPLE_RUN } = await import("../domain/example-run");
   const { SURVEY_TITLE } = await import("../domain/questionnaire");
+  const { t } = await import("../i18n");
   const { createSurveyToken } = await import("../token");
   const { answersToColumns } = await import("./answers");
   const {
@@ -29,7 +30,7 @@ async function main() {
   const adminPassword = required("ADMIN_PASSWORD");
   const orgEmail = required("DEMO_ORG_EMAIL");
   const orgPassword = required("DEMO_ORG_PASSWORD");
-  const orgName = "Muster GmbH";
+  const orgName = t.seed.demoOrganizationName;
 
   // The admin is recreated on every run, so the password always matches .env.local.
   await db.delete(user).where(eq(user.email, adminEmail));
@@ -41,7 +42,7 @@ async function main() {
       role: "admin",
     },
   });
-  console.log(`Admin angelegt: ${adminEmail}`);
+  console.log(`Admin created: ${adminEmail}`);
 
   // The demo organization is rebuilt from scratch on every run.
   const existingOrgUser = await db.select().from(user).where(eq(user.email, orgEmail));
@@ -86,10 +87,10 @@ async function main() {
     })),
   );
 
-  console.log(`Organisation angelegt: ${orgName} (${orgEmail})`);
-  console.log(`Befragung angelegt: ${demoSurvey.title}`);
-  console.log(`Öffentlicher Link: /s/${demoSurvey.token}`);
-  console.log(`${EXAMPLE_RUN.length} Antworten eingespielt.`);
+  console.log(`Organization created: ${orgName} (${orgEmail})`);
+  console.log(`Survey created: ${demoSurvey.title}`);
+  console.log(`Public link: /s/${demoSurvey.token}`);
+  console.log(`${EXAMPLE_RUN.length} responses loaded.`);
 
   // The reference organization holds the same 15 answers, but nothing may change it.
   // It has no login of its own; only the admin opens it, to compare the dashboard with
@@ -114,12 +115,12 @@ async function main() {
     })),
   );
 
-  console.log(`Referenz angelegt: ${REFERENCE_ORG_NAME} (/orgs/${REFERENCE_ORG_ID})`);
+  console.log(`Reference created: ${REFERENCE_ORG_NAME} (/orgs/${REFERENCE_ORG_ID})`);
 }
 
 function required(name: string): string {
   const value = process.env[name];
-  if (!value) throw new Error(`${name} fehlt in .env.local`);
+  if (!value) throw new Error(`${name} is missing from .env.local`);
   return value;
 }
 

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { t } from "@/lib/i18n";
 import { survey } from "@/lib/db/schema";
 import { isReferenceOrganization } from "@/lib/reference-org";
 import { requireOrgAccess } from "@/lib/session";
@@ -21,12 +22,12 @@ export async function createSurveyAction(input: {
   if (isReferenceOrganization(input.organizationId)) {
     return {
       ok: false,
-      error: "Die Referenz-Auswertung ist schreibgeschützt und nimmt keine neuen Befragungen auf.",
+      error: t.reference.readOnlySurvey,
     };
   }
 
   const title = input.title.trim();
-  if (title.length === 0) return { ok: false, error: "Bitte einen Titel eingeben." };
+  if (title.length === 0) return { ok: false, error: t.org.titleRequired };
 
   const [created] = await db
     .insert(survey)

@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SURVEY_TITLE } from "@/lib/domain/questionnaire";
+import { t } from "@/lib/i18n";
 import { createSurveyAction } from "@/app/orgs/[orgId]/actions";
 
 export function CreateSurveyDialog({ organizationId }: { organizationId: string }) {
@@ -56,7 +57,7 @@ export function CreateSurveyDialog({ organizationId }: { organizationId: string 
       <DialogTrigger asChild>
         <Button size="lg">
           <PlusIcon aria-hidden="true" />
-          Neue Befragung
+          {t.org.newSurvey}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
@@ -68,17 +69,14 @@ export function CreateSurveyDialog({ organizationId }: { organizationId: string 
           }}
         >
           <DialogHeader>
-            <DialogTitle>Neue Befragung</DialogTitle>
-            <DialogDescription>
-              Nach dem Speichern erhalten Sie den Link, den Sie an Ihre Mitarbeitenden
-              weitergeben.
-            </DialogDescription>
+            <DialogTitle>{t.org.newSurvey}</DialogTitle>
+            <DialogDescription>{t.org.newSurveyDescription}</DialogDescription>
           </DialogHeader>
 
           <div className="my-6 space-y-6">
             {serverError ? (
               <Alert variant="destructive">
-                <AlertTitle>Speichern fehlgeschlagen</AlertTitle>
+                <AlertTitle>{t.org.saveFailedTitle}</AlertTitle>
                 <AlertDescription>{serverError}</AlertDescription>
               </Alert>
             ) : null}
@@ -87,12 +85,12 @@ export function CreateSurveyDialog({ organizationId }: { organizationId: string 
               name="title"
               validators={{
                 onSubmit: ({ value }) =>
-                  value.trim().length === 0 ? "Bitte einen Titel eingeben." : undefined,
+                  value.trim().length === 0 ? t.org.titleRequired : undefined,
               }}
             >
               {(field) => (
                 <div className="space-y-2">
-                  <Label htmlFor={field.name}>Titel der Befragung</Label>
+                  <Label htmlFor={field.name}>{t.org.titleLabel}</Label>
                   <Input
                     id={field.name}
                     name={field.name}
@@ -120,7 +118,7 @@ export function CreateSurveyDialog({ organizationId }: { organizationId: string 
             <form.Field name="mode">
               {(field) => (
                 <fieldset className="space-y-3">
-                  <legend className="text-sm font-medium">Art der Befragung</legend>
+                  <legend className="text-sm font-medium">{t.org.modeLegend}</legend>
                   <RadioGroup
                     value={field.state.value}
                     onValueChange={(value) =>
@@ -132,10 +130,10 @@ export function CreateSurveyDialog({ organizationId }: { organizationId: string 
                       <RadioGroupItem value="anonymous" id="mode-anonymous" className="mt-1" />
                       <div className="space-y-1">
                         <Label htmlFor="mode-anonymous" className="text-base">
-                          Anonym
+                          {t.app.modeAnonymous}
                         </Label>
                         <p className="text-sm text-muted-foreground">
-                          Der Normalfall. Es werden keine Namen gespeichert.
+                          {t.org.modeAnonymousHint}
                         </p>
                       </div>
                     </div>
@@ -143,12 +141,9 @@ export function CreateSurveyDialog({ organizationId }: { organizationId: string 
                       <RadioGroupItem value="named" id="mode-named" className="mt-1" />
                       <div className="space-y-1">
                         <Label htmlFor="mode-named" className="text-base">
-                          Mit Namen
+                          {t.app.modeNamed}
                         </Label>
-                        <p className="text-sm text-muted-foreground">
-                          Für Teamleiter kleiner Organisationen, um persönliche Situationen
-                          mit Mitarbeitenden besprechen und deeskalieren zu können.
-                        </p>
+                        <p className="text-sm text-muted-foreground">{t.org.modeNamedHint}</p>
                       </div>
                     </div>
                   </RadioGroup>
@@ -160,13 +155,13 @@ export function CreateSurveyDialog({ organizationId }: { organizationId: string 
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline" size="lg">
-                Abbrechen
+                {t.app.cancel}
               </Button>
             </DialogClose>
             <form.Subscribe selector={(state) => state.isSubmitting}>
               {(isSubmitting) => (
                 <Button type="submit" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? "Wird angelegt …" : "Befragung anlegen"}
+                  {isSubmitting ? t.org.creating : t.org.createSubmit}
                 </Button>
               )}
             </form.Subscribe>

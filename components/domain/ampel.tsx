@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { AMPEL_ICON, AMPEL_PHASE, type Ampel } from "@/lib/domain/mapping";
+import { AMPEL_ICON, AMPEL_LABEL, AMPEL_PHASE, type Ampel } from "@/lib/domain/mapping";
 
 /**
  * The colours for one Ampel value. Colour never carries the meaning on its own:
@@ -77,7 +77,7 @@ export function AmpelBadge({
       )}
     >
       <span aria-hidden="true">{AMPEL_ICON[ampel]}</span>
-      <span>{ampel}</span>
+      <span>{AMPEL_LABEL[ampel]}</span>
     </span>
   );
 

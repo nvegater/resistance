@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
+import { t } from "@/lib/i18n";
 
 export function LoginForm() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export function LoginForm() {
         password: value.password,
       });
       if (error) {
-        setServerError("E-Mail oder Passwort ist falsch. Bitte erneut versuchen.");
+        setServerError(t.login.wrongCredentials);
         return;
       }
       router.push("/");
@@ -41,7 +42,7 @@ export function LoginForm() {
     >
       {serverError ? (
         <Alert variant="destructive">
-          <AlertTitle>Anmeldung fehlgeschlagen</AlertTitle>
+          <AlertTitle>{t.login.failedTitle}</AlertTitle>
           <AlertDescription>{serverError}</AlertDescription>
         </Alert>
       ) : null}
@@ -50,12 +51,12 @@ export function LoginForm() {
         name="email"
         validators={{
           onSubmit: ({ value }) =>
-            value.trim().length === 0 ? "Bitte E-Mail-Adresse eingeben." : undefined,
+            value.trim().length === 0 ? t.login.emailRequired : undefined,
         }}
       >
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor={field.name}>E-Mail-Adresse</Label>
+            <Label htmlFor={field.name}>{t.login.emailLabel}</Label>
             <Input
               id={field.name}
               name={field.name}
@@ -83,12 +84,12 @@ export function LoginForm() {
         name="password"
         validators={{
           onSubmit: ({ value }) =>
-            value.length === 0 ? "Bitte Passwort eingeben." : undefined,
+            value.length === 0 ? t.login.passwordRequired : undefined,
         }}
       >
         {(field) => (
           <div className="space-y-2">
-            <Label htmlFor={field.name}>Passwort</Label>
+            <Label htmlFor={field.name}>{t.login.passwordLabel}</Label>
             <Input
               id={field.name}
               name={field.name}
@@ -115,7 +116,7 @@ export function LoginForm() {
       <form.Subscribe selector={(state) => state.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" size="lg" className="h-11 w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Wird angemeldet …" : "Anmelden"}
+            {isSubmitting ? t.login.submitting : t.login.submit}
           </Button>
         )}
       </form.Subscribe>

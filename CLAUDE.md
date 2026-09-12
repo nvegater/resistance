@@ -105,9 +105,23 @@ Environment variables: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
 
 Conventions:
 
-- UI language is **German**. Code, comments, commit messages and this file are English.
+- The UI runs in one language, currently **English** (`LANGUAGE` in `lib/i18n/index.ts`).
+  German is the original wording and stays complete in `de.json`. Code, comments, commit
+  messages and this file are English.
+- Every text the app shows lives in `lib/i18n/de.json` and `lib/i18n/en.json`. Both files
+  have exactly the same keys; `lib/i18n/index.ts` picks one of them through the single
+  constant `LANGUAGE`, and that is the only place a language is chosen. This is **not** a
+  multilingual feature: the app runs in one language at a time, decided at build time.
+  There is no locale in the URL, no switch in the interface and no per-user setting. The
+  two files exist so that the client can be shown an English demo, and so that a real
+  translation layer can be added later without touching every component again. German is
+  the original; the English came from the client's own `Diagnose Tool English.xlsx`
+  (section 14). Nothing in `app/` or `components/` holds a user-visible string any more.
 - All domain constants (profiles, questionnaire, impact factors, Ampel mapping, Roadmap
-  texts) live in TypeScript under `lib/domain/`. They are not stored in the database.
+  texts) live in TypeScript under `lib/domain/`. They are not stored in the database. The
+  modules there keep the parts that never change with the language — the codes, the icons,
+  the impact factors, the Ampel value of each pair, the order the pairs are listed in —
+  and read all their wording from `lib/i18n`.
 - Scoring is one pure module, `lib/domain/scoring.ts`, with no I/O. Everything that shows
   a result calls it.
 - Prefer Server Components. Client Components only where needed: the survey form, charts,
@@ -143,6 +157,7 @@ app/
   api/orgs/[orgId]/surveys/[surveyId]/results/route.ts   JSON for polling
 lib/
   domain/profiles.ts  questionnaire.ts  mapping.ts  scoring.ts  scoring.test.ts
+  i18n/index.ts  de.json  en.json       every text of the app, one file per language
   db/schema.ts  index.ts  seed.ts
   auth.ts  auth-client.ts
 components/                     shadcn/ui plus app components
@@ -428,8 +443,9 @@ D 13.0, E 13.2, F 9.4. Participant 8 only reproduces with F = 0.85 (10 × 0.85 =
 beats B = 8.0); with F = 0.8 it would tie. That is why the sheet's 0.85 is canonical.
 
 The seed script creates: the admin user from `ADMIN_EMAIL`/`ADMIN_PASSWORD`; a demo
-organization "Muster GmbH" with its login from `DEMO_ORG_EMAIL`/`DEMO_ORG_PASSWORD`; one
-anonymous survey "Interne Resonanzbefragung" holding the 15 responses with their original
+organization named by `seed.demoOrganizationName` in `lib/i18n` („Muster GmbH" in German,
+"Example Ltd" in English) with its login from `DEMO_ORG_EMAIL`/`DEMO_ORG_PASSWORD`; one
+anonymous survey titled `questionnaire.title` holding the 15 responses with their original
 timestamps; and the reference organization below. The client can then demo the dashboard
 without collecting answers first.
 
@@ -626,6 +642,8 @@ runtime; copy what the app needs (the seed rows) into the project.
 | `Widerstand Diagnose Tool Protokoll 02-09-26.docx` | Client's protocol, first round (Stand 04.09.2026): requests 1–5, profile table, impact factors, older question variant, sheet screenshots, volcano images, Ampel logic, Roadmap tables. |
 | `Widerstand Diagnose Tool Protokoll 09-09-26.docx` | Client's protocol, second round (Stand 08.09.2026): repeats requests 1–5 and adds items 6–13 after the first demo, with screenshots of the pages he is commenting on. |
 | `Widerstand Diagnose Tool Protokoll 10-09-2026.docx` | Client's protocol, third round (Stand 10.09.2026): items 14–18 after the second demo. Frühwarnsystem heading above the Ampel cards, volcano in one colour, badges of equal size, weighting charts as collapsed detail, „Mischprofil-Matrix", „Change-Risiko-Roadmap" with two chapters side by side, and his question whether the sheets have to change for it (they do not). |
+| `Widerstand Diagnose Tool Protokoll 09-2026.docx` | Client's protocol, fourth round (2026-09-12). It repeats items 1–18 and adds 19–22: complete the Intervention on every Mischprofil card, replace the wrong volcano text with his own wording, move tables down as collapsed detail, and let the texts use the full page width. None of the four is built yet; see section 15. |
+| `Diagnose Tool English.xlsx` | The client's own German/English translation sheet (2026-09-12), one sheet per area: Fragen Katalog, Profile-Auswertung-Gewichtung, Frühwarnsystem, Mapping (all 30 ordered pairs, every column), Feedback, Vorstellungstext, Demo Texte. It is the source of `lib/i18n/en.json`. |
 | `auswertung example/*.csv` | The 15-participant run, one CSV per sheet (section 10). |
 | `updated auswertung example/*.csv` | The same 15 responses exported again in September 2026. Responses, block sums, weighted values and Frühwarnsystem are byte-identical to the older export; only Mapping and Roadmap changed, and they carry the two new columns of section 8. |
 | `thesis/Vom Widerstand zur Strategie ... es-ES_1.pdf` | The client's certification thesis in Spanish: theory, volcano model, six profiles, Ampel, transfer architecture. Background only. Its content is copyrighted by the client; the app may use the model because the client commissioned it. |
@@ -685,6 +703,20 @@ Decisions taken so the build can start. Each one is cheap to change later.
     the two weighting charts. We moved the two charts and their „Häufigkeit je Profil" table
     into one closed section at the end; the combinations table stayed up as the
     Mischprofil-Matrix, because item 17 renames it without asking to hide it. Confirm.
+17. **Protocol items 19–22 (Stand 12.09.2026)**: received, not built yet. Item 19: fill in
+    the Intervention (workshop recommendations) on every Mischprofil card of the
+    Change-Risiko-Roadmap. Item 20: the text beside the volcano is wrong; he wrote the
+    replacement himself and it stands in the Demo Texte sheet of `Diagnose Tool
+    English.xlsx`, in German and English. Item 21: move the remaining tables down as
+    collapsed detail. Item 22: the texts should use the full width of the page.
+18. **The profile „Muster" column, answered by the English sheet**: his
+    Profile-Auswertung-Gewichtung sheet gives his own wording for the Muster of every
+    profile — A „Angst vor Bedeutsamkeitsverlust", D „Werte- & Identitäts-Konflikt",
+    E „Macht- & Einfluss-Verlust", F „Ressourcen- & Energie-Mangel" — and it differs from
+    the provisional split of open question 11. He also writes F as „Der Überlastete"
+    rather than „Überlasteter". The app still shows our provisional wording, so the German
+    did not change when the translation files were added. Decide whether to adopt his
+    wording; it is a one-line change per profile in `lib/i18n/de.json` and `en.json`.
 
 ## 16. Working rules for Claude in this repo
 
@@ -693,7 +725,10 @@ Decisions taken so the build can start. Each one is cheap to change later.
 - Keep it lean. If a change is not needed for the demo story in section 2, do not make it.
 - The scoring module stays pure and the golden test in section 10 must pass after every
   change to `lib/domain/`.
-- German UI strings, English code and comments. Comments are plain sentences.
+- English code and comments, in plain sentences.
+- No user-visible string goes into a component. Add it to `lib/i18n/de.json` and
+  `lib/i18n/en.json` under the same key and read it through `t`. Both files must keep
+  exactly the same keys; a missing English key fails `pnpm typecheck`.
 - Do not touch `source material/`.
 - Commands: `pnpm dev`, `pnpm build`, `pnpm start`, `pnpm typecheck`, `pnpm lint`,
   `pnpm test`, `pnpm db:push`, `pnpm db:seed`.

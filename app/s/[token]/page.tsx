@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SurveyFlow } from "@/components/survey/survey-flow";
+import { t } from "@/lib/i18n";
 import { getSurveyByToken } from "@/lib/queries";
 import { isReferenceOrganization } from "@/lib/reference-org";
 
@@ -11,7 +12,7 @@ export async function generateMetadata({
 }: PageProps<"/s/[token]">): Promise<Metadata> {
   const { token } = await params;
   const survey = await getSurveyByToken(token);
-  return { title: survey ? survey.title : "Befragung" };
+  return { title: survey ? survey.title : t.survey.fallbackTitle };
 }
 
 export default async function PublicSurveyPage({ params }: PageProps<"/s/[token]">) {
@@ -25,10 +26,7 @@ export default async function PublicSurveyPage({ params }: PageProps<"/s/[token]
     return (
       <main id="inhalt" className="mx-auto w-full max-w-2xl flex-1 px-4 py-12">
         <h1 className="text-2xl font-semibold tracking-tight">{survey.title}</h1>
-        <p className="mt-3 text-muted-foreground">
-          Diese Befragung ist eine schreibgeschützte Referenz. Sie enthält die 15
-          Antworten aus der Beispielauswertung und nimmt keine weiteren Antworten an.
-        </p>
+        <p className="mt-3 text-muted-foreground">{t.reference.publicNotice}</p>
       </main>
     );
   }

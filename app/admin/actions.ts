@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { getBaseUrl } from "@/lib/base-url";
 import { db } from "@/lib/db";
+import { t } from "@/lib/i18n";
 import { organization, user } from "@/lib/db/schema";
 import { isReferenceOrganization } from "@/lib/reference-org";
 import { requireAdmin } from "@/lib/session";
@@ -31,17 +32,17 @@ export async function createOrganizationAction(input: {
   const email = input.email.trim().toLowerCase();
   const password = input.password;
 
-  if (name.length === 0) return { ok: false, error: "Bitte einen Namen eingeben." };
+  if (name.length === 0) return { ok: false, error: t.admin.nameRequired };
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-    return { ok: false, error: "Bitte eine gültige E-Mail-Adresse eingeben." };
+    return { ok: false, error: t.admin.emailInvalid };
   }
   if (password.length < 8) {
-    return { ok: false, error: "Das Passwort muss mindestens 8 Zeichen haben." };
+    return { ok: false, error: t.admin.passwordTooShort };
   }
 
   const existing = await db.select().from(user).where(eq(user.email, email));
   if (existing.length > 0) {
-    return { ok: false, error: "Diese E-Mail-Adresse wird bereits verwendet." };
+    return { ok: false, error: t.admin.emailTaken };
   }
 
   const [created] = await db.insert(organization).values({ name }).returning();

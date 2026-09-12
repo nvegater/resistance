@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { SCALE, SCALE_MAX_LABEL, SCALE_MIN_LABEL, type ItemCode } from "@/lib/domain/questionnaire";
+import { fill, t } from "@/lib/i18n";
 
 /**
  * One statement with the five-point scale. A real radio group, so arrow keys work
@@ -59,7 +60,12 @@ export function ScaleQuestion({
                 )}
               >
                 <span aria-hidden="true">{option.value}</span>
-                <span className="sr-only">{`${option.value} – ${option.label}`}</span>
+                <span className="sr-only">
+                  {fill(t.survey.answerOption, {
+                    value: option.value,
+                    label: option.label,
+                  })}
+                </span>
               </label>
             </div>
           );

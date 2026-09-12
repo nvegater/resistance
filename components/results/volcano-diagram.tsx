@@ -1,7 +1,8 @@
 import { useId } from "react";
 
-import { AMPEL_PHASE, type Ampel } from "@/lib/domain/mapping";
+import { AMPEL_LABEL, AMPEL_PHASE, type Ampel } from "@/lib/domain/mapping";
 import type { AmpelCount } from "@/lib/domain/scoring";
+import { fill, t } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 /**
@@ -68,9 +69,9 @@ const PHASE_FILL: Record<Ampel, string> = {
 const MAGMA_TOP: Record<Ampel, number> = { ROT: 108, GELB: 150, "GRÜN": 186 };
 
 const CRATER_TEXT: Record<Ampel, string> = {
-  ROT: "eine Eruption mit Lavafontäne, ausgeworfenem Gestein und einer Aschewolke",
-  GELB: "eine kleine Rauchwolke über dem Krater",
-  "GRÜN": "einen ruhigen Krater ohne Rauch",
+  ROT: t.volcano.crater.ROT,
+  GELB: t.volcano.crater.GELB,
+  "GRÜN": t.volcano.crater["GRÜN"],
 };
 
 export function VolcanoDiagram({
@@ -98,8 +99,13 @@ export function VolcanoDiagram({
     : 0;
 
   const chamberText = phase
-    ? `${phase}, ${AMPEL_PHASE[phase].phase}, ${phaseCount} von ${total} Teilnehmenden`
-    : "noch leer, weil noch keine Antworten vorliegen";
+    ? fill(t.volcano.chamber, {
+        ampel: AMPEL_LABEL[phase],
+        phase: AMPEL_PHASE[phase].phase,
+        count: phaseCount,
+        total,
+      })
+    : t.volcano.chamberEmpty;
 
   return (
     <svg
@@ -110,13 +116,17 @@ export function VolcanoDiagram({
     >
       <title id={titleId}>
         {phase
-          ? `Vulkanmodell: ${phase} · ${AMPEL_PHASE[phase].phase}`
-          : "Vulkanmodell: noch keine Antworten"}
+          ? fill(t.volcano.srTitle, {
+              ampel: AMPEL_LABEL[phase],
+              phase: AMPEL_PHASE[phase].phase,
+            })
+          : t.volcano.srTitleEmpty}
       </title>
       <desc id={descId}>
-        {`Querschnitt durch einen Vulkan. Die Magmakammer unter der Erdoberfläche trägt die Farbe der Gesamtphase: ${chamberText}. Am Krater zeigt die Darstellung ${
-          phase ? CRATER_TEXT[phase] : "einen ruhigen Krater ohne Rauch"
-        }. Alle Zahlen stehen auch in der Tabelle daneben.`}
+        {fill(t.volcano.srDescription, {
+          chamber: chamberText,
+          crater: phase ? CRATER_TEXT[phase] : CRATER_TEXT["GRÜN"],
+        })}
       </desc>
 
       <defs>
@@ -225,7 +235,7 @@ export function VolcanoDiagram({
           strokeWidth={1}
         />
         <text x={10} y={124} className="fill-muted-foreground" fontSize={15} fontWeight={500}>
-          Zone 2
+          {t.volcano.zone2Short}
         </text>
         <line
           x1={58}
@@ -236,7 +246,7 @@ export function VolcanoDiagram({
           strokeWidth={1}
         />
         <text x={10} y={186} className="fill-muted-foreground" fontSize={15} fontWeight={500}>
-          Zone 1
+          {t.volcano.zone1Short}
         </text>
 
         {phase ? (
@@ -257,7 +267,7 @@ export function VolcanoDiagram({
               fontSize={16}
               fontWeight={600}
             >
-              {phaseCount} · {phase}
+              {phaseCount} · {AMPEL_LABEL[phase]}
             </text>
           </g>
         ) : null}

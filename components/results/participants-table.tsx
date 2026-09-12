@@ -22,6 +22,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AMPEL_SEVERITY } from "@/lib/domain/mapping";
 import { PROFILES, PROFILE_CODES } from "@/lib/domain/profiles";
 import type { ParticipantResult, SurveyResults } from "@/lib/domain/scoring";
+import { fill, LOCALE, t } from "@/lib/i18n";
 
 const features = tableFeatures({
   rowSortingFeature,
@@ -37,7 +38,7 @@ const features = tableFeatures({
 
 const helper = createColumnHelper<typeof features, ParticipantResult>();
 
-const dateTimeFormat = new Intl.DateTimeFormat("de-DE", {
+const dateTimeFormat = new Intl.DateTimeFormat(LOCALE, {
   dateStyle: "short",
   timeStyle: "short",
 });
@@ -45,7 +46,7 @@ const dateTimeFormat = new Intl.DateTimeFormat("de-DE", {
 const columns = helper.columns([
   helper.display({
     id: "aufklappen",
-    header: () => <span className="sr-only">Details</span>,
+    header: () => <span className="sr-only">{t.results.participants.colDetails}</span>,
     cell: ({ row }) => (
       <Button
         type="button"
@@ -62,24 +63,27 @@ const columns = helper.columns([
           <ChevronRightIcon aria-hidden="true" />
         )}
         <span className="sr-only">
-          {row.getIsExpanded() ? "Maßnahmen ausblenden" : "Maßnahmen anzeigen"}
+          {row.getIsExpanded()
+            ? t.results.participants.hideMeasures
+            : t.results.participants.showMeasures}
         </span>
       </Button>
     ),
   }),
   helper.accessor("index", {
     id: "teilnehmer",
-    header: "Teilnehmer",
+    header: t.results.participants.colParticipant,
     sortFn: "basic",
     cell: ({ row }) => (
       <span className="font-medium">
-        {row.original.name ?? `Teilnehmer ${row.original.index}`}
+        {row.original.name ??
+          fill(t.results.participants.participantLabel, { index: row.original.index })}
       </span>
     ),
   }),
   helper.accessor((row) => new Date(row.submittedAt).getTime(), {
     id: "zeitpunkt",
-    header: "Zeitpunkt",
+    header: t.results.participants.colTime,
     sortFn: "basic",
     cell: ({ row }) => (
       <span className="whitespace-nowrap text-muted-foreground tabular-nums">
@@ -93,7 +97,9 @@ const columns = helper.columns([
       header: () => (
         <>
           <span aria-hidden="true">{code}</span>
-          <span className="sr-only">{`Profil ${code}, ${PROFILES[code].name}`}</span>
+          <span className="sr-only">
+            {fill(t.results.participants.srProfile, { code, name: PROFILES[code].name })}
+          </span>
         </>
       ),
       sortFn: "basic",
@@ -102,12 +108,12 @@ const columns = helper.columns([
         return (
           <span className="block text-right tabular-nums">
             <span className="font-medium">
-              {score.weightedRounded.toLocaleString("de-DE", {
+              {score.weightedRounded.toLocaleString(LOCALE, {
                 minimumFractionDigits: 1,
               })}
             </span>
             <span className="block text-xs text-muted-foreground">
-              roh {score.blockSum}
+              {fill(t.results.participants.rawBlockSum, { value: score.blockSum })}
             </span>
           </span>
         );
@@ -116,19 +122,19 @@ const columns = helper.columns([
   ),
   helper.accessor("dominant", {
     id: "dominant",
-    header: "Dominant",
+    header: t.results.participants.colDominant,
     sortFn: "alphanumeric",
     cell: ({ row }) => <ProfileTag code={row.original.dominant} withName={false} />,
   }),
   helper.accessor("second", {
     id: "zweit",
-    header: "Zweit",
+    header: t.results.participants.colSecond,
     sortFn: "alphanumeric",
     cell: ({ row }) => <ProfileTag code={row.original.second} withName={false} />,
   }),
   helper.accessor((row) => AMPEL_SEVERITY[row.ampel], {
     id: "ampel",
-    header: "Ampel",
+    header: t.results.participants.colAmpel,
     sortFn: "basic",
     cell: ({ row }) => <AmpelBadge ampel={row.original.ampel} />,
   }),
@@ -162,12 +168,10 @@ export function ParticipantsTable({
     <section aria-labelledby="teilnehmer-titel" className="space-y-4">
       <div>
         <h2 id="teilnehmer-titel" className="text-xl font-semibold tracking-tight">
-          Teilnehmer
+          {t.results.participants.title}
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Die Einzelauswertung ist vor allem für Führungskräfte bei Befragungen mit Namen
-          gedacht. Sie zeigt die gewichteten Werte je Profil, darunter die rohe
-          Blocksumme; eine Zeile aufklappen zeigt die passende Maßnahme.
+          {t.results.participants.description}
         </p>
       </div>
 
@@ -179,18 +183,15 @@ export function ParticipantsTable({
             aria-hidden="true"
             className="size-4 transition-transform group-open:rotate-90"
           />
-          Einzelauswertung anzeigen ({data.length}{" "}
-          {data.length === 1 ? "Teilnehmende:r" : "Teilnehmende"})
+          {data.length === 1
+            ? t.results.participants.toggleOne
+            : fill(t.results.participants.toggleMany, { count: data.length })}
         </summary>
 
         <Card className="mt-4">
           <CardContent className="overflow-x-auto pt-6">
             <table className="w-full caption-bottom text-sm">
-              <caption className="sr-only">
-                Alle Teilnehmenden mit gewichteten Werten für die Profile A bis F, dem
-                dominanten und zweitdominanten Profil und der Gefahrenampel. Die Spalten
-                lassen sich sortieren.
-              </caption>
+              <caption className="sr-only">{t.results.participants.tableCaption}</caption>
               <thead>
                 {table.getHeaderGroups().map((group) => (
                   <tr key={group.id} className="border-b">
@@ -227,7 +228,7 @@ export function ParticipantsTable({
                               ) : (
                                 <ChevronsUpDownIcon aria-hidden="true" />
                               )}
-                              <span className="sr-only">sortieren</span>
+                              <span className="sr-only">{t.results.participants.sort}</span>
                             </Button>
                           ) : (
                             <table.FlexRender header={header} />
@@ -266,7 +267,7 @@ export function ParticipantsTable({
                 {data.length === 0 ? (
                   <tr>
                     <td colSpan={columns.length} className="px-2 py-6 text-muted-foreground">
-                      Noch keine Antworten.
+                      {t.app.noResponsesYet}
                     </td>
                   </tr>
                 ) : null}

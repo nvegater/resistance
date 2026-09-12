@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { lookupMuster } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
+import { t } from "@/lib/i18n";
 
 /**
  * Every ordered pair of dominant and second profile that occurs, with the
@@ -26,31 +27,26 @@ export function MischprofilMatrix({ results }: { results: SurveyResults }) {
     <section aria-labelledby="mischprofil-titel" className="space-y-4">
       <div>
         <h2 id="mischprofil-titel" className="text-xl font-semibold tracking-tight">
-          Mischprofil-Matrix
+          {t.results.matrix.title}
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Diese Matrix zeigt, wie aus dem dominanten und zweitdominanten Profil eines
-          Teilnehmers ein neues Mischprofil entsteht. Dieses Mischprofil bestimmt die
-          Bedrohung, Intervention, Entwicklungsrolle, Story und KPIs.
+          {t.results.matrix.description}
         </p>
       </div>
 
       <Card>
         <CardContent className="overflow-x-auto pt-6">
           <Table>
-            <TableCaption>
-              Alle vorkommenden Mischprofile, sortiert nach Ampel und Häufigkeit. Die
-              gefährlichsten stehen oben.
-            </TableCaption>
+            <TableCaption>{t.results.matrix.tableCaption}</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead scope="col" className="text-right">
-                  Teilnehmende
+                  {t.results.matrix.colParticipants}
                 </TableHead>
-                <TableHead scope="col">Dominantes Profil</TableHead>
-                <TableHead scope="col">Zweitdominantes Profil</TableHead>
-                <TableHead scope="col">Mischprofil</TableHead>
-                <TableHead scope="col">Ampel</TableHead>
+                <TableHead scope="col">{t.results.matrix.colDominant}</TableHead>
+                <TableHead scope="col">{t.results.matrix.colSecond}</TableHead>
+                <TableHead scope="col">{t.results.matrix.colMischprofil}</TableHead>
+                <TableHead scope="col">{t.results.matrix.colAmpel}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -77,7 +73,7 @@ export function MischprofilMatrix({ results }: { results: SurveyResults }) {
               {results.combinations.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-muted-foreground">
-                    Noch keine Antworten.
+                    {t.app.noResponsesYet}
                   </TableCell>
                 </TableRow>
               ) : null}

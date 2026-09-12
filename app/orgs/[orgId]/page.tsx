@@ -7,13 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getBaseUrl } from "@/lib/base-url";
+import { fill, LOCALE, t } from "@/lib/i18n";
 import { getOrganization, listSurveys } from "@/lib/queries";
 import { isReferenceOrganization, REFERENCE_BADGE } from "@/lib/reference-org";
 import { requireOrgAccess } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
-const dateFormat = new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" });
+const dateFormat = new Intl.DateTimeFormat(LOCALE, { dateStyle: "medium" });
 
 export default async function OrganizationPage({ params }: PageProps<"/orgs/[orgId]">) {
   const { orgId } = await params;
@@ -38,9 +39,7 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
               {isReference ? <Badge variant="outline">{REFERENCE_BADGE}</Badge> : null}
             </div>
             <p className="mt-1 max-w-prose text-muted-foreground">
-              {isReference
-                ? "Der Beispiellauf des Kunden mit 15 Antworten. Diese Organisation lässt sich nicht ändern: keine neuen Befragungen, keine neuen Antworten. Die Ergebnisseite vergleicht jede Zahl mit seinen CSV-Tabellen."
-                : "Befragungen anlegen, Link teilen und Ergebnisse live verfolgen."}
+              {isReference ? t.reference.orgDescription : t.org.description}
             </p>
           </div>
           {isReference ? null : <CreateSurveyDialog organizationId={orgId} />}
@@ -48,14 +47,11 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
 
         {surveys.length === 0 ? (
           <div className="rounded-lg border border-dashed p-10">
-            <h2 className="text-lg font-medium">Noch keine Befragung</h2>
-            <p className="mt-2 max-w-prose text-muted-foreground">In zwei Schritten los:</p>
+            <h2 className="text-lg font-medium">{t.org.emptyTitle}</h2>
+            <p className="mt-2 max-w-prose text-muted-foreground">{t.org.emptyIntro}</p>
             <ol className="mt-3 max-w-prose list-decimal space-y-1 pl-5 text-muted-foreground">
-              <li>Eine Befragung anlegen.</li>
-              <li>
-                Den entstandenen Link an die Mitarbeitenden schicken. Die Ergebnisse
-                erscheinen danach automatisch.
-              </li>
+              <li>{t.org.emptyStep1}</li>
+              <li>{t.org.emptyStep2}</li>
             </ol>
           </div>
         ) : (
@@ -69,22 +65,25 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <h2 className="text-lg font-medium">{survey.title}</h2>
                         <Badge variant={survey.mode === "named" ? "default" : "secondary"}>
-                          {survey.mode === "named" ? "Mit Namen" : "Anonym"}
+                          {survey.mode === "named" ? t.app.modeNamed : t.app.modeAnonymous}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {survey.responseCount === 1
-                          ? "1 Antwort"
-                          : `${survey.responseCount} Antworten`}{" "}
-                        · angelegt am {dateFormat.format(survey.createdAt)}
+                          ? t.app.responseOne
+                          : fill(t.app.responseMany, { count: survey.responseCount })}{" "}
+                        ·{" "}
+                        {fill(t.org.createdOn, {
+                          date: dateFormat.format(survey.createdAt),
+                        })}
                       </p>
                     </CardHeader>
                     <CardContent className="flex flex-wrap gap-2">
                       <Button asChild size="lg">
-                        <Link href={`/orgs/${orgId}/surveys/${survey.id}`}>Ergebnisse</Link>
+                        <Link href={`/orgs/${orgId}/surveys/${survey.id}`}>{t.org.results}</Link>
                       </Button>
                       {isReference ? null : (
-                        <CopyButton value={publicUrl} label="Link kopieren" />
+                        <CopyButton value={publicUrl} label={t.share.copyLink} />
                       )}
                     </CardContent>
                   </Card>

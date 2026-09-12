@@ -11,9 +11,13 @@ import {
   MUSTER,
   lookupMapping,
   lookupMuster,
+  orderedPairKey,
 } from "./mapping";
 import { PROFILE_CODES, type ProfileCode } from "./profiles";
 import { ITEMS, type Answers } from "./questionnaire";
+// The German file, so the pattern names can be checked no matter which language the
+// app is currently set to in lib/i18n.
+import german from "../i18n/de.json";
 
 const INPUTS: ParticipantInput[] = EXAMPLE_RUN.map((response, position) => ({
   id: `p${position + 1}`,
@@ -114,17 +118,25 @@ describe("scoring the example run", () => {
     const first = results.roadmap[0];
     expect(first.orderedPair).toBe("E>F");
     expect(first.count).toBe(3);
-    expect(first.muster.name).toBe("Der Druck-Überlastete Performer");
+    expect(first.muster.name).toBe(MUSTER["E>F"].name);
     expect(first.rollen.map((entry) => entry.code)).toEqual(["E", "F"]);
   });
 
   it("gives every participant the Profil-Mustername of the client's Roadmap export", () => {
-    const namen = results.participants.map((participant) =>
-      lookupMuster(participant.dominant, participant.second).name,
+    const pairs = results.participants.map((participant) =>
+      orderedPairKey(participant.dominant, participant.second),
     );
-    expect(namen[2]).toBe("Der Bedeutsamkeits-Ängstliche");
-    expect(namen[7]).toBe("Der Überlastete Stabilitäts-Sucher");
-    expect(namen[12]).toBe("Der Druck-Überlastete Performer");
+    expect(pairs[2]).toBe("A>E");
+    expect(pairs[7]).toBe("F>B");
+    expect(pairs[12]).toBe("E>F");
+    // The names themselves are checked against the German export, so this test keeps
+    // working when the app language is switched in lib/i18n.
+    expect(german.muster["A>E"].name).toBe("Der Bedeutsamkeits-Ängstliche");
+    expect(german.muster["F>B"].name).toBe("Der Überlastete Stabilitäts-Sucher");
+    expect(german.muster["E>F"].name).toBe("Der Druck-Überlastete Performer");
+    expect(
+      lookupMuster(results.participants[2].dominant, results.participants[2].second).name,
+    ).toBe(MUSTER["A>E"].name);
   });
 
   it("summarizes every statement", () => {

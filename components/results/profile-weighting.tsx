@@ -22,18 +22,19 @@ import {
 } from "@/components/ui/table";
 import { PROFILES, type ProfileCode } from "@/lib/domain/profiles";
 import type { SurveyResults } from "@/lib/domain/scoring";
+import { LOCALE, t } from "@/lib/i18n";
 
 const countsConfig: ChartConfig = {
-  dominantCount: { label: "Dominant" },
-  secondCount: { label: "Zweitprofil" },
+  dominantCount: { label: t.results.weighting.seriesDominant },
+  secondCount: { label: t.results.weighting.seriesSecond },
 };
 
 const averageConfig: ChartConfig = {
-  averageWeighted: { label: "Ø gewichteter Wert" },
+  averageWeighted: { label: t.results.weighting.seriesAverage },
 };
 
 const oneDecimal = (value: number) =>
-  value.toLocaleString("de-DE", { minimumFractionDigits: 1 });
+  value.toLocaleString(LOCALE, { minimumFractionDigits: 1 });
 
 /**
  * How often each profile leads and how strong it is on average. Each profile keeps
@@ -58,11 +59,10 @@ export function ProfileWeighting({ results }: { results: SurveyResults }) {
     <section aria-labelledby="gewichtung-titel" className="space-y-4">
       <div>
         <h2 id="gewichtung-titel" className="text-xl font-semibold tracking-tight">
-          Profile Gewichtung
+          {t.results.weighting.title}
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Welche Widerstandsprofile im Unternehmen am häufigsten führen und wie stark sie
-          im Durchschnitt ausgeprägt sind. Detailinformation zur Zusammenfassung oben.
+          {t.results.weighting.description}
         </p>
       </div>
 
@@ -72,15 +72,13 @@ export function ProfileWeighting({ results }: { results: SurveyResults }) {
             aria-hidden="true"
             className="size-4 transition-transform group-open:rotate-90"
           />
-          Profile Gewichtung anzeigen
+          {t.results.weighting.toggle}
         </summary>
 
         <div className="mt-4 grid gap-4 xl:grid-cols-2">
           <Card>
             <CardHeader>
-              <h3 className="font-medium">
-                Wie oft ein Profil dominant oder zweitdominant ist
-              </h3>
+              <h3 className="font-medium">{t.results.weighting.chartCountsTitle}</h3>
             </CardHeader>
             <CardContent className="space-y-3 overflow-x-auto">
               <div className="min-w-[420px]">
@@ -147,7 +145,7 @@ export function ProfileWeighting({ results }: { results: SurveyResults }) {
 
           <Card>
             <CardHeader>
-              <h3 className="font-medium">Durchschnittlicher gewichteter Wert je Profil</h3>
+              <h3 className="font-medium">{t.results.weighting.chartAverageTitle}</h3>
             </CardHeader>
             <CardContent className="overflow-x-auto">
               <div className="min-w-[420px]">
@@ -184,20 +182,18 @@ export function ProfileWeighting({ results }: { results: SurveyResults }) {
         <Card className="mt-4">
           <CardContent className="overflow-x-auto pt-6">
             <Table>
-              <TableCaption>
-                Häufigkeit je Profil. Dieselben Zahlen wie in den beiden Diagrammen.
-              </TableCaption>
+              <TableCaption>{t.results.weighting.tableCaption}</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead scope="col">Profil</TableHead>
+                  <TableHead scope="col">{t.results.weighting.colProfile}</TableHead>
                   <TableHead scope="col" className="text-right">
-                    Dominant
+                    {t.results.weighting.colDominant}
                   </TableHead>
                   <TableHead scope="col" className="text-right">
-                    Zweitprofil
+                    {t.results.weighting.colSecond}
                   </TableHead>
                   <TableHead scope="col" className="text-right">
-                    Ø gewichtet
+                    {t.results.weighting.colAverage}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -236,7 +232,7 @@ function SeriesLegend() {
           aria-hidden="true"
           className="inline-block size-4 rounded-[3px] border border-foreground bg-foreground/70"
         />
-        Dominant
+        {t.results.weighting.seriesDominant}
       </li>
       <li className="flex items-center gap-2">
         <span
@@ -247,7 +243,7 @@ function SeriesLegend() {
               "repeating-linear-gradient(45deg, var(--foreground) 0 2px, transparent 2px 5px)",
           }}
         />
-        Zweitprofil
+        {t.results.weighting.seriesSecond}
       </li>
     </ul>
   );

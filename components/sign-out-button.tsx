@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { LogOutIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { t } from "@/lib/i18n";
 
 export function SignOutButton() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export function SignOutButton() {
       }}
     >
       <LogOutIcon aria-hidden="true" />
-      Abmelden
+      {t.app.signOut}
     </Button>
   );
 }

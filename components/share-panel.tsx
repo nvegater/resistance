@@ -7,20 +7,19 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { fill, t } from "@/lib/i18n";
 
 /** The public survey link with a copy button and a QR code to scan on a phone. */
 export function SharePanel({ url, title }: { url: string; title: string }) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
       <div className="flex-1 space-y-2">
-        <Label htmlFor="share-url">Öffentlicher Link zur Befragung</Label>
+        <Label htmlFor="share-url">{t.share.linkLabel}</Label>
         <div className="flex gap-2">
           <Input id="share-url" readOnly value={url} className="h-10 font-mono text-xs" />
-          <CopyButton value={url} label="Link kopieren" />
+          <CopyButton value={url} label={t.share.copyLink} />
         </div>
-        <p className="text-sm text-muted-foreground">
-          Diesen Link an die Mitarbeitenden weitergeben. Es ist keine Anmeldung nötig.
-        </p>
+        <p className="text-sm text-muted-foreground">{t.share.hint}</p>
       </div>
       <figure className="flex flex-col items-center gap-1">
         <div className="rounded-lg border bg-white p-2">
@@ -28,10 +27,10 @@ export function SharePanel({ url, title }: { url: string; title: string }) {
             value={url}
             size={112}
             level="M"
-            title={`QR-Code zur Befragung ${title}`}
+            title={fill(t.share.qrTitle, { title })}
           />
         </div>
-        <figcaption className="text-xs text-muted-foreground">Zum Scannen</figcaption>
+        <figcaption className="text-xs text-muted-foreground">{t.share.qrCaption}</figcaption>
       </figure>
     </div>
   );
@@ -51,7 +50,7 @@ export function CopyButton({
   async function copy() {
     await navigator.clipboard.writeText(value);
     setCopied(true);
-    toast.success(`${label}: in die Zwischenablage kopiert`);
+    toast.success(fill(t.app.copiedToClipboard, { label }));
     window.setTimeout(() => setCopied(false), 2000);
   }
 

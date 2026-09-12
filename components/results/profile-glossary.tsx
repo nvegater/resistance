@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PROFILE_LIST } from "@/lib/domain/profiles";
+import { t } from "@/lib/i18n";
 
 /**
  * The six profiles as a plain glossary. It says nothing about this survey, so it
@@ -22,26 +23,23 @@ export function ProfileGlossary() {
     <section aria-labelledby="profile-titel" className="space-y-4">
       <div>
         <h2 id="profile-titel" className="text-xl font-semibold tracking-tight">
-          Profile
+          {t.results.profiles.title}
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Die sechs Widerstandsprofile, auf die die Befragung verweist.
+          {t.results.profiles.description}
         </p>
       </div>
 
       <Card>
         <CardContent className="overflow-x-auto pt-6">
           <Table>
-            <TableCaption>
-              Muster, Beschreibung und Folgen der sechs Profile. Diese Tabelle ist immer
-              gleich und hängt nicht von den Antworten ab.
-            </TableCaption>
+            <TableCaption>{t.results.profiles.tableCaption}</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead scope="col">Profil</TableHead>
-                <TableHead scope="col">Muster</TableHead>
-                <TableHead scope="col">Profil-Beschreibung</TableHead>
-                <TableHead scope="col">Folgen</TableHead>
+                <TableHead scope="col">{t.results.profiles.colProfile}</TableHead>
+                <TableHead scope="col">{t.results.profiles.colMuster}</TableHead>
+                <TableHead scope="col">{t.results.profiles.colBeschreibung}</TableHead>
+                <TableHead scope="col">{t.results.profiles.colFolgen}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

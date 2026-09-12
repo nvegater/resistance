@@ -16,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { fill, t } from "@/lib/i18n";
 import { deleteOrganizationAction } from "@/app/admin/actions";
 
 export function DeleteOrganizationButton({
@@ -34,32 +35,31 @@ export function DeleteOrganizationButton({
       <AlertDialogTrigger asChild>
         <Button variant="outline" size="lg">
           <Trash2Icon aria-hidden="true" />
-          Löschen
+          {t.app.delete}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{organizationName} löschen?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Der Zugang, alle Befragungen und alle Antworten dieser Organisation werden
-            gelöscht. Das lässt sich nicht rückgängig machen.
-          </AlertDialogDescription>
+          <AlertDialogTitle>
+            {fill(t.admin.deleteTitle, { name: organizationName })}
+          </AlertDialogTitle>
+          <AlertDialogDescription>{t.admin.deleteDescription}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+          <AlertDialogCancel>{t.app.cancel}</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
             onClick={(event) => {
               event.preventDefault();
               startTransition(async () => {
                 await deleteOrganizationAction(organizationId);
-                toast.success(`${organizationName} wurde gelöscht.`);
+                toast.success(fill(t.admin.deleted, { name: organizationName }));
                 setOpen(false);
                 router.refresh();
               });
             }}
           >
-            {isPending ? "Wird gelöscht …" : "Endgültig löschen"}
+            {isPending ? t.admin.deleting : t.admin.deleteConfirm}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -14,6 +14,7 @@ import {
 import { BLOCKS, SCALE } from "@/lib/domain/questionnaire";
 import { PROFILES } from "@/lib/domain/profiles";
 import type { ItemStat, SurveyResults } from "@/lib/domain/scoring";
+import { fill, LOCALE, t } from "@/lib/i18n";
 
 /** One shade per answer value, from "trifft gar nicht zu" to "trifft voll zu". */
 const SCALE_COLORS = ["#dbeafe", "#93c5fd", "#3b82f6", "#1d4ed8", "#1e3a8a"];
@@ -25,10 +26,10 @@ export function ItemSummary({ results }: { results: SurveyResults }) {
     <section aria-labelledby="antworten-titel" className="space-y-4">
       <div>
         <h2 id="antworten-titel" className="text-xl font-semibold tracking-tight">
-          Antworten-Übersicht
+          {t.results.items.title}
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Mittelwert und Verteilung jeder einzelnen Aussage, gruppiert nach Profil.
+          {t.results.items.description}
         </p>
       </div>
 
@@ -41,19 +42,26 @@ export function ItemSummary({ results }: { results: SurveyResults }) {
               </h3>
               <Table>
                 <TableCaption className="sr-only">
-                  {`Aussagen des Profils ${PROFILES[block.profile].name} mit Mittelwert und Verteilung der Antworten von 1 bis 5.`}
+                  {fill(t.results.items.tableCaption, {
+                    name: PROFILES[block.profile].name,
+                  })}
                 </TableCaption>
                 <TableHeader>
                   <TableRow>
-                    <TableHead scope="col">Aussage</TableHead>
+                    <TableHead scope="col">{t.results.items.colStatement}</TableHead>
                     <TableHead scope="col" className="text-right">
-                      Ø
+                      {t.results.items.colMean}
                     </TableHead>
-                    <TableHead scope="col">Verteilung</TableHead>
+                    <TableHead scope="col">{t.results.items.colDistribution}</TableHead>
                     {SCALE.map((option) => (
                       <TableHead key={option.value} scope="col" className="text-right">
                         <span aria-hidden="true">{option.value}</span>
-                        <span className="sr-only">{`Antwort ${option.value}: ${option.label}`}</span>
+                        <span className="sr-only">
+                          {fill(t.results.items.srAnswer, {
+                            value: option.value,
+                            label: option.label,
+                          })}
+                        </span>
                       </TableHead>
                     ))}
                   </TableRow>
@@ -71,7 +79,7 @@ export function ItemSummary({ results }: { results: SurveyResults }) {
                           <span className="block min-w-48">{item.text}</span>
                         </TableCell>
                         <TableCell className="align-top text-right font-medium tabular-nums">
-                          {stat.mean.toLocaleString("de-DE", { minimumFractionDigits: 1 })}
+                          {stat.mean.toLocaleString(LOCALE, { minimumFractionDigits: 1 })}
                         </TableCell>
                         <TableCell className="align-top">
                           <span className="block w-28 pt-1">
@@ -113,7 +121,7 @@ function DistributionBar({ stat }: { stat: ItemStat }) {
     <span
       className="flex h-5 w-full overflow-hidden rounded border"
       role="img"
-      aria-label={`Verteilung der Antworten. ${description}.`}
+      aria-label={fill(t.results.items.distributionLabel, { description })}
     >
       {stat.distribution.map((count, position) =>
         count === 0 ? null : (

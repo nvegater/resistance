@@ -6,6 +6,7 @@ import { ProfileTag } from "@/components/domain/profile";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PROFILES } from "@/lib/domain/profiles";
 import type { RoadmapCard, SurveyResults } from "@/lib/domain/scoring";
+import { fill, t } from "@/lib/i18n";
 
 export function Roadmap({
   results,
@@ -18,19 +19,15 @@ export function Roadmap({
     <section aria-labelledby="roadmap-titel" className="space-y-4">
       <div>
         <h2 id="roadmap-titel" className="text-xl font-semibold tracking-tight">
-          Change-Risiko-Roadmap
+          {t.results.roadmap.title}
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Für jedes vorkommende Mischprofil zwei Kapitel nebeneinander: links die
-          Risikoanalyse mit Bedrohung und Intervention, rechts der Entwicklungsweg mit
-          den neuen Rollen und der Entwicklungsstory. Rote Mischprofile zuerst.
+          {t.results.roadmap.description}
         </p>
       </div>
 
       {results.roadmap.length === 0 ? (
-        <p className="text-muted-foreground">
-          Sobald die erste Antwort eingeht, erscheinen hier die Maßnahmen.
-        </p>
+        <p className="text-muted-foreground">{t.results.roadmap.pending}</p>
       ) : (
         <ul className="space-y-4">
           {results.roadmap.map((card) => (
@@ -64,36 +61,39 @@ export function RoadmapEntry({
   const people =
     mode === "named" && card.participantNames.length > 0
       ? card.participantNames.join(", ")
-      : card.participantIndexes.map((index) => `Teilnehmer ${index}`).join(", ");
-  const peopleTerm = mode === "named" ? "Betroffene" : "Betroffene Teilnehmende";
+      : card.participantIndexes
+          .map((index) => fill(t.results.participants.participantLabel, { index }))
+          .join(", ");
+  const peopleTerm =
+    mode === "named" ? t.results.roadmap.rowAffectedNamed : t.results.roadmap.rowAffected;
 
   const body = (
     <div className="grid gap-6 md:grid-cols-2 md:gap-8">
-      <Chapter title="Mischprofil – Risikoanalyse">
+      <Chapter title={t.results.roadmap.chapterRisk}>
         <div>
-          <dt className="font-medium">Profil dominant + zweitdominant</dt>
+          <dt className="font-medium">{t.results.roadmap.rowProfiles}</dt>
           <dd className="mt-1 flex flex-col gap-1 text-muted-foreground">
             {card.rollen.map((entry) => (
               <span key={entry.code} className="inline-flex flex-wrap items-center gap-x-1.5">
-                <span>vom</span>
+                <span>{t.results.roadmap.from}</span>
                 <ProfileTag code={entry.code} name={PROFILES[entry.code].nameDative} />
               </span>
             ))}
           </dd>
         </div>
-        <Row term="Bedrohung (Eruptionswirkung)" detail={mapping.bedrohung} />
-        <Row term="Intervention" detail={mapping.intervention} />
-        <Row term="Verantwortliche" detail={mapping.verantwortung} />
-        <Row term="Strategisches Ziel" detail={mapping.ziel} />
+        <Row term={t.results.roadmap.rowThreat} detail={mapping.bedrohung} />
+        <Row term={t.results.roadmap.rowIntervention} detail={mapping.intervention} />
+        <Row term={t.results.roadmap.rowResponsible} detail={mapping.verantwortung} />
+        <Row term={t.results.roadmap.rowGoal} detail={mapping.ziel} />
       </Chapter>
 
-      <Chapter title="Journey – Entwicklungsweg">
+      <Chapter title={t.results.roadmap.chapterJourney}>
         <div>
-          <dt className="font-medium">Entwicklungsrollen (Profil-Wandel)</dt>
+          <dt className="font-medium">{t.results.roadmap.rowRoles}</dt>
           <dd className="mt-1 flex flex-col gap-1 text-muted-foreground">
             {card.rollen.map((entry) => (
               <span key={entry.code} className="inline-flex flex-wrap items-center gap-x-1.5">
-                <span>zum</span>
+                <span>{t.results.roadmap.to}</span>
                 <ProfileTag
                   code={entry.code}
                   withIcon={false}
@@ -103,10 +103,10 @@ export function RoadmapEntry({
             ))}
           </dd>
         </div>
-        <Row term="Entwicklungsstory" detail={muster.story} />
-        <Row term="Erfolgskriterien (KPIs)" detail={mapping.kpis} />
+        <Row term={t.results.roadmap.rowStory} detail={muster.story} />
+        <Row term={t.results.roadmap.rowKpis} detail={mapping.kpis} />
         <Row term={`${peopleTerm} (${card.count})`} detail={people} />
-        <Row term="Zeitraum" detail={mapping.zeitraum} />
+        <Row term={t.results.roadmap.rowTimeframe} detail={mapping.zeitraum} />
       </Chapter>
     </div>
   );
@@ -118,7 +118,7 @@ export function RoadmapEntry({
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-lg font-medium">
-            <span className="sr-only">Mischprofil: </span>
+            <span className="sr-only">{t.results.roadmap.srMischprofil}</span>
             {muster.name}
           </h3>
           <AmpelBadge ampel={mapping.ampel} />

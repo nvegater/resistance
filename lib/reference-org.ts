@@ -4,15 +4,17 @@
 // generated ones, which is what makes "is this the reference?" a plain comparison
 // everywhere and lets the seed rebuild it without looking anything up.
 
+import { t } from "./i18n";
+
 export const REFERENCE_ORG_ID = "referenz";
 export const REFERENCE_SURVEY_ID = "referenz-befragung";
 export const REFERENCE_SURVEY_TOKEN = "referenz";
 
-export const REFERENCE_ORG_NAME = "Referenz-Auswertung";
-export const REFERENCE_SURVEY_TITLE = "Interne Resonanzbefragung (Referenzlauf)";
+export const REFERENCE_ORG_NAME = t.reference.orgName;
+export const REFERENCE_SURVEY_TITLE = t.reference.surveyTitle;
 
-/** German wording for the badge and the notices, kept in one place. */
-export const REFERENCE_BADGE = "Schreibgeschützt";
+/** The wording on the badge, kept in one place. */
+export const REFERENCE_BADGE = t.reference.badge;
 
 export function isReferenceOrganization(organizationId: string): boolean {
   return organizationId === REFERENCE_ORG_ID;

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SignOutButton } from "@/components/sign-out-button";
+import { t } from "@/lib/i18n";
 import type { CurrentUser } from "@/lib/session";
 
 export function AppHeader({ user }: { user: CurrentUser }) {
@@ -11,15 +12,15 @@ export function AppHeader({ user }: { user: CurrentUser }) {
             href="/"
             className="rounded-sm text-base font-semibold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
-            Widerstandsdiagnose
+            {t.app.name}
           </Link>
           {user.role === "admin" ? (
-            <nav aria-label="Bereiche">
+            <nav aria-label={t.app.navLabel}>
               <Link
                 href="/admin"
                 className="rounded-sm text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
-                Organisationen
+                {t.admin.title}
               </Link>
             </nav>
           ) : null}

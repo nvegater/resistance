@@ -47,3 +47,12 @@ You can find there some information about the survey and how the results of the 
 The umfrage folder is where the survey is located.  Its a link to a google form, which is what my client used to distribute the survey and collect the responses before.
 Also it has the questions in text form. 
 
+
+
+## The two files added on 2026-09-12
+
+`Widerstand Diagnose Tool Protokoll 09-2026.docx` is the fourth round of the client's
+protocol. It repeats everything from the earlier rounds and adds items 19 to 22.
+
+`Diagnose Tool English.xlsx` is the client's own German/English translation of the tool,
+one sheet per area. It is where `lib/i18n/en.json` comes from.

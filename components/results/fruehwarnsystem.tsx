@@ -20,13 +20,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AMPEL_PHASE, VOLCANO_LEGEND } from "@/lib/domain/mapping";
+import { AMPEL_LABEL, AMPEL_PHASE, VOLCANO_LEGEND } from "@/lib/domain/mapping";
 import type { SurveyResults } from "@/lib/domain/scoring";
+import { LOCALE, t } from "@/lib/i18n";
 
 const chartConfig: ChartConfig = {
-  ROT: { label: "ROT · Akute Eruption", color: "var(--ampel-rot-mark)" },
-  GELB: { label: "GELB · Brodelnde Phase", color: "var(--ampel-gelb-mark)" },
-  "GRÜN": { label: "GRÜN · Inaktiver Vulkan", color: "var(--ampel-gruen-mark)" },
+  ROT: {
+    label: `${AMPEL_LABEL.ROT} · ${AMPEL_PHASE.ROT.phase}`,
+    color: "var(--ampel-rot-mark)",
+  },
+  GELB: {
+    label: `${AMPEL_LABEL.GELB} · ${AMPEL_PHASE.GELB.phase}`,
+    color: "var(--ampel-gelb-mark)",
+  },
+  "GRÜN": {
+    label: `${AMPEL_LABEL["GRÜN"]} · ${AMPEL_PHASE["GRÜN"].phase}`,
+    color: "var(--ampel-gruen-mark)",
+  },
 };
 
 export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
@@ -39,12 +49,10 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
     <section aria-labelledby="fruehwarn-titel" className="space-y-4">
       <div>
         <h2 id="fruehwarn-titel" className="text-xl font-semibold tracking-tight">
-          Frühwarnsystem
+          {t.results.fruehwarnsystem.title}
         </h2>
         <p className="mt-1 max-w-prose text-muted-foreground">
-          Die Ampel jedes Teilnehmenden zu einem Bild der Organisation zusammengefasst.
-          Die Gesamtphase ist die Phase mit den meisten Teilnehmenden; der Vulkan zeigt
-          sie.
+          {t.results.fruehwarnsystem.description}
         </p>
       </div>
 
@@ -55,7 +63,7 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <h3 className="font-medium">Vulkanmodell</h3>
+            <h3 className="font-medium">{t.volcano.cardTitle}</h3>
           </CardHeader>
           <CardContent className="space-y-4">
             <VolcanoDiagram
@@ -71,16 +79,10 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
               </p>
             ) : (
               <p className="text-muted-foreground">
-                Sobald die erste Antwort eingeht, erscheint hier die Phase der
-                Organisation.
+                {t.results.fruehwarnsystem.phasePending}
               </p>
             )}
-            <p className="text-sm text-muted-foreground">
-              Der ganze Vulkan trägt die Farbe der Gesamtphase. Die Magmakammer nennt,
-              wie viele Teilnehmende in dieser Phase sind; wie hoch das Magma im Schlot
-              steht und was aus dem Krater kommt, zeigt dieselbe Phase. Die Verteilung
-              aller Ampelwerte steht rechts daneben.
-            </p>
+            <p className="text-sm text-muted-foreground">{t.volcano.explanation}</p>
 
             <dl className="space-y-3 border-t pt-4 text-sm">
               {VOLCANO_LEGEND.map((entry) => (
@@ -95,7 +97,7 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
 
         <Card>
           <CardHeader>
-            <h3 className="font-medium">Verteilung der Ampelwerte</h3>
+            <h3 className="font-medium">{t.results.fruehwarnsystem.distributionTitle}</h3>
           </CardHeader>
           <CardContent className="space-y-4">
             {chartData.length > 0 ? (
@@ -120,19 +122,16 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
             ) : null}
 
             <Table>
-              <TableCaption>
-                Anzahl und Anteil der Teilnehmenden je Phase des Vulkanmodells. Dieselben
-                Zahlen wie im Ringdiagramm.
-              </TableCaption>
+              <TableCaption>{t.results.fruehwarnsystem.tableCaption}</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead scope="col">Vulkanmodell</TableHead>
-                  <TableHead scope="col">Farbe</TableHead>
+                  <TableHead scope="col">{t.results.fruehwarnsystem.colVolcanoModel}</TableHead>
+                  <TableHead scope="col">{t.results.fruehwarnsystem.colColor}</TableHead>
                   <TableHead scope="col" className="text-right">
-                    Anzahl
+                    {t.results.fruehwarnsystem.colCount}
                   </TableHead>
                   <TableHead scope="col" className="text-right">
-                    %
+                    {t.results.fruehwarnsystem.colPercent}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -145,18 +144,21 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
                     </TableCell>
                     <TableCell className="text-right tabular-nums">{entry.count}</TableCell>
                     <TableCell className="text-right tabular-nums">
-                      {entry.percent.toLocaleString("de-DE", { minimumFractionDigits: 1 })} %
+                      {entry.percent.toLocaleString(LOCALE, { minimumFractionDigits: 1 })} %
                     </TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell className="font-medium">Gesamt</TableCell>
+                  <TableCell className="font-medium">{t.results.fruehwarnsystem.total}</TableCell>
                   <TableCell />
                   <TableCell className="text-right font-medium tabular-nums">
                     {results.total}
                   </TableCell>
                   <TableCell className="text-right font-medium tabular-nums">
-                    {results.total === 0 ? "0,0 %" : "100,0 %"}
+                    {(results.total === 0 ? 0 : 100).toLocaleString(LOCALE, {
+                      minimumFractionDigits: 1,
+                    })}{" "}
+                    %
                   </TableCell>
                 </TableRow>
               </TableBody>

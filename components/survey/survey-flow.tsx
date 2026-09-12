@@ -11,10 +11,12 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import {
   BLOCKS,
+  ITEM_CODES,
   SCALE,
   surveySubtitle,
   type ItemCode,
 } from "@/lib/domain/questionnaire";
+import { fill, t } from "@/lib/i18n";
 import { submitResponseAction } from "@/app/s/[token]/actions";
 
 type AnswerState = Partial<Record<ItemCode, number>>;
@@ -108,7 +110,7 @@ export function SurveyFlow({
   }
 
   if (answeredBefore === null) {
-    return <p className="py-16 text-center text-muted-foreground">Wird geladen …</p>;
+    return <p className="py-16 text-center text-muted-foreground">{t.app.loading}</p>;
   }
 
   // A soft hint only. Nothing stops anyone from answering a second time.
@@ -117,10 +119,8 @@ export function SurveyFlow({
       <div className="space-y-6 py-8">
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         <Alert>
-          <AlertTitle>Sie haben diese Befragung bereits ausgefüllt</AlertTitle>
-          <AlertDescription>
-            Vielen Dank. Wenn Sie trotzdem noch einmal antworten möchten, geht das hier.
-          </AlertDescription>
+          <AlertTitle>{t.survey.alreadyAnsweredTitle}</AlertTitle>
+          <AlertDescription>{t.survey.alreadyAnsweredText}</AlertDescription>
         </Alert>
         <Button
           size="lg"
@@ -130,7 +130,7 @@ export function SurveyFlow({
             setScreen("intro");
           }}
         >
-          Trotzdem noch einmal ausfüllen
+          {t.survey.answerAgain}
         </Button>
       </div>
     );
@@ -146,32 +146,23 @@ export function SurveyFlow({
         </div>
 
         <div className="max-w-prose space-y-3 text-base">
-          <p>
-            Wir möchten verstehen, wie Sie die aktuellen Veränderungen im Unternehmen
-            erleben.
-          </p>
-          <p>
-            Es gibt keine richtigen oder falschen Antworten. Antworten Sie so, wie es für
-            Ihren Arbeitsalltag zutrifft.
-          </p>
-          <p>
-            Die Ergebnisse helfen dabei, Belastungen früh zu erkennen und passende
-            Maßnahmen zu wählen.
-          </p>
+          <p>{t.survey.intro1}</p>
+          <p>{t.survey.intro2}</p>
+          <p>{t.survey.intro3}</p>
         </div>
 
         <Alert>
-          <AlertTitle>Datenschutz</AlertTitle>
+          <AlertTitle>{t.survey.privacyTitle}</AlertTitle>
           <AlertDescription>
             {mode === "anonymous"
-              ? "Es werden keine Namen, E-Mail-Adressen oder Geräteinformationen gespeichert."
-              : "Ihr Name wird zusammen mit Ihren Antworten gespeichert und ist für Ihre Führungskraft sichtbar."}
+              ? t.survey.privacyAnonymous
+              : t.survey.privacyNamed}
           </AlertDescription>
         </Alert>
 
         {mode === "named" ? (
           <div className="space-y-2">
-            <Label htmlFor="teilnehmer-name">Ihr Name</Label>
+            <Label htmlFor="teilnehmer-name">{t.survey.nameLabel}</Label>
             <Input
               id="teilnehmer-name"
               name="teilnehmer-name"
@@ -195,16 +186,14 @@ export function SurveyFlow({
 
         <ScaleLegend />
 
-        <p className="text-sm text-muted-foreground">
-          18 Aussagen in 6 Teilen, ca. 5 Minuten.
-        </p>
+        <p className="text-sm text-muted-foreground">{t.survey.duration}</p>
 
         <Button
           size="lg"
           className="h-12 w-full"
           onClick={() => {
             if (mode === "named" && name.trim().length === 0) {
-              setNameError("Bitte geben Sie Ihren Namen an.");
+              setNameError(t.survey.nameRequired);
               document.getElementById("teilnehmer-name")?.focus();
               return;
             }
@@ -212,7 +201,7 @@ export function SurveyFlow({
             window.setTimeout(() => stepHeadingRef.current?.focus(), 0);
           }}
         >
-          Befragung starten
+          {t.survey.start}
         </Button>
       </div>
     );
@@ -229,29 +218,36 @@ export function SurveyFlow({
             tabIndex={-1}
             ref={stepHeadingRef}
           >
-            Teil {stepIndex + 1} von {BLOCKS.length}
+            {fill(t.survey.step, { step: stepIndex + 1, total: BLOCKS.length })}
           </h1>
           <p className="text-sm text-muted-foreground" aria-live="polite">
-            {`${Object.keys(answers).length} von 18 beantwortet`}
+            {fill(t.survey.answeredCount, {
+              done: Object.keys(answers).length,
+              total: ITEM_CODES.length,
+            })}
           </p>
         </div>
-        <Progress value={progress} aria-label={`Fortschritt: Teil ${stepIndex + 1} von ${BLOCKS.length}`} />
+        <Progress
+          value={progress}
+          aria-label={fill(t.survey.progressLabel, {
+            step: stepIndex + 1,
+            total: BLOCKS.length,
+          })}
+        />
       </div>
 
       <ScaleLegend collapsible />
 
       {missing.length > 0 ? (
         <Alert variant="destructive" id={STEP_ERROR_ID}>
-          <AlertTitle>Es fehlen noch Antworten</AlertTitle>
-          <AlertDescription>
-            Bitte beantworten Sie alle Aussagen dieses Teils, bevor Sie weitergehen.
-          </AlertDescription>
+          <AlertTitle>{t.survey.missingTitle}</AlertTitle>
+          <AlertDescription>{t.survey.missingText}</AlertDescription>
         </Alert>
       ) : null}
 
       {serverError ? (
         <Alert variant="destructive">
-          <AlertTitle>Senden fehlgeschlagen</AlertTitle>
+          <AlertTitle>{t.survey.sendFailedTitle}</AlertTitle>
           <AlertDescription>{serverError}</AlertDescription>
         </Alert>
       ) : null}
@@ -280,7 +276,7 @@ export function SurveyFlow({
           onClick={() => goToStep(stepIndex - 1)}
         >
           <ArrowLeftIcon aria-hidden="true" />
-          Zurück
+          {t.survey.back}
         </Button>
         <Button
           type="button"
@@ -292,11 +288,11 @@ export function SurveyFlow({
           {isLastStep ? (
             <>
               <SendIcon aria-hidden="true" />
-              {isSubmitting ? "Wird gesendet …" : "Absenden"}
+              {isSubmitting ? t.survey.submitting : t.survey.submit}
             </>
           ) : (
             <>
-              Weiter
+              {t.survey.next}
               <ArrowRightIcon aria-hidden="true" />
             </>
           )}
@@ -322,7 +318,7 @@ function ScaleLegend({ collapsible = false }: { collapsible?: boolean }) {
   if (!collapsible) {
     return (
       <div className="rounded-lg border p-4">
-        <h2 className="mb-2 text-sm font-medium">Die Antwortskala</h2>
+        <h2 className="mb-2 text-sm font-medium">{t.survey.scaleTitle}</h2>
         {list}
       </div>
     );
@@ -331,7 +327,7 @@ function ScaleLegend({ collapsible = false }: { collapsible?: boolean }) {
   return (
     <details className="rounded-lg border p-3">
       <summary className="cursor-pointer rounded-sm text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
-        Bedeutung der Zahlen 1 bis 5
+        {t.survey.scaleSummary}
       </summary>
       <div className="mt-3">{list}</div>
     </details>

@@ -12,6 +12,7 @@ import { Roadmap } from "@/components/results/roadmap";
 import { VolcanoDiagram } from "@/components/results/volcano-diagram";
 import { Card, CardContent } from "@/components/ui/card";
 import { VOLCANO_LEGEND } from "@/lib/domain/mapping";
+import { fill, t } from "@/lib/i18n";
 import type { ResultsPayload } from "@/lib/results";
 
 const POLL_INTERVAL_MS = 5000;
@@ -32,7 +33,7 @@ export function ResultsDashboard({
         `/api/orgs/${orgId}/surveys/${surveyId}/results`,
         { cache: "no-store" },
       );
-      if (!response.ok) throw new Error("Die Ergebnisse konnten nicht geladen werden.");
+      if (!response.ok) throw new Error(t.results.loadFailed);
       return response.json();
     },
     initialData,
@@ -52,13 +53,10 @@ export function ResultsDashboard({
       {results.total === 0 ? (
         <Card>
           <CardContent className="space-y-4 pt-6">
-            <h2 className="text-lg font-medium">Noch keine Antworten</h2>
-            <p className="max-w-prose text-muted-foreground">
-              Sobald die erste Antwort eingeht, erscheinen hier die Ergebnisse. Teilen Sie
-              dafür den Link oben mit Ihren Mitarbeitenden.
-            </p>
+            <h2 className="text-lg font-medium">{t.results.emptyTitle}</h2>
+            <p className="max-w-prose text-muted-foreground">{t.results.emptyText}</p>
             <div className="border-t pt-4">
-              <h3 className="mb-3 font-medium">Das Vulkanmodell</h3>
+              <h3 className="mb-3 font-medium">{t.volcano.emptyHeading}</h3>
               <VolcanoDiagram
                 phase={null}
                 ampelCounts={results.ampelCounts}
@@ -120,19 +118,21 @@ function LiveIndicator({
       {/* Only the number of responses is announced. The ticking seconds would
           otherwise interrupt a screen reader every second. */}
       <p className="sr-only" aria-live="polite">
-        {total === 1 ? "1 Antwort" : `${total} Antworten`}
+        {total === 1 ? t.app.responseOne : fill(t.app.responseMany, { count: total })}
       </p>
       <span className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-medium text-foreground">
         <span
           aria-hidden="true"
           className="inline-block size-2 rounded-full bg-ampel-gruen-mark"
         />
-        Live
+        {t.results.live}
       </span>
       <span aria-hidden="true">
-        {total === 1 ? "1 Antwort" : `${total} Antworten`} · aktualisiert vor {secondsAgo}{" "}
-        {secondsAgo === 1 ? "Sekunde" : "Sekunden"}
-        {isFetching ? " · wird aktualisiert" : ""}
+        {total === 1 ? t.app.responseOne : fill(t.app.responseMany, { count: total })} ·{" "}
+        {secondsAgo === 1
+          ? t.results.updatedOneSecondAgo
+          : fill(t.results.updatedSecondsAgo, { seconds: secondsAgo })}
+        {isFetching ? ` · ${t.results.refreshing}` : ""}
       </span>
     </div>
   );
