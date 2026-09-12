@@ -807,3 +807,6 @@ Decisions taken so the build can start. Each one is cheap to change later.
 - Do not touch `source material/`.
 - Commands: `pnpm dev`, `pnpm build`, `pnpm start`, `pnpm typecheck`, `pnpm lint`,
   `pnpm test`, `pnpm db:push`, `pnpm db:seed`.
+- `pnpm db:fake <token> [responses]` fills any survey with made-up answers and feedback,
+  so a demo organization does not have to be filled in by hand. It only adds rows, and it
+  refuses the reference evaluation.

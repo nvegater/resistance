@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx lib/db/seed.ts"
+    "db:seed": "tsx lib/db/seed.ts",
+    "db:fake": "tsx lib/db/fake.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
