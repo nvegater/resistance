@@ -7,11 +7,29 @@ import { config } from "dotenv";
 
 config({ path: ".env.local" });
 
+// Made-up feedback for the demo organization. The three-question totals land in two
+// different impact levels on purpose, so a demo shows more than one of them.
+const DEMO_TRUST = [4, 5, 3, 4, 4, 5, 2, 4, 3, 5, 4, 4];
+const DEMO_JOURNEY = [
+  [4, 4, 4],
+  [5, 4, 4],
+  [4, 3, 4],
+  [5, 5, 4],
+  [3, 3, 4],
+  [4, 4, 5],
+];
+const DEMO_LEADER = [
+  [3, 3, 4],
+  [4, 3, 3],
+  [3, 2, 3],
+  [4, 4, 3],
+];
+
 async function main() {
   // Imported here so that the environment variables are loaded first.
   const { eq } = await import("drizzle-orm");
   const { db } = await import("./index");
-  const { organization, response, survey, user } = await import("./schema");
+  const { feedback, organization, response, survey, user } = await import("./schema");
   const { auth } = await import("../auth");
   const { EXAMPLE_RUN } = await import("../domain/example-run");
   const { SURVEY_TITLE } = await import("../domain/questionnaire");
@@ -87,10 +105,40 @@ async function main() {
     })),
   );
 
+  // Invented feedback for the demo organization, so the feedback section shows numbers
+  // during a demo. The client's example run has no feedback of its own, which is why
+  // the reference organization below gets none.
+  await db.insert(feedback).values([
+    ...DEMO_TRUST.map((value) => ({
+      surveyId: demoSurvey.id,
+      kind: "trust" as const,
+      q1: value,
+      q2: null,
+      q3: null,
+    })),
+    ...DEMO_JOURNEY.map(([q1, q2, q3]) => ({
+      surveyId: demoSurvey.id,
+      kind: "journey" as const,
+      q1,
+      q2,
+      q3,
+    })),
+    ...DEMO_LEADER.map(([q1, q2, q3]) => ({
+      surveyId: demoSurvey.id,
+      kind: "leader" as const,
+      q1,
+      q2,
+      q3,
+    })),
+  ]);
+
   console.log(`Organization created: ${orgName} (${orgEmail})`);
   console.log(`Survey created: ${demoSurvey.title}`);
   console.log(`Public link: /s/${demoSurvey.token}`);
   console.log(`${EXAMPLE_RUN.length} responses loaded.`);
+  console.log(
+    `Feedback loaded: ${DEMO_TRUST.length} trust, ${DEMO_JOURNEY.length} journey, ${DEMO_LEADER.length} leader.`,
+  );
 
   // The reference organization holds the same 15 answers, but nothing may change it.
   // It has no login of its own; only the admin opens it, to compare the dashboard with

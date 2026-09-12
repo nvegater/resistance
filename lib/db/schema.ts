@@ -56,8 +56,29 @@ export const response = pgTable("response", {
   f3: smallint("f3").notNull(),
 });
 
+/**
+ * The three feedback instruments of the client's Feedback sheet, all in one table.
+ * "trust" asks a single question and leaves q2 and q3 empty; "journey" and "leader"
+ * ask three. See lib/domain/feedback.ts.
+ */
+export const feedback = pgTable("feedback", {
+  id: id(),
+  surveyId: text("survey_id")
+    .notNull()
+    .references(() => survey.id, { onDelete: "cascade" }),
+  /** "trust", "journey" or "leader". */
+  kind: text("kind").notNull().$type<"trust" | "journey" | "leader">(),
+  /** Null in anonymous surveys. */
+  participantName: text("participant_name"),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+  q1: smallint("q1").notNull(),
+  q2: smallint("q2"),
+  q3: smallint("q3"),
+});
+
 export type Organization = typeof organization.$inferSelect;
 export type Survey = typeof survey.$inferSelect;
 export type Response = typeof response.$inferSelect;
+export type Feedback = typeof feedback.$inferSelect;
 
 export * from "./auth-schema";

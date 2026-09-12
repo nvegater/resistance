@@ -1,27 +1,39 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { SCALE, SCALE_MAX_LABEL, SCALE_MIN_LABEL, type ItemCode } from "@/lib/domain/questionnaire";
+import { SCALE } from "@/lib/domain/questionnaire";
 import { fill, t } from "@/lib/i18n";
 
+export type ScaleOption = { value: number; label: string };
+
 /**
- * One statement with the five-point scale. A real radio group, so arrow keys work
+ * One statement with a five-point scale. A real radio group, so arrow keys work
  * and screen readers announce the chosen value together with its wording.
+ *
+ * The resistance survey and the three feedback forms both use it. They differ only in
+ * the small label above the statement (the item code A1, or the name of the feedback
+ * question) and in the wording of the five options.
  */
 export function ScaleQuestion({
-  code,
+  name,
+  label,
   text,
   value,
   onChange,
   missing,
   errorId,
+  scale = SCALE,
 }: {
-  code: ItemCode;
+  /** Groups the five radios and builds their ids. Unique on the page. */
+  name: string;
+  /** The small line above the statement: „A1“ or „Klarheit“. */
+  label: string;
   text: string;
   value: number | undefined;
   onChange: (value: number) => void;
   missing: boolean;
   errorId: string;
+  scale?: readonly ScaleOption[];
 }) {
   return (
     <fieldset
@@ -32,19 +44,19 @@ export function ScaleQuestion({
       aria-describedby={missing ? errorId : undefined}
     >
       <legend className="px-1">
-        <span className="block text-xs font-medium text-muted-foreground">{code}</span>
+        <span className="block text-xs font-medium text-muted-foreground">{label}</span>
         <span className="block max-w-prose text-base leading-snug sm:text-lg">{text}</span>
       </legend>
 
       <div className="mt-4 grid grid-cols-5 gap-1.5">
-        {SCALE.map((option) => {
-          const inputId = `${code}-${option.value}`;
+        {scale.map((option) => {
+          const inputId = `${name}-${option.value}`;
           return (
             <div key={option.value}>
               <input
                 type="radio"
                 id={inputId}
-                name={code}
+                name={name}
                 value={option.value}
                 checked={value === option.value}
                 onChange={() => onChange(option.value)}
@@ -73,8 +85,8 @@ export function ScaleQuestion({
       </div>
 
       <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-        <span>{SCALE_MIN_LABEL}</span>
-        <span>{SCALE_MAX_LABEL}</span>
+        <span>{scale[0].label}</span>
+        <span>{scale[scale.length - 1].label}</span>
       </div>
     </fieldset>
   );

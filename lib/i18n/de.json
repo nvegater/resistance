@@ -141,6 +141,21 @@
     "title": "Vielen Dank",
     "text": "Ihre Antworten sind angekommen. Sie können dieses Fenster jetzt schließen."
   },
+  "feedbackForm": {
+    "intro": "Ihre Rückmeldung zeigt, ob die Maßnahmen wirken. Sie dauert weniger als eine Minute.",
+    "participantNameLabel": "Name des Teilnehmenden",
+    "participantNameRequired": "Bitte geben Sie den Namen des Teilnehmenden an.",
+    "submit": "Feedback senden",
+    "submitting": "Wird gesendet …",
+    "skip": "Überspringen",
+    "trustHeading": "Eine kurze Frage noch",
+    "sentTitle": "Feedback angekommen",
+    "sentText": "Vielen Dank. Ihre Rückmeldung ist gespeichert.",
+    "missingTitle": "Es fehlen noch Antworten",
+    "missingText": "Bitte beantworten Sie alle Fragen, bevor Sie senden.",
+    "errorAllRequired": "Bitte alle Fragen beantworten.",
+    "notFound": "Diesen Feedback-Bogen gibt es nicht."
+  },
   "reference": {
     "orgName": "Referenz-Auswertung",
     "surveyTitle": "Interne Resonanzbefragung (Referenzlauf)",
@@ -219,6 +234,27 @@
       "rowAffected": "Betroffene Teilnehmende",
       "rowAffectedNamed": "Betroffene",
       "rowTimeframe": "Zeitraum"
+    },
+    "feedback": {
+      "title": "Feedback zur Wirkung",
+      "description": "Misst, ob die Befragung Vertrauen geschaffen hat und ob die Maßnahmen der Roadmap gewirkt haben. Der Gesamtwert der drei Fragen wird in vier Wirkungsstufen eingeordnet.",
+      "linksHint": "Den Vertrauens-Frage stellt die App direkt nach der Befragung auf der Danke-Seite. Die beiden Bögen am Ende der Journey werden über diese Links geteilt.",
+      "copyLink": "Link kopieren",
+      "empty": "Noch kein Feedback. Sobald die erste Rückmeldung eingeht, erscheinen hier die Werte.",
+      "answersCountOne": "1 Rückmeldung",
+      "answersCountMany": "{count} Rückmeldungen",
+      "tableCaption": "Mittelwert je Frage auf der Skala von 1 bis 5. Dieselben Zahlen wie in den Balken.",
+      "colQuestion": "Frage",
+      "colMean": "Ø",
+      "colDistribution": "Verteilung",
+      "totalLabel": "Ø Gesamtwert",
+      "totalRange": "von 3 bis 15",
+      "levelLabel": "Wirkungsstufe",
+      "levelTableCaption": "Die vier Wirkungsstufen des Kunden. Der Gesamtwert der drei Fragen entscheidet, welche gilt.",
+      "colLevel": "Stufe",
+      "colRange": "Punkte",
+      "colInterpretation": "Interpretation",
+      "showLevels": "Die vier Wirkungsstufen anzeigen"
     },
     "items": {
       "title": "Antworten-Übersicht",
@@ -359,6 +395,86 @@
       "F1": "Unser Tagesgeschäft ist bereits so dicht, dass ich schlichtweg keine Kapazität für zusätzliche Transformations-Projekte habe.",
       "F2": "Ich fühle mich durch die Geschwindigkeit und die Menge der gleichzeitigen Veränderungen im Unternehmen emotional erschöpft.",
       "F3": "Es fehlen uns die personellen, finanziellen und zeitlichen Ressourcen, um diese neue Strategie überhaupt sauber umsetzen zu können."
+    }
+  },
+  "feedback": {
+    "trust": {
+      "title": "1.A Teilnehmer-Feedback",
+      "when": "Direkt nach der Resonanzbefragung",
+      "description": "Eine Frage. Ziel: psychologische Sicherheit und Vertrauen.",
+      "questions": {
+        "q1": {
+          "label": "Gehört werden",
+          "text": "Wie sehr hatten Sie durch die proaktive Resonanzbefragung das Gefühl, dass Ihre Bedürfnisse, Belastungen und Bedenken im Wandel wirklich gehört und ernst genommen werden?"
+        }
+      }
+    },
+    "journey": {
+      "title": "1.B Teilnehmer-Feedback",
+      "when": "Am Ende der Journey",
+      "description": "Drei Fragen: Klarheit, Wirkung und Stabilität.",
+      "questions": {
+        "q1": {
+          "label": "Klarheit",
+          "text": "Wie klar war für Sie der Entwicklungsweg (Intervention, Rollen, Story)?"
+        },
+        "q2": {
+          "label": "Wirkung",
+          "text": "Wie sehr hat die Maßnahme Ihre Belastung, Konflikte oder Unsicherheiten reduziert?"
+        },
+        "q3": {
+          "label": "Stabilität",
+          "text": "Wie stabil fühlen Sie sich in Ihrer neuen Rolle (z. B. Resilienz-Champion, Beziehungs-Gestalter)?"
+        }
+      }
+    },
+    "leader": {
+      "title": "2. Führungskraft-Feedback",
+      "when": "Am Ende der Journey",
+      "description": "Drei Fragen an die Verantwortlichen: sichtbare Veränderung, reduziertes Risiko und Teamwirkung.",
+      "questions": {
+        "q1": {
+          "label": "Veränderung sichtbar?",
+          "text": "Wie deutlich ist die positive Veränderung im Verhalten oder in der Zusammenarbeit erkennbar?"
+        },
+        "q2": {
+          "label": "Risiko reduziert?",
+          "text": "Wie stark hat sich das ursprüngliche Risiko (z. B. Überlastung, Status-Konflikte) reduziert?"
+        },
+        "q3": {
+          "label": "Teamwirkung",
+          "text": "Wie sehr hat die Entwicklung des Teilnehmers die Teamstabilität verbessert?"
+        }
+      }
+    },
+    "scale": {
+      "1": "gar nicht",
+      "2": "wenig",
+      "3": "teilweise",
+      "4": "überwiegend",
+      "5": "voll und ganz"
+    },
+    "levels": {
+      "low": {
+        "name": "Niedrige Wirkung",
+        "range": "3–6 Punkte",
+        "interpretation": "Die Intervention hat kaum gegriffen. Risiko bleibt bestehen."
+      },
+      "moderate": {
+        "name": "Mittlere Wirkung",
+        "range": "7–10 Punkte",
+        "interpretation": "Teilweise Verbesserung, aber instabil. Risiko reduziert sich nur leicht."
+      },
+      "high": {
+        "name": "Hohe Wirkung",
+        "range": "11–13 Punkte",
+        "interpretation": "Intervention wirkt klar. Verhalten und Stabilität verbessern sich sichtbar."
+      },
+      "veryHigh": {
+        "name": "Sehr hohe Wirkung",
+        "range": "14–15 Punkte",
+        "interpretation": "Intervention voll wirksam. Risiko praktisch neutralisiert."
+      }
     }
   },
   "profiles": {

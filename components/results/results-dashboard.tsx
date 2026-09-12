@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { FeedbackSection } from "@/components/results/feedback-section";
 import { Fruehwarnsystem } from "@/components/results/fruehwarnsystem";
 import { ItemSummary } from "@/components/results/item-summary";
 import { MischprofilMatrix } from "@/components/results/mischprofil-matrix";
@@ -40,7 +41,7 @@ export function ResultsDashboard({
     refetchInterval: POLL_INTERVAL_MS,
   });
 
-  const { results, survey } = data;
+  const { feedback, results, survey } = data;
 
   return (
     <div className="space-y-10">
@@ -83,6 +84,8 @@ export function ResultsDashboard({
           <ProfileGlossary />
           <MischprofilMatrix results={results} />
           <Roadmap results={results} mode={survey.mode} />
+          {/* The feedback measures whether those measures worked, so it follows them. */}
+          <FeedbackSection feedback={feedback} feedbackUrls={survey.feedbackUrls} />
           <ItemSummary results={results} />
           <ProfileWeighting results={results} />
           <ParticipantsTable results={results} mode={survey.mode} />

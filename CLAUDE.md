@@ -59,6 +59,9 @@ In scope:
   the source material.
 - A read-only reference organization that holds the same 15 responses and shows, value by
   value, that the app calculates what the client's CSV sheets calculate (section 10).
+- The three feedback instruments of his Feedback sheet: one trust question right after the
+  survey, and two three-question forms at the end of the journey, one for the participant
+  and one for the responsible manager (section 6a).
 
 Out of scope for the demo (do not build):
 
@@ -153,10 +156,12 @@ app/
   orgs/[orgId]/                 survey list for one organization
   orgs/[orgId]/surveys/[surveyId]/   results dashboard
   s/[token]/                    public survey
-  s/[token]/danke/              thank-you page
+  s/[token]/danke/              thank-you page, carries the trust question
+  f/[token]/[kind]/             the feedback forms: trust, journey, leader
   api/orgs/[orgId]/surveys/[surveyId]/results/route.ts   JSON for polling
 lib/
   domain/profiles.ts  questionnaire.ts  mapping.ts  scoring.ts  scoring.test.ts
+  domain/feedback.ts  feedback.test.ts   the three feedback forms and the four levels
   i18n/index.ts  de.json  en.json       every text of the app, one file per language
   db/schema.ts  index.ts  seed.ts
   auth.ts  auth-client.ts
@@ -235,6 +240,36 @@ what the 15 real responses answer. The docx and thesis contain an older question
 | F1 | Unser Tagesgeschäft ist bereits so dicht, dass ich schlichtweg keine Kapazität für zusätzliche Transformations-Projekte habe. |
 | F2 | Ich fühle mich durch die Geschwindigkeit und die Menge der gleichzeitigen Veränderungen im Unternehmen emotional erschöpft. |
 | F3 | Es fehlen uns die personellen, finanziellen und zeitlichen Ressourcen, um diese neue Strategie überhaupt sauber umsetzen zu können. |
+
+## 6a. Domain: the three feedback forms
+
+Source: the Feedback sheet of `Diagnose Tool English.xlsx`. It measures whether the
+survey created trust and whether the measures of the Roadmap worked. Everything lives in
+`lib/domain/feedback.ts`; the wording is in `lib/i18n` under `feedback`.
+
+| Key | The client's name | When | Questions |
+|---|---|---|---|
+| `trust` | 1.A Teilnehmer-Feedback | Direkt nach der Resonanzbefragung | 1: „Gehört werden" |
+| `journey` | 1.B Teilnehmer-Feedback | Am Ende der Journey | 3: Klarheit, Wirkung, Stabilität |
+| `leader` | 2. Führungskraft-Feedback | Am Ende der Journey | 3: Veränderung sichtbar?, Risiko reduziert?, Teamwirkung |
+
+All questions use the same 1–5 scale. The sheet gives no labels for it, so the app uses a
+degree scale: 1 „gar nicht", 2 „wenig", 3 „teilweise", 4 „überwiegend", 5 „voll und ganz"
+(open question 18).
+
+The three questions of `journey` and `leader` add up to 3 to 15 points, and that total
+falls into one of his four **Wirkungsstufen**. The dashboard shows the level of the mean
+total, rounded to whole points.
+
+| Stufe | Punkte | Interpretation |
+|---|---|---|
+| Niedrige Wirkung | 3–6 | Die Intervention hat kaum gegriffen. Risiko bleibt bestehen. |
+| Mittlere Wirkung | 7–10 | Teilweise Verbesserung, aber instabil. Risiko reduziert sich nur leicht. |
+| Hohe Wirkung | 11–13 | Intervention wirkt klar. Verhalten und Stabilität verbessern sich sichtbar. |
+| Sehr hohe Wirkung | 14–15 | Intervention voll wirksam. Risiko praktisch neutralisiert. |
+
+`trust` asks one question, so it has no total and no level: the dashboard shows its mean
+on the 1–5 scale.
 
 ## 7. Domain: scoring one participant
 
@@ -446,7 +481,10 @@ The seed script creates: the admin user from `ADMIN_EMAIL`/`ADMIN_PASSWORD`; a d
 organization named by `seed.demoOrganizationName` in `lib/i18n` („Muster GmbH" in German,
 "Example Ltd" in English) with its login from `DEMO_ORG_EMAIL`/`DEMO_ORG_PASSWORD`; one
 anonymous survey titled `questionnaire.title` holding the 15 responses with their original
-timestamps; and the reference organization below. The client can then demo the dashboard
+timestamps, plus 22 made-up feedback rows so the feedback section shows numbers during a
+demo (12 trust, 6 journey, 4 leader; the totals land in two different Wirkungsstufen on
+purpose); and the reference organization below. The client's example run has no feedback
+of its own, which is why the reference organization gets none. The client can then demo the dashboard
 without collecting answers first.
 
 ### The reference organization
@@ -485,6 +523,9 @@ survey         id, organizationId (fk, cascade), title, mode ('anonymous' | 'nam
                token (unique, url-safe, used in /s/[token]), createdAt
 response       id, surveyId (fk, cascade), participantName (null in anonymous mode),
                submittedAt, a1 a2 a3 b1 b2 b3 c1 c2 c3 d1 d2 d3 e1 e2 e3 f1 f2 f3 (smallint 1–5)
+feedback       id, surveyId (fk, cascade), kind ('trust' | 'journey' | 'leader'),
+               participantName (null unless named mode, always null for 'trust'),
+               submittedAt, q1 (smallint 1–5), q2 q3 (smallint 1–5, null for 'trust')
 ```
 
 Nothing else is stored. No IP addresses, no user agents, no computed results (they are
@@ -551,7 +592,18 @@ Mobile first. Must work at 320 px. No login, no cookies beyond what Next.js need
    enforcement.
 
 ### `/s/[token]/danke`
-Thank-you text, no further navigation. Nothing about results.
+Thank-you text, no further navigation. Nothing about results. Below it the app asks the
+one trust question of feedback 1.A, with a „Überspringen" button that removes it. It never
+asks for a name, not even in named mode, because it is a pulse about the survey itself.
+
+### `/f/[token]/[kind]` feedback forms
+The same token as the survey; `kind` is `journey` or `leader` (`trust` also works, but the
+app asks that one on the thank-you page). Organization name, the title and description of
+the form, the privacy note of the survey's mode, then the questions on a 1–5 scale. In
+named mode `journey` asks „Ihr Name" and `leader` asks „Name des Teilnehmenden". The
+organization shares these two links itself, at the end of the journey; the results
+dashboard offers them with a copy button. The reference organization shows the read-only
+notice instead of a form.
 
 ## 13. Results dashboard
 
@@ -566,7 +618,8 @@ Antwort eingeht, erscheinen hier die Ergebnisse", and the quiet volcano with its
 
 Sections, top to bottom. Protocol items 9, 10, 14 and 16 set this order: first the
 warning system as a whole, then what the profiles mean, then the Mischprofile and their
-measures, then the answers, and the two detail sections closed at the end.
+measures, then whether those measures worked, then the answers, and the two detail
+sections closed at the end.
 
 1. **Header**: survey title, mode badge, share panel (public URL, copy button, QR code).
 2. **Frühwarnsystem**: the heading comes first because the client counts the Ampel and
@@ -604,10 +657,16 @@ measures, then the answers, and the two detail sections closed at the end.
    `nameDative` and `rolleDative` fields of `lib/domain/profiles.ts`. Each role carries the
    letter swatch of its profile, so the reader can match left and right. No Magmakammer or
    Symptom rows. No change to the client's Mapping or Roadmap sheets was needed for this.
-6. **Antworten-Übersicht**: per statement the mean and the 1–5 distribution as a small
+6. **Feedback zur Wirkung** (section 6a): three cards side by side, one per instrument,
+   each with its question means and the 1–5 distribution as a small stacked bar. The two
+   three-question forms also show the mean total and its Wirkungsstufe with the client's
+   interpretation, and carry the copy button for their public link. Under the cards a
+   closed `<details>` holds the table of all four Wirkungsstufen. It follows the Roadmap
+   because it measures whether those measures worked.
+7. **Antworten-Übersicht**: per statement the mean and the 1–5 distribution as a small
    horizontal stacked bar, grouped by block with the profile name as group heading.
    Replaces the Google Forms response summary.
-7. **Profile Gewichtung**, closed by default inside a `<details>` (protocol item 16: the
+8. **Profile Gewichtung**, closed by default inside a `<details>` (protocol item 16: the
    client reads the summary without these charts and wants them as detail further down).
    - „Wie oft ein Profil dominant oder zweitdominant ist": one bar pair per profile, both
      bars in that profile's color, the Zweitprofil bar hatched and outlined so the two
@@ -617,7 +676,7 @@ measures, then the answers, and the two detail sections closed at the end.
      value labels with one decimal.
    - „Häufigkeit je Profil": Profil | Dominant | Zweitprofil | Ø gewichtet. The text
      alternative for both charts.
-8. **Teilnehmer**, last: TanStack Table inside a `<details>` that is closed in anonymous
+9. **Teilnehmer**, last: TanStack Table inside a `<details>` that is closed in anonymous
    surveys and open in named ones, because the single rows are what a team lead needs and
    what everyone else scrolls past. Columns: Teilnehmer (name in named mode, otherwise
    „Teilnehmer n" by submission order), Zeitpunkt, weighted A–F (one decimal, raw block sum
@@ -643,7 +702,7 @@ runtime; copy what the app needs (the seed rows) into the project.
 | `Widerstand Diagnose Tool Protokoll 09-09-26.docx` | Client's protocol, second round (Stand 08.09.2026): repeats requests 1–5 and adds items 6–13 after the first demo, with screenshots of the pages he is commenting on. |
 | `Widerstand Diagnose Tool Protokoll 10-09-2026.docx` | Client's protocol, third round (Stand 10.09.2026): items 14–18 after the second demo. Frühwarnsystem heading above the Ampel cards, volcano in one colour, badges of equal size, weighting charts as collapsed detail, „Mischprofil-Matrix", „Change-Risiko-Roadmap" with two chapters side by side, and his question whether the sheets have to change for it (they do not). |
 | `Widerstand Diagnose Tool Protokoll 09-2026.docx` | Client's protocol, fourth round (2026-09-12). It repeats items 1–18 and adds 19–22: complete the Intervention on every Mischprofil card, replace the wrong volcano text with his own wording, move tables down as collapsed detail, and let the texts use the full page width. None of the four is built yet; see section 15. |
-| `Diagnose Tool English.xlsx` | The client's own German/English translation sheet (2026-09-12), one sheet per area: Fragen Katalog, Profile-Auswertung-Gewichtung, Frühwarnsystem, Mapping (all 30 ordered pairs, every column), Feedback, Vorstellungstext, Demo Texte. It is the source of `lib/i18n/en.json`. |
+| `Diagnose Tool English.xlsx` | The client's own German/English translation sheet (2026-09-12), one sheet per area: Fragen Katalog, Profile-Auswertung-Gewichtung, Frühwarnsystem, Mapping (all 30 ordered pairs, every column), Feedback, Vorstellungstext, Demo Texte. It is the source of `lib/i18n/en.json`, and its Feedback sheet is the source of section 6a. Vorstellungstext is not used yet. |
 | `auswertung example/*.csv` | The 15-participant run, one CSV per sheet (section 10). |
 | `updated auswertung example/*.csv` | The same 15 responses exported again in September 2026. Responses, block sums, weighted values and Frühwarnsystem are byte-identical to the older export; only Mapping and Roadmap changed, and they carry the two new columns of section 8. |
 | `thesis/Vom Widerstand zur Strategie ... es-ES_1.pdf` | The client's certification thesis in Spanish: theory, volcano model, six profiles, Ampel, transfer architecture. Background only. Its content is copyrighted by the client; the app may use the model because the client commissioned it. |
@@ -709,7 +768,23 @@ Decisions taken so the build can start. Each one is cheap to change later.
     replacement himself and it stands in the Demo Texte sheet of `Diagnose Tool
     English.xlsx`, in German and English. Item 21: move the remaining tables down as
     collapsed detail. Item 22: the texts should use the full width of the page.
-18. **The profile „Muster" column, answered by the English sheet**: his
+18. **The feedback forms, decisions taken while building them (section 6a)**:
+    - The sheet gives no wording for the 1–5 scale, so the app uses a degree scale
+      („gar nicht" … „voll und ganz"). Ask the client whether he wants other words.
+    - The trust question stays anonymous even in a named survey. It is a pulse about the
+      survey itself, and the person has just given their name one screen earlier.
+    - `journey` and `leader` follow the survey's own mode: in a named survey `journey`
+      asks the participant's name and `leader` asks which participant is being assessed.
+      In an anonymous survey neither asks for a name, so the leader form is then a
+      judgement about the group rather than about one person. Confirm with him.
+    - The two end-of-journey forms are separate public links that the organization shares
+      when the journey ends. The app does not send them, and it does not track who was
+      invited.
+    - The Wirkungsstufe shown per form is the level of the **mean** total across all
+      answers, rounded to whole points. His sheet defines the bands for one person's
+      total; using the mean is our reading for a group. Confirm.
+    - The feedback rows in the seed are invented. They exist only so a demo shows numbers.
+19. **The profile „Muster" column, answered by the English sheet**: his
     Profile-Auswertung-Gewichtung sheet gives his own wording for the Muster of every
     profile — A „Angst vor Bedeutsamkeitsverlust", D „Werte- & Identitäts-Konflikt",
     E „Macht- & Einfluss-Verlust", F „Ressourcen- & Energie-Mangel" — and it differs from

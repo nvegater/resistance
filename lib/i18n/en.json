@@ -141,6 +141,21 @@
     "title": "Thank you",
     "text": "Your answers have arrived. You can close this window now."
   },
+  "feedbackForm": {
+    "intro": "Your feedback shows whether the measures work. It takes less than a minute.",
+    "participantNameLabel": "Name of the participant",
+    "participantNameRequired": "Please enter the name of the participant.",
+    "submit": "Send feedback",
+    "submitting": "Sending …",
+    "skip": "Skip",
+    "trustHeading": "One short question",
+    "sentTitle": "Feedback received",
+    "sentText": "Thank you. Your feedback has been saved.",
+    "missingTitle": "Some answers are still missing",
+    "missingText": "Please answer every question before you send.",
+    "errorAllRequired": "Please answer every question.",
+    "notFound": "This feedback form does not exist."
+  },
   "reference": {
     "orgName": "Reference evaluation",
     "surveyTitle": "Internal Resonance Survey (reference run)",
@@ -219,6 +234,27 @@
       "rowAffected": "Participants affected",
       "rowAffectedNamed": "Affected",
       "rowTimeframe": "Timeframe"
+    },
+    "feedback": {
+      "title": "Impact feedback",
+      "description": "Measures whether the survey created trust and whether the measures of the roadmap worked. The total of the three questions falls into one of four impact levels.",
+      "linksHint": "The app asks the trust question on the thank-you page right after the survey. The two forms for the end of the journey are shared through these links.",
+      "copyLink": "Copy link",
+      "empty": "No feedback yet. As soon as the first answer arrives, the values appear here.",
+      "answersCountOne": "1 answer",
+      "answersCountMany": "{count} answers",
+      "tableCaption": "Mean per question on the scale from 1 to 5. The same numbers as in the bars.",
+      "colQuestion": "Question",
+      "colMean": "Ø",
+      "colDistribution": "Distribution",
+      "totalLabel": "Ø total",
+      "totalRange": "from 3 to 15",
+      "levelLabel": "Impact level",
+      "levelTableCaption": "The customer's four impact levels. The total of the three questions decides which one applies.",
+      "colLevel": "Level",
+      "colRange": "Points",
+      "colInterpretation": "Interpretation",
+      "showLevels": "Show the four impact levels"
     },
     "items": {
       "title": "Answer overview",
@@ -359,6 +395,86 @@
       "F1": "Our daily business is already so dense that I simply have no capacity for additional transformation projects.",
       "F2": "I feel emotionally exhausted by the speed and amount of simultaneous changes happening in the company.",
       "F3": "We lack the personnel, financial and time resources needed to implement this new strategy properly."
+    }
+  },
+  "feedback": {
+    "trust": {
+      "title": "1.A Participant feedback",
+      "when": "Immediately after the resonance survey",
+      "description": "One question. Goal: psychological safety and trust.",
+      "questions": {
+        "q1": {
+          "label": "Being heard",
+          "text": "How strongly did the proactive resonance survey give you the feeling that your needs, burdens and concerns during the change were truly heard and taken seriously?"
+        }
+      }
+    },
+    "journey": {
+      "title": "1.B Participant feedback",
+      "when": "At the end of the journey",
+      "description": "Three questions: clarity, impact and stability.",
+      "questions": {
+        "q1": {
+          "label": "Clarity",
+          "text": "How clear was the development path for you (intervention, roles, story)?"
+        },
+        "q2": {
+          "label": "Impact",
+          "text": "To what extent did the intervention reduce your burden, conflicts or uncertainties?"
+        },
+        "q3": {
+          "label": "Stability",
+          "text": "How stable do you feel in your new role (e.g. Resilience Champion, Relationship Builder)?"
+        }
+      }
+    },
+    "leader": {
+      "title": "2. Leader feedback",
+      "when": "At the end of the journey",
+      "description": "Three questions for the people responsible: visible change, reduced risk and team impact.",
+      "questions": {
+        "q1": {
+          "label": "Visible change?",
+          "text": "How clearly is the positive change in behavior or collaboration observable?"
+        },
+        "q2": {
+          "label": "Risk reduced?",
+          "text": "To what extent has the original risk (e.g. overload, status conflicts) decreased?"
+        },
+        "q3": {
+          "label": "Team impact",
+          "text": "To what extent has the participant's development improved team stability?"
+        }
+      }
+    },
+    "scale": {
+      "1": "not at all",
+      "2": "a little",
+      "3": "partly",
+      "4": "mostly",
+      "5": "completely"
+    },
+    "levels": {
+      "low": {
+        "name": "Low impact",
+        "range": "3–6 points",
+        "interpretation": "The intervention has barely taken effect. The risk remains."
+      },
+      "moderate": {
+        "name": "Moderate impact",
+        "range": "7–10 points",
+        "interpretation": "Partial improvement, but unstable. The risk is only slightly reduced."
+      },
+      "high": {
+        "name": "High impact",
+        "range": "11–13 points",
+        "interpretation": "The intervention is clearly effective. Behavior and stability visibly improve."
+      },
+      "veryHigh": {
+        "name": "Very high impact",
+        "range": "14–15 points",
+        "interpretation": "The intervention is fully effective. The risk is practically neutralized."
+      }
     }
   },
   "profiles": {

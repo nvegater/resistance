@@ -256,7 +256,8 @@ export function SurveyFlow({
         {block.items.map((item) => (
           <ScaleQuestion
             key={item.code}
-            code={item.code}
+            name={item.code}
+            label={item.code}
             text={item.text}
             value={answers[item.code]}
             onChange={(value) => setAnswer(item.code, value)}

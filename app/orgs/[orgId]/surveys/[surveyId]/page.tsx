@@ -9,11 +9,17 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getBaseUrl } from "@/lib/base-url";
 import { checkAgainstReference } from "@/lib/domain/reference-check";
+import { evaluateFeedback } from "@/lib/domain/feedback";
 import { evaluateSurvey } from "@/lib/domain/scoring";
 import { fill, t } from "@/lib/i18n";
-import { getOrganization, getSurvey, listParticipantInputs } from "@/lib/queries";
+import {
+  getOrganization,
+  getSurvey,
+  listFeedbackInputs,
+  listParticipantInputs,
+} from "@/lib/queries";
 import { isReferenceOrganization, REFERENCE_BADGE } from "@/lib/reference-org";
-import type { ResultsPayload } from "@/lib/results";
+import { publicLinks, type ResultsPayload } from "@/lib/results";
 import { requireOrgAccess } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +35,9 @@ export default async function ResultsPage({
   if (!organization || !survey || survey.organizationId !== orgId) notFound();
 
   const participants = await listParticipantInputs(surveyId);
-  const publicUrl = `${await getBaseUrl()}/s/${survey.token}`;
+  const feedbackEntries = await listFeedbackInputs(surveyId);
+  const links = publicLinks(await getBaseUrl(), survey.token);
+  const publicUrl = links.publicUrl;
   const results = evaluateSurvey(participants);
   const isReference = isReferenceOrganization(orgId);
 
@@ -39,9 +47,10 @@ export default async function ResultsPage({
       title: survey.title,
       mode: survey.mode,
       token: survey.token,
-      publicUrl,
+      ...links,
     },
     results,
+    feedback: evaluateFeedback(feedbackEntries),
     generatedAt: new Date().toISOString(),
   };
 

@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { getBaseUrl } from "@/lib/base-url";
+import { evaluateFeedback } from "@/lib/domain/feedback";
 import { evaluateSurvey } from "@/lib/domain/scoring";
 import { t } from "@/lib/i18n";
-import { getSurvey, listParticipantInputs } from "@/lib/queries";
-import type { ResultsPayload } from "@/lib/results";
+import { getSurvey, listFeedbackInputs, listParticipantInputs } from "@/lib/queries";
+import { publicLinks, type ResultsPayload } from "@/lib/results";
 import { getCurrentUser } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,7 @@ export async function GET(
   }
 
   const participants = await listParticipantInputs(surveyId);
+  const feedbackEntries = await listFeedbackInputs(surveyId);
 
   const payload: ResultsPayload = {
     survey: {
@@ -35,9 +37,10 @@ export async function GET(
       title: survey.title,
       mode: survey.mode,
       token: survey.token,
-      publicUrl: `${await getBaseUrl()}/s/${survey.token}`,
+      ...publicLinks(await getBaseUrl(), survey.token),
     },
     results: evaluateSurvey(participants),
+    feedback: evaluateFeedback(feedbackEntries),
     generatedAt: new Date().toISOString(),
   };
 

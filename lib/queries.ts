@@ -2,8 +2,9 @@
 
 import { desc, eq, sql } from "drizzle-orm";
 import { db } from "./db";
-import { organization, response, survey, user } from "./db/schema";
+import { feedback, organization, response, survey, user } from "./db/schema";
 import { columnsToAnswers } from "./db/answers";
+import type { FeedbackInput } from "./domain/feedback";
 import type { ParticipantInput } from "./domain/scoring";
 
 export type OrganizationRow = {
@@ -103,5 +104,24 @@ export async function listParticipantInputs(
     name: row.participantName,
     submittedAt: row.submittedAt.toISOString(),
     answers: columnsToAnswers(row),
+  }));
+}
+
+/** Every feedback form of one survey, ready for the feedback module. */
+export async function listFeedbackInputs(surveyId: string): Promise<FeedbackInput[]> {
+  const rows = await db
+    .select()
+    .from(feedback)
+    .where(eq(feedback.surveyId, surveyId))
+    .orderBy(feedback.submittedAt);
+
+  return rows.map((row) => ({
+    id: row.id,
+    kind: row.kind,
+    name: row.participantName,
+    submittedAt: row.submittedAt.toISOString(),
+    q1: row.q1,
+    q2: row.q2,
+    q3: row.q3,
   }));
 }
