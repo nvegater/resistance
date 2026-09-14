@@ -7,6 +7,7 @@ import { ITEM_CODES, isValidAnswer, type Answers } from "@/lib/domain/questionna
 import { t } from "@/lib/i18n";
 import { getSurveyByToken } from "@/lib/queries";
 import { isReferenceOrganization } from "@/lib/reference-org";
+import { hasQuestionnaire } from "@/lib/survey-kind";
 
 export type SubmitResult = { ok: true } | { ok: false; error: string };
 
@@ -17,6 +18,8 @@ export async function submitResponseAction(input: {
 }): Promise<SubmitResult> {
   const survey = await getSurveyByToken(input.token);
   if (!survey) return { ok: false, error: t.survey.errorGone };
+  // A leader survey has no questionnaire, so it takes no responses.
+  if (!hasQuestionnaire(survey.kind)) return { ok: false, error: t.survey.errorGone };
   if (isReferenceOrganization(survey.organizationId)) {
     return {
       ok: false,

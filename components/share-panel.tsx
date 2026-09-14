@@ -9,17 +9,29 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { fill, t } from "@/lib/i18n";
 
-/** The public survey link with a copy button and a QR code to scan on a phone. */
-export function SharePanel({ url, title }: { url: string; title: string }) {
+/** The public link with a copy button and a QR code to scan on a phone. */
+export function SharePanel({
+  url,
+  title,
+  linkLabel = t.share.linkLabel,
+  hint = t.share.hint,
+}: {
+  url: string;
+  title: string;
+  /** What the link opens. The default names the survey; a leader survey names its form. */
+  linkLabel?: string;
+  /** Who should receive the link. */
+  hint?: string;
+}) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
       <div className="flex-1 space-y-2">
-        <Label htmlFor="share-url">{t.share.linkLabel}</Label>
+        <Label htmlFor="share-url">{linkLabel}</Label>
         <div className="flex gap-2">
           <Input id="share-url" readOnly value={url} className="h-10 font-mono text-xs" />
           <CopyButton value={url} label={t.share.copyLink} />
         </div>
-        <p className="text-sm text-muted-foreground">{t.share.hint}</p>
+        <p className="text-sm text-muted-foreground">{hint}</p>
       </div>
       <figure className="flex flex-col items-center gap-1">
         <div className="rounded-lg border bg-white p-2">

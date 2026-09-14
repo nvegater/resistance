@@ -8,13 +8,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getBaseUrl } from "@/lib/base-url";
 import { fill, LOCALE, t } from "@/lib/i18n";
-import { getOrganization, listSurveys } from "@/lib/queries";
+import { getOrganization, listSurveys, type SurveyRow } from "@/lib/queries";
 import { isReferenceOrganization, REFERENCE_BADGE } from "@/lib/reference-org";
+import { publicLinks } from "@/lib/results";
 import { requireOrgAccess } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
 const dateFormat = new Intl.DateTimeFormat(LOCALE, { dateStyle: "medium" });
+
+/** „12 Antworten“ for a resonance survey, „4 Rückmeldungen“ for a leader survey. */
+function countLabel(survey: SurveyRow): string {
+  if (survey.kind === "leader") {
+    return survey.feedbackCount === 1
+      ? t.results.feedback.answersCountOne
+      : fill(t.results.feedback.answersCountMany, { count: survey.feedbackCount });
+  }
+  return survey.responseCount === 1
+    ? t.app.responseOne
+    : fill(t.app.responseMany, { count: survey.responseCount });
+}
 
 export default async function OrganizationPage({ params }: PageProps<"/orgs/[orgId]">) {
   const { orgId } = await params;
@@ -22,7 +35,12 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
   const organization = await getOrganization(orgId);
   if (!organization) notFound();
 
-  const surveys = await listSurveys(orgId);
+  const isAdmin = user.role === "admin";
+  // Leader surveys belong to the admin: only the admin creates them and sends their
+  // link, so an org user does not see them in the list.
+  const surveys = (await listSurveys(orgId)).filter(
+    (survey) => isAdmin || survey.kind === "resonance",
+  );
   const baseUrl = await getBaseUrl();
   const isReference = isReferenceOrganization(orgId);
 
@@ -42,7 +60,9 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
               {isReference ? t.reference.orgDescription : t.org.description}
             </p>
           </div>
-          {isReference ? null : <CreateSurveyDialog organizationId={orgId} />}
+          {isReference ? null : (
+            <CreateSurveyDialog organizationId={orgId} canCreateLeaderSurvey={isAdmin} />
+          )}
         </div>
 
         {surveys.length === 0 ? (
@@ -57,22 +77,24 @@ export default async function OrganizationPage({ params }: PageProps<"/orgs/[org
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {surveys.map((survey) => {
-              const publicUrl = `${baseUrl}/s/${survey.token}`;
+              const { publicUrl } = publicLinks(baseUrl, survey.token, survey.kind);
               return (
                 <li key={survey.id}>
                   <Card className="h-full">
                     <CardHeader>
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <h2 className="text-lg font-medium">{survey.title}</h2>
-                        <Badge variant={survey.mode === "named" ? "default" : "secondary"}>
-                          {survey.mode === "named" ? t.app.modeNamed : t.app.modeAnonymous}
-                        </Badge>
+                        {/* A leader survey is always named, so its badge says only what it is. */}
+                        {survey.kind === "leader" ? (
+                          <Badge variant="outline">{t.org.leaderBadge}</Badge>
+                        ) : (
+                          <Badge variant={survey.mode === "named" ? "default" : "secondary"}>
+                            {survey.mode === "named" ? t.app.modeNamed : t.app.modeAnonymous}
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {survey.responseCount === 1
-                          ? t.app.responseOne
-                          : fill(t.app.responseMany, { count: survey.responseCount })}{" "}
-                        ·{" "}
+                        {countLabel(survey)} ·{" "}
                         {fill(t.org.createdOn, {
                           date: dateFormat.format(survey.createdAt),
                         })}

@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { AmpelBadge } from "@/components/domain/ampel";
 import { ProfileTag } from "@/components/domain/profile";
+import { ResultsSection } from "@/components/results/results-section";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PROFILES } from "@/lib/domain/profiles";
 import type { RoadmapCard, SurveyResults } from "@/lib/domain/scoring";
@@ -16,16 +17,11 @@ export function Roadmap({
   mode: "anonymous" | "named";
 }) {
   return (
-    <section aria-labelledby="roadmap-titel" className="space-y-4">
-      <div>
-        <h2 id="roadmap-titel" className="text-xl font-semibold tracking-tight">
-          {t.results.roadmap.title}
-        </h2>
-        <p className="mt-1 max-w-prose text-muted-foreground">
-          {t.results.roadmap.description}
-        </p>
-      </div>
-
+    <ResultsSection
+      id="roadmap-titel"
+      title={t.results.roadmap.title}
+      description={t.results.roadmap.description}
+    >
       {results.roadmap.length === 0 ? (
         <p className="text-muted-foreground">{t.results.roadmap.pending}</p>
       ) : (
@@ -37,7 +33,7 @@ export function Roadmap({
           ))}
         </ul>
       )}
-    </section>
+    </ResultsSection>
   );
 }
 

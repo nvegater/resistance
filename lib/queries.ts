@@ -6,6 +6,7 @@ import { feedback, organization, response, survey, user } from "./db/schema";
 import { columnsToAnswers } from "./db/answers";
 import type { FeedbackInput } from "./domain/feedback";
 import type { ParticipantInput } from "./domain/scoring";
+import type { SurveyKind } from "./survey-kind";
 
 export type OrganizationRow = {
   id: string;
@@ -45,10 +46,14 @@ export async function getOrganization(organizationId: string) {
 export type SurveyRow = {
   id: string;
   title: string;
+  kind: SurveyKind;
   mode: "anonymous" | "named";
   token: string;
   createdAt: Date;
+  /** Answers to the 18 statements. Always 0 for a leader survey. */
   responseCount: number;
+  /** Submitted feedback forms. This is the count a leader survey shows. */
+  feedbackCount: number;
 };
 
 export async function listSurveys(organizationId: string): Promise<SurveyRow[]> {
@@ -56,13 +61,16 @@ export async function listSurveys(organizationId: string): Promise<SurveyRow[]> 
     .select({
       id: survey.id,
       title: survey.title,
+      kind: survey.kind,
       mode: survey.mode,
       token: survey.token,
       createdAt: survey.createdAt,
-      responseCount: sql<number>`count(${response.id})::int`,
+      responseCount: sql<number>`count(distinct ${response.id})::int`,
+      feedbackCount: sql<number>`count(distinct ${feedback.id})::int`,
     })
     .from(survey)
     .leftJoin(response, eq(response.surveyId, survey.id))
+    .leftJoin(feedback, eq(feedback.surveyId, survey.id))
     .where(eq(survey.organizationId, organizationId))
     .groupBy(survey.id)
     .orderBy(desc(survey.createdAt));
@@ -78,6 +86,7 @@ export async function getSurveyByToken(token: string) {
     .select({
       id: survey.id,
       title: survey.title,
+      kind: survey.kind,
       mode: survey.mode,
       token: survey.token,
       organizationId: survey.organizationId,

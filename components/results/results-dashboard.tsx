@@ -18,16 +18,9 @@ import type { ResultsPayload } from "@/lib/results";
 
 const POLL_INTERVAL_MS = 5000;
 
-export function ResultsDashboard({
-  orgId,
-  surveyId,
-  initialData,
-}: {
-  orgId: string;
-  surveyId: string;
-  initialData: ResultsPayload;
-}) {
-  const { data, dataUpdatedAt, isFetching } = useQuery({
+/** Polls the results route every few seconds. Both dashboards read the same payload. */
+export function useResultsQuery(orgId: string, surveyId: string, initialData: ResultsPayload) {
+  return useQuery({
     queryKey: ["results", orgId, surveyId],
     queryFn: async (): Promise<ResultsPayload> => {
       const response = await fetch(
@@ -40,16 +33,26 @@ export function ResultsDashboard({
     initialData,
     refetchInterval: POLL_INTERVAL_MS,
   });
+}
+
+export function ResultsDashboard({
+  orgId,
+  surveyId,
+  initialData,
+}: {
+  orgId: string;
+  surveyId: string;
+  initialData: ResultsPayload;
+}) {
+  const { data, dataUpdatedAt, isFetching } = useResultsQuery(orgId, surveyId, initialData);
 
   const { feedback, results, survey } = data;
+  const countLabel =
+    results.total === 1 ? t.app.responseOne : fill(t.app.responseMany, { count: results.total });
 
   return (
     <div className="space-y-10">
-      <LiveIndicator
-        updatedAt={dataUpdatedAt}
-        isFetching={isFetching}
-        total={results.total}
-      />
+      <LiveIndicator updatedAt={dataUpdatedAt} isFetching={isFetching} countLabel={countLabel} />
 
       {results.total === 0 ? (
         <Card>
@@ -95,15 +98,16 @@ export function ResultsDashboard({
   );
 }
 
-/** Makes the polling visible: response count plus how long ago the data arrived. */
-function LiveIndicator({
+/** Makes the polling visible: the count plus how long ago the data arrived. */
+export function LiveIndicator({
   updatedAt,
   isFetching,
-  total,
+  countLabel,
 }: {
   updatedAt: number;
   isFetching: boolean;
-  total: number;
+  /** How the count reads, e.g. „12 Antworten“ or „4 Rückmeldungen“. */
+  countLabel: string;
 }) {
   const [secondsAgo, setSecondsAgo] = useState(0);
 
@@ -118,10 +122,10 @@ function LiveIndicator({
 
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-      {/* Only the number of responses is announced. The ticking seconds would
-          otherwise interrupt a screen reader every second. */}
+      {/* Only the count is announced. The ticking seconds would otherwise interrupt a
+          screen reader every second. */}
       <p className="sr-only" aria-live="polite">
-        {total === 1 ? t.app.responseOne : fill(t.app.responseMany, { count: total })}
+        {countLabel}
       </p>
       <span className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-medium text-foreground">
         <span
@@ -131,7 +135,7 @@ function LiveIndicator({
         {t.results.live}
       </span>
       <span aria-hidden="true">
-        {total === 1 ? t.app.responseOne : fill(t.app.responseMany, { count: total })} ·{" "}
+        {countLabel} ·{" "}
         {secondsAgo === 1
           ? t.results.updatedOneSecondAgo
           : fill(t.results.updatedSecondsAgo, { seconds: secondsAgo })}

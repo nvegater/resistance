@@ -27,6 +27,10 @@ export async function GET(
   if (!survey || survey.organizationId !== orgId) {
     return NextResponse.json({ error: t.api.surveyNotFound }, { status: 404 });
   }
+  // Only the admin reads the answers to form 2, the same rule as on the results page.
+  if (survey.kind === "leader" && user.role !== "admin") {
+    return NextResponse.json({ error: t.api.noAccess }, { status: 403 });
+  }
 
   const participants = await listParticipantInputs(surveyId);
   const feedbackEntries = await listFeedbackInputs(surveyId);
@@ -35,9 +39,10 @@ export async function GET(
     survey: {
       id: survey.id,
       title: survey.title,
+      kind: survey.kind,
       mode: survey.mode,
       token: survey.token,
-      ...publicLinks(await getBaseUrl(), survey.token),
+      ...publicLinks(await getBaseUrl(), survey.token, survey.kind),
     },
     results: evaluateSurvey(participants),
     feedback: evaluateFeedback(feedbackEntries),

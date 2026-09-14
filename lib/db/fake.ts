@@ -1,6 +1,8 @@
 // Fills a survey with made-up answers, so a demo does not have to be typed in by hand.
 // Run it with `pnpm db:fake <token> [responses]`, where the token is the part after
-// /s/ in the public link. It only adds rows; nothing existing is touched.
+// /s/ (or /f/) in the public link. A resonance survey gets responses plus trust and
+// journey feedback; a leader survey gets only leader feedback, because it has no
+// questionnaire. It only adds rows; nothing existing is touched.
 
 import { config } from "dotenv";
 import type { Answers } from "../domain/questionnaire";
@@ -46,6 +48,26 @@ async function main() {
   if (isReferenceOrganization(survey.organizationId)) {
     throw new Error("The reference evaluation is read-only and keeps its 15 responses.");
   }
+  console.log(`${survey.organizationName} · ${survey.title} (${survey.kind}, ${survey.mode})`);
+
+  const named = (position: number) =>
+    survey.mode === "named" ? NAMES[position % NAMES.length] : null;
+
+  if (survey.kind === "leader") {
+    // A leader survey holds only the client's form 2, one row per person responsible.
+    await db.insert(feedback).values(
+      Array.from({ length: count }, (_, position) => ({
+        surveyId: survey.id,
+        kind: "leader" as const,
+        participantName: named(position),
+        q1: between(2, 4),
+        q2: between(2, 4),
+        q3: between(3, 5),
+      })),
+    );
+    console.log(`${count} leader forms added.`);
+    return;
+  }
 
   // Every fake participant gets one profile that runs hot and one that runs warm, so
   // the dashboard shows six different profiles instead of one flat average.
@@ -60,7 +82,7 @@ async function main() {
     }
     return {
       surveyId: survey.id,
-      participantName: survey.mode === "named" ? NAMES[position % NAMES.length] : null,
+      participantName: named(position),
       // Spread over the last few days, newest last.
       submittedAt: new Date(Date.now() - (count - position) * 3_600_000),
       ...answersToColumns(answers),
@@ -69,12 +91,9 @@ async function main() {
 
   await db.insert(response).values(rows);
 
-  // Feedback from about two thirds of them, and a handful of end-of-journey forms.
+  // Trust feedback from about two thirds of them, and a handful of end-of-journey forms.
   const trustCount = Math.max(1, Math.round(count * 0.7));
   const journeyCount = Math.max(1, Math.round(count * 0.4));
-  const leaderCount = Math.max(1, Math.round(count * 0.25));
-  const named = (position: number) =>
-    survey.mode === "named" ? NAMES[position % NAMES.length] : null;
 
   await db.insert(feedback).values([
     ...Array.from({ length: trustCount }, () => ({
@@ -93,21 +112,10 @@ async function main() {
       q2: between(3, 5),
       q3: between(3, 5),
     })),
-    ...Array.from({ length: leaderCount }, (_, position) => ({
-      surveyId: survey.id,
-      kind: "leader" as const,
-      participantName: named(position),
-      q1: between(2, 4),
-      q2: between(2, 4),
-      q3: between(3, 5),
-    })),
   ]);
 
-  console.log(`${survey.organizationName} · ${survey.title} (${survey.mode})`);
   console.log(`${count} responses added.`);
-  console.log(
-    `Feedback added: ${trustCount} trust, ${journeyCount} journey, ${leaderCount} leader.`,
-  );
+  console.log(`Feedback added: ${trustCount} trust, ${journeyCount} journey.`);
 }
 
 main()

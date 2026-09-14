@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
 import { AppHeader } from "@/components/app-header";
+import { LeaderFeedbackDashboard } from "@/components/results/leader-feedback-dashboard";
 import { ReferenceCheck } from "@/components/results/reference-check";
 import { ResultsDashboard } from "@/components/results/results-dashboard";
 import { SharePanel } from "@/components/share-panel";
@@ -33,18 +34,21 @@ export default async function ResultsPage({
   const organization = await getOrganization(orgId);
   const survey = await getSurvey(surveyId);
   if (!organization || !survey || survey.organizationId !== orgId) notFound();
+  // A leader survey belongs to the admin: only the admin sends form 2 and reads its answers.
+  if (survey.kind === "leader" && user.role !== "admin") redirect(`/orgs/${orgId}`);
 
   const participants = await listParticipantInputs(surveyId);
   const feedbackEntries = await listFeedbackInputs(surveyId);
-  const links = publicLinks(await getBaseUrl(), survey.token);
-  const publicUrl = links.publicUrl;
+  const links = publicLinks(await getBaseUrl(), survey.token, survey.kind);
   const results = evaluateSurvey(participants);
   const isReference = isReferenceOrganization(orgId);
+  const isLeader = survey.kind === "leader";
 
   const initialData: ResultsPayload = {
     survey: {
       id: survey.id,
       title: survey.title,
+      kind: survey.kind,
       mode: survey.mode,
       token: survey.token,
       ...links,
@@ -68,11 +72,19 @@ export default async function ResultsPage({
           </Link>
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold tracking-tight">{survey.title}</h1>
-            <Badge variant={survey.mode === "named" ? "default" : "secondary"}>
-              {survey.mode === "named" ? t.app.modeNamed : t.app.modeAnonymous}
-            </Badge>
+            {/* A leader survey is always named, so its badge says only what it is. */}
+            {isLeader ? (
+              <Badge variant="outline">{t.org.leaderBadge}</Badge>
+            ) : (
+              <Badge variant={survey.mode === "named" ? "default" : "secondary"}>
+                {survey.mode === "named" ? t.app.modeNamed : t.app.modeAnonymous}
+              </Badge>
+            )}
             {isReference ? <Badge variant="outline">{REFERENCE_BADGE}</Badge> : null}
           </div>
+          {isLeader ? (
+            <p className="max-w-prose text-muted-foreground">{t.results.leaderDescription}</p>
+          ) : null}
         </div>
 
         {isReference ? (
@@ -80,12 +92,25 @@ export default async function ResultsPage({
         ) : (
           <Card>
             <CardContent className="pt-6">
-              <SharePanel url={publicUrl} title={survey.title} />
+              <SharePanel
+                url={links.publicUrl}
+                title={survey.title}
+                linkLabel={isLeader ? t.share.linkLabelLeader : undefined}
+                hint={isLeader ? t.share.hintLeader : undefined}
+              />
             </CardContent>
           </Card>
         )}
 
-        <ResultsDashboard orgId={orgId} surveyId={surveyId} initialData={initialData} />
+        {isLeader ? (
+          <LeaderFeedbackDashboard
+            orgId={orgId}
+            surveyId={surveyId}
+            initialData={initialData}
+          />
+        ) : (
+          <ResultsDashboard orgId={orgId} surveyId={surveyId} initialData={initialData} />
+        )}
       </main>
     </>
   );

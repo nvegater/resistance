@@ -1,6 +1,7 @@
-// Seeds the demo: the admin login, one demo organization with its own login and one
-// survey that already holds the 15 answers from the client's example run, plus the
-// read-only reference organization with the same 15 answers.
+// Seeds the demo: the admin login, one demo organization with its own login, one
+// survey that already holds the 15 answers from the client's example run, one leader
+// survey with a few answers to the client's form 2, plus the read-only reference
+// organization with the same 15 answers.
 // Run it with `pnpm db:seed`. Running it again replaces both organizations.
 
 import { config } from "dotenv";
@@ -18,11 +19,12 @@ const DEMO_JOURNEY = [
   [3, 3, 4],
   [4, 4, 5],
 ];
-const DEMO_LEADER = [
-  [3, 3, 4],
-  [4, 3, 3],
-  [3, 2, 3],
-  [4, 4, 3],
+// A leader survey is always named: each row names the participant it is about.
+const DEMO_LEADER: [string, number, number, number][] = [
+  ["Anna Berger", 3, 3, 4],
+  ["Ben Frank", 4, 3, 3],
+  ["Carla Diaz", 3, 2, 3],
+  ["David Roth", 4, 4, 3],
 ];
 
 async function main() {
@@ -123,22 +125,41 @@ async function main() {
       q2,
       q3,
     })),
-    ...DEMO_LEADER.map(([q1, q2, q3]) => ({
-      surveyId: demoSurvey.id,
+  ]);
+
+  // Form 2 is a survey of its own kind. Only the admin sees it in the organization's
+  // list and sends its link to the organization's login holders.
+  const [demoLeaderSurvey] = await db
+    .insert(survey)
+    .values({
+      organizationId: demoOrg.id,
+      title: t.feedback.leader.title,
+      kind: "leader",
+      mode: "named",
+      token: createSurveyToken(),
+    })
+    .returning();
+  await db.insert(feedback).values(
+    DEMO_LEADER.map(([participantName, q1, q2, q3]) => ({
+      surveyId: demoLeaderSurvey.id,
       kind: "leader" as const,
+      participantName,
       q1,
       q2,
       q3,
     })),
-  ]);
+  );
 
   console.log(`Organization created: ${orgName} (${orgEmail})`);
   console.log(`Survey created: ${demoSurvey.title}`);
   console.log(`Public link: /s/${demoSurvey.token}`);
   console.log(`${EXAMPLE_RUN.length} responses loaded.`);
   console.log(
-    `Feedback loaded: ${DEMO_TRUST.length} trust, ${DEMO_JOURNEY.length} journey, ${DEMO_LEADER.length} leader.`,
+    `Feedback loaded: ${DEMO_TRUST.length} trust, ${DEMO_JOURNEY.length} journey.`,
   );
+  console.log(`Leader survey created: ${demoLeaderSurvey.title}`);
+  console.log(`Leader form link: /f/${demoLeaderSurvey.token}/leader`);
+  console.log(`${DEMO_LEADER.length} leader forms loaded.`);
 
   // The reference organization holds the same 15 answers, but nothing may change it.
   // It has no login of its own; only the admin opens it, to compare the dashboard with

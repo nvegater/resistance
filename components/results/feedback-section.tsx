@@ -2,6 +2,7 @@
 
 import { ChevronRightIcon } from "lucide-react";
 import { CopyButton } from "@/components/share-panel";
+import { ResultsSection } from "@/components/results/results-section";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -28,96 +29,98 @@ const oneDecimal = (value: number) =>
   value.toLocaleString(LOCALE, { minimumFractionDigits: 1 });
 
 /**
- * The client's three feedback instruments. 1.A measures trust right after the survey,
- * 1.B asks the participant and 2 asks the responsible manager at the end of the
- * journey. For the two three-question forms the total of 3 to 15 points is placed in
- * one of his four impact levels.
+ * The two participant feedback forms of a resonance survey. 1.A measures trust right
+ * after the survey, 1.B asks the participant at the end of the journey; both links can
+ * be copied here. The client's form 2 is not in this section: it is a survey of its own
+ * that only the admin creates, see leader-feedback-dashboard.tsx.
  */
 export function FeedbackSection({
   feedback,
   feedbackUrls,
 }: {
   feedback: FeedbackResults;
-  feedbackUrls: { journey: string; leader: string };
+  feedbackUrls: { trust: string; journey: string };
 }) {
   return (
-    <section aria-labelledby="feedback-titel" className="space-y-4">
-      <div>
-        <h2 id="feedback-titel" className="text-xl font-semibold tracking-tight">
-          {t.results.feedback.title}
-        </h2>
-        <p className="mt-1 max-w-prose text-muted-foreground">
-          {t.results.feedback.description}
-        </p>
-        <p className="mt-2 max-w-prose text-sm text-muted-foreground">
-          {t.results.feedback.linksHint}
-        </p>
+    <ResultsSection
+      id="feedback-titel"
+      title={t.results.feedback.title}
+      description={t.results.feedback.description}
+      hint={t.results.feedback.linksHint}
+    >
+      <div className="grid gap-4 md:grid-cols-2">
+        <FeedbackInstrument summary={feedback.trust} shareUrl={feedbackUrls.trust} />
+        <FeedbackInstrument summary={feedback.journey} shareUrl={feedbackUrls.journey} />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-3">
-        <Instrument summary={feedback.trust} />
-        <Instrument summary={feedback.journey} shareUrl={feedbackUrls.journey} />
-        <Instrument summary={feedback.leader} shareUrl={feedbackUrls.leader} />
-      </div>
+      <ImpactLevelsDetails />
+    </ResultsSection>
+  );
+}
 
-      <details className="group">
-        <summary className="inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
-          <ChevronRightIcon
-            aria-hidden="true"
-            className="size-4 transition-transform group-open:rotate-90"
-          />
-          {t.results.feedback.showLevels}
-        </summary>
-        <Card className="mt-4">
-          <CardContent className="overflow-x-auto pt-6">
-            <Table>
-              <TableCaption>{t.results.feedback.levelTableCaption}</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead scope="col">{t.results.feedback.colLevel}</TableHead>
-                  <TableHead scope="col">{t.results.feedback.colRange}</TableHead>
-                  <TableHead scope="col">
-                    {t.results.feedback.colInterpretation}
-                  </TableHead>
+/** The client's four impact levels as a closed table, for readers who want the bands. */
+export function ImpactLevelsDetails() {
+  return (
+    <details className="group">
+      <summary className="inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+        <ChevronRightIcon
+          aria-hidden="true"
+          className="size-4 transition-transform group-open:rotate-90"
+        />
+        {t.results.feedback.showLevels}
+      </summary>
+      <Card className="mt-4">
+        <CardContent className="overflow-x-auto pt-6">
+          <Table>
+            <TableCaption>{t.results.feedback.levelTableCaption}</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col">{t.results.feedback.colLevel}</TableHead>
+                <TableHead scope="col">{t.results.feedback.colRange}</TableHead>
+                <TableHead scope="col">{t.results.feedback.colInterpretation}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {IMPACT_LEVELS.map((level) => (
+                <TableRow key={level.key}>
+                  <TableCell className="font-medium">{level.name}</TableCell>
+                  <TableCell className="whitespace-nowrap tabular-nums">
+                    {level.range}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    <span className="block max-w-[36rem] whitespace-normal">
+                      {level.interpretation}
+                    </span>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {IMPACT_LEVELS.map((level) => (
-                  <TableRow key={level.key}>
-                    <TableCell className="font-medium">{level.name}</TableCell>
-                    <TableCell className="whitespace-nowrap tabular-nums">
-                      {level.range}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      <span className="block max-w-[36rem] whitespace-normal">
-                        {level.interpretation}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </details>
-    </section>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </details>
   );
 }
 
 /** One of the three forms: its questions, its means and, where it has one, its level. */
-function Instrument({
+export function FeedbackInstrument({
   summary,
   shareUrl,
+  headingLevel = "h3",
 }: {
   summary: FeedbackSummary;
+  /** Shown as a copy button when the form is sent through a link from this card. */
   shareUrl?: string;
+  /** h3 under the section heading of the dashboard, h2 on the leader survey's own page. */
+  headingLevel?: "h2" | "h3";
 }) {
   const texts = t.feedback[summary.kind];
+  const Heading = headingLevel;
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-medium">{texts.title}</h3>
+        <Heading className="font-medium">{texts.title}</Heading>
         <p className="text-sm text-muted-foreground">{texts.when}</p>
       </CardHeader>
       <CardContent className="space-y-4">

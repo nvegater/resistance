@@ -2,6 +2,7 @@
 
 import { AmpelBadge } from "@/components/domain/ampel";
 import { ProfileTag } from "@/components/domain/profile";
+import { ResultsSection } from "@/components/results/results-section";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -24,16 +25,11 @@ import { t } from "@/lib/i18n";
  */
 export function MischprofilMatrix({ results }: { results: SurveyResults }) {
   return (
-    <section aria-labelledby="mischprofil-titel" className="space-y-4">
-      <div>
-        <h2 id="mischprofil-titel" className="text-xl font-semibold tracking-tight">
-          {t.results.matrix.title}
-        </h2>
-        <p className="mt-1 max-w-prose text-muted-foreground">
-          {t.results.matrix.description}
-        </p>
-      </div>
-
+    <ResultsSection
+      id="mischprofil-titel"
+      title={t.results.matrix.title}
+      description={t.results.matrix.description}
+    >
       <Card>
         <CardContent className="overflow-x-auto pt-6">
           <Table>
@@ -81,6 +77,6 @@ export function MischprofilMatrix({ results }: { results: SurveyResults }) {
           </Table>
         </CardContent>
       </Card>
-    </section>
+    </ResultsSection>
   );
 }

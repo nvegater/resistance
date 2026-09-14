@@ -10,6 +10,7 @@ import {
 import { t } from "@/lib/i18n";
 import { getSurveyByToken } from "@/lib/queries";
 import { isReferenceOrganization } from "@/lib/reference-org";
+import { feedbackKindsOf } from "@/lib/survey-kind";
 
 export type SubmitFeedbackResult = { ok: true } | { ok: false; error: string };
 
@@ -23,6 +24,10 @@ export async function submitFeedbackAction(input: {
   if (!survey) return { ok: false, error: t.survey.errorGone };
   if (isReferenceOrganization(survey.organizationId)) {
     return { ok: false, error: t.reference.readOnlyResponse };
+  }
+  // The same rule as the page: a token only takes the forms of its survey kind.
+  if (!feedbackKindsOf(survey.kind).includes(input.kind)) {
+    return { ok: false, error: t.feedbackForm.notFound };
   }
 
   const asked = QUESTION_COUNT[input.kind];

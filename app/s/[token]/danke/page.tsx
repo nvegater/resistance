@@ -4,6 +4,7 @@ import { TrustQuestion } from "@/components/feedback/trust-question";
 import { t } from "@/lib/i18n";
 import { getSurveyByToken } from "@/lib/queries";
 import { isReferenceOrganization } from "@/lib/reference-org";
+import { hasQuestionnaire } from "@/lib/survey-kind";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,8 @@ export default async function ThankYouPage({ params }: PageProps<"/s/[token]/dan
   const { token } = await params;
   const survey = await getSurveyByToken(token);
   if (!survey) notFound();
+  // Only the questionnaire ends here, and a leader survey has none.
+  if (!hasQuestionnaire(survey.kind)) notFound();
 
   const asksTrust = !isReferenceOrganization(survey.organizationId);
 

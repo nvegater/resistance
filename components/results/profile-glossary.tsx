@@ -1,6 +1,7 @@
 "use client";
 
 import { ProfileTag } from "@/components/domain/profile";
+import { ResultsSection } from "@/components/results/results-section";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -20,16 +21,11 @@ import { t } from "@/lib/i18n";
  */
 export function ProfileGlossary() {
   return (
-    <section aria-labelledby="profile-titel" className="space-y-4">
-      <div>
-        <h2 id="profile-titel" className="text-xl font-semibold tracking-tight">
-          {t.results.profiles.title}
-        </h2>
-        <p className="mt-1 max-w-prose text-muted-foreground">
-          {t.results.profiles.description}
-        </p>
-      </div>
-
+    <ResultsSection
+      id="profile-titel"
+      title={t.results.profiles.title}
+      description={t.results.profiles.description}
+    >
       <Card>
         <CardContent className="overflow-x-auto pt-6">
           <Table>
@@ -69,6 +65,6 @@ export function ProfileGlossary() {
           </Table>
         </CardContent>
       </Card>
-    </section>
+    </ResultsSection>
   );
 }

@@ -4,6 +4,7 @@ import { Cell, Pie, PieChart } from "recharts";
 import { AmpelBadge, AMPEL_STYLE } from "@/components/domain/ampel";
 import { KpiRow } from "@/components/results/kpi-row";
 import { VolcanoDiagram } from "@/components/results/volcano-diagram";
+import { ResultsSection } from "@/components/results/results-section";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -46,16 +47,11 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
     .map((entry) => ({ ampel: entry.ampel, count: entry.count }));
 
   return (
-    <section aria-labelledby="fruehwarn-titel" className="space-y-4">
-      <div>
-        <h2 id="fruehwarn-titel" className="text-xl font-semibold tracking-tight">
-          {t.results.fruehwarnsystem.title}
-        </h2>
-        <p className="mt-1 max-w-prose text-muted-foreground">
-          {t.results.fruehwarnsystem.description}
-        </p>
-      </div>
-
+    <ResultsSection
+      id="fruehwarn-titel"
+      title={t.results.fruehwarnsystem.title}
+      description={t.results.fruehwarnsystem.description}
+    >
       {/* The counts come first: the Ampel and the volcano are both part of the
           warning system, so they share this section (protocol item 14). */}
       <KpiRow results={results} />
@@ -166,6 +162,6 @@ export function Fruehwarnsystem({ results }: { results: SurveyResults }) {
           </CardContent>
         </Card>
       </div>
-    </section>
+    </ResultsSection>
   );
 }

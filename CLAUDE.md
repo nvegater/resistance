@@ -6,8 +6,10 @@ decided against, and item 13 (the reflection page) is deferred. His third round 
 10.09.2026) added items 14–18, all implemented: the Ampel counts sit inside the
 Frühwarnsystem, the volcano carries the colour of the overall phase, the weighting charts
 are collapsed detail, the combinations table is the Mischprofil-Matrix, and the Roadmap
-is the Change-Risiko-Roadmap with two chapters side by side. This file is the single
-source of truth for what the app must do. Read it fully before touching code.
+is the Change-Risiko-Roadmap with two chapters side by side. On 2026-09-14 the client's
+form 2 (Führungskraft-Feedback) became a survey kind of its own that only the admin creates
+and sends (section 15, item 20). This file is the single source of truth for what the app
+must do. Read it fully before touching code.
 
 ## 1. What this is
 
@@ -37,6 +39,9 @@ concerns. If a feature is not in this file, do not build it.
 | Organization | a potential customer such as "SAP". One shared login per organization. | email + password, created by the admin | Creates surveys, shares the survey link with employees, watches results update live. |
 | Respondent | an employee of that organization | none | Opens the public link, answers 18 statements, submits. |
 
+In chat the user calls the admin „the super admin" and the organization logins „the
+admins"; this file keeps the names of the table.
+
 The demo story: the admin logs in, adds "SAP" with an email and password, hands those
 credentials to SAP. SAP logs in, creates a survey, copies the link, sends it to
 employees. Employees answer on their phones. SAP watches the dashboard fill up.
@@ -59,9 +64,10 @@ In scope:
   the source material.
 - A read-only reference organization that holds the same 15 responses and shows, value by
   value, that the app calculates what the client's CSV sheets calculate (section 10).
-- The three feedback instruments of his Feedback sheet: one trust question right after the
-  survey, and two three-question forms at the end of the journey, one for the participant
-  and one for the responsible manager (section 6a).
+- The three feedback instruments of his Feedback sheet (section 6a): the trust question
+  right after the survey, the participant form at the end of the journey, and the form for
+  the people responsible. The last one is a survey kind of its own that only the admin
+  creates and sends (section 15, item 20).
 
 Out of scope for the demo (do not build):
 
@@ -270,6 +276,19 @@ total, rounded to whole points.
 
 `trust` asks one question, so it has no total and no level: the dashboard shows its mean
 on the 1–5 scale.
+
+Who answers which form, and how each one reaches its people (WhatsApp with the client,
+2026-09-12; decisions of the user, 2026-09-14, section 15 item 20):
+
+| Key | Who answers | How it is sent | Where it lives |
+|---|---|---|---|
+| `trust` | the participants, right after the questionnaire | the thank-you page asks it; the dashboard also offers its link with a copy button, so the organization can send it | with the resonance survey, same token |
+| `journey` | the participants, at the end of the whole process | the organization copies the link from the dashboard | with the resonance survey, same token |
+| `leader` | the organization's login holders: the customer's management and the consultants („los JEFES y CONSULTORES") | only the admin creates a survey of kind `leader` inside the organization and sends its link | its own survey, kind `leader`, always named, hidden from the organization |
+
+The demo only covers the first diagnosis. `journey` stays on the dashboard as a taste of
+what can be sent after the workshops; `leader` exists so the admin can show it, and the
+organization never sees it in its list.
 
 ## 7. Domain: scoring one participant
 
@@ -481,9 +500,11 @@ The seed script creates: the admin user from `ADMIN_EMAIL`/`ADMIN_PASSWORD`; a d
 organization named by `seed.demoOrganizationName` in `lib/i18n` („Muster GmbH" in German,
 "Example Ltd" in English) with its login from `DEMO_ORG_EMAIL`/`DEMO_ORG_PASSWORD`; one
 anonymous survey titled `questionnaire.title` holding the 15 responses with their original
-timestamps, plus 22 made-up feedback rows so the feedback section shows numbers during a
-demo (12 trust, 6 journey, 4 leader; the totals land in two different Wirkungsstufen on
-purpose); and the reference organization below. The client's example run has no feedback
+timestamps, plus made-up feedback rows so the feedback section shows numbers during a
+demo: 12 trust and 6 journey rows on that survey, and a second survey of kind `leader`
+titled `feedback.leader.title`, named, with 4 leader rows that carry invented participant
+names (the totals land in two different Wirkungsstufen on purpose); and the reference
+organization below. The client's example run has no feedback
 of its own, which is why the reference organization gets none. The client can then demo the dashboard
 without collecting answers first.
 
@@ -519,14 +540,21 @@ Better Auth owns `user`, `session`, `account`, `verification`. Extend `user` wit
 
 ```
 organization   id, name, createdAt
-survey         id, organizationId (fk, cascade), title, mode ('anonymous' | 'named'),
-               token (unique, url-safe, used in /s/[token]), createdAt
+survey         id, organizationId (fk, cascade), title, kind ('resonance' | 'leader'),
+               mode ('anonymous' | 'named'),
+               token (unique, url-safe, used in /s/[token] and /f/[token]/[kind]), createdAt
 response       id, surveyId (fk, cascade), participantName (null in anonymous mode),
                submittedAt, a1 a2 a3 b1 b2 b3 c1 c2 c3 d1 d2 d3 e1 e2 e3 f1 f2 f3 (smallint 1–5)
 feedback       id, surveyId (fk, cascade), kind ('trust' | 'journey' | 'leader'),
                participantName (null unless named mode, always null for 'trust'),
                submittedAt, q1 (smallint 1–5), q2 q3 (smallint 1–5, null for 'trust')
 ```
+
+`survey.kind` says what the token opens. A `resonance` survey collects the 18 answers at
+`/s/[token]` and the two participant feedback forms at `/f/[token]/trust` and
+`/f/[token]/journey`. A `leader` survey collects only form 2 at `/f/[token]/leader`; it
+never has responses, and its `mode` is always `named`: the dialog offers no choice and
+the server action forces it. The helpers live in `lib/survey-kind.ts`.
 
 Nothing else is stored. No IP addresses, no user agents, no computed results (they are
 recomputed on read; 18 integers × a few hundred rows is nothing).
@@ -556,18 +584,33 @@ app name and a one-line description. No sign-up link, no forgot-password link.
 ### `/orgs/[orgId]` (org user for own org, admin for any)
 - Header with the organization name. Admin also sees a link back to `/admin`.
 - Cards or table of surveys: title, mode badge („Anonym" / „Mit Namen"), response count,
-  created date, buttons "Ergebnisse" and "Link kopieren".
-- "Neue Befragung" dialog: title (default „Interne Resonanzbefragung"), mode as a radio
-  group with the client's explanation: anonymous for the general case; named „für
+  created date, buttons "Ergebnisse" and "Link kopieren". A leader survey carries the
+  badge „Führungskraft-Feedback" instead of the mode badge, counts its feedback forms
+  instead of responses, and its copy button copies the form link. Org users do not see leader surveys at all; the admin
+  sees them in the same list.
+- "Neue Befragung" dialog: a „Befragungsart" dropdown first. Everyone sees „Interne
+  Resonanzbefragung"; the option „2. Führungskraft-Feedback" is in the list only when the
+  logged-in user is the admin, and the server action refuses it from anyone else. Then the
+  title (default follows the chosen kind), then, for a resonance survey only, mode as a
+  radio group with the client's explanation: anonymous for the general case; named „für
   Teamleiter kleiner Organisationen, um persönliche Situationen mit Mitarbeitenden
-  besprechen und deeskalieren zu können". Saving generates the token and opens the results page.
+  besprechen und deeskalieren zu können". A leader survey shows no mode choice. It is
+  always named, because the people responsible say which participant the form is about,
+  and the server action forces `named` for that kind. Saving generates the token and
+  opens the results page.
 - Empty state explains the two steps: create a survey, share the link.
 
 ### `/orgs/[orgId]/surveys/[surveyId]` results dashboard
-Specified in section 13.
+Specified in section 13 for a resonance survey. A leader survey has a short page instead:
+the header with the „Führungskraft-Feedback" badge, the share panel with the form link and
+QR code, the leader card of section 13 item 6 and the closed table of the four
+Wirkungsstufen, polled the same way. Only the admin may open it; org users are sent back
+to their organization page and the JSON route answers 403.
 
 ### `/s/[token]` public survey
-Mobile first. Must work at 320 px. No login, no cookies beyond what Next.js needs.
+Mobile first. Must work at 320 px. No login, no cookies beyond what Next.js needs. A
+leader token has no questionnaire: `/s/[token]`, `/s/[token]/danke` and the submit action
+answer 404 for it.
 
 1. **Intro screen**: organization name, survey title, three sentences on purpose,
    privacy note that differs by mode (anonymous: „Es werden keine Namen, E-Mail-Adressen
@@ -597,13 +640,16 @@ one trust question of feedback 1.A, with a „Überspringen" button that removes
 asks for a name, not even in named mode, because it is a pulse about the survey itself.
 
 ### `/f/[token]/[kind]` feedback forms
-The same token as the survey; `kind` is `journey` or `leader` (`trust` also works, but the
-app asks that one on the thank-you page). Organization name, the title and description of
-the form, the privacy note of the survey's mode, then the questions on a 1–5 scale. In
-named mode `journey` asks „Ihr Name" and `leader` asks „Name des Teilnehmenden". The
-organization shares these two links itself, at the end of the journey; the results
-dashboard offers them with a copy button. The reference organization shows the read-only
-notice instead of a form.
+The same token as the survey. Which `kind` a token accepts depends on the survey's kind: a
+resonance token accepts `trust` and `journey`, a leader token only `leader`. Anything else
+is 404, and the server action refuses it as well. Organization name, the title and
+description of the form, the privacy note of the survey's mode (the leader form has a
+note of its own: it stores the participant's name, not the responder's), then the
+questions on a 1–5 scale. In named mode `journey` asks „Ihr Name" and `leader` asks „Name des
+Teilnehmenden". The organization shares the trust and journey links itself; the results
+dashboard offers both with a copy button. The leader link is on the leader survey's own
+page, which only the admin sees. The reference organization shows the read-only notice
+instead of a form.
 
 ## 13. Results dashboard
 
@@ -620,6 +666,12 @@ Sections, top to bottom. Protocol items 9, 10, 14 and 16 set this order: first t
 warning system as a whole, then what the profiles mean, then the Mischprofile and their
 measures, then whether those measures worked, then the answers, and the two detail
 sections closed at the end.
+
+Every section from 2 on has an „Einblenden / Ausblenden" button in its heading row
+(`components/results/results-section.tsx`; the client asked for it in the WhatsApp chat
+of 2026-09-12). The heading and the description stay visible when the body is hidden, so
+the reader still sees what is folded away. Sections 2 to 7 start open, section 8 starts
+closed, and section 9 starts closed in anonymous surveys and open in named ones.
 
 1. **Header**: survey title, mode badge, share panel (public URL, copy button, QR code).
 2. **Frühwarnsystem**: the heading comes first because the client counts the Ampel and
@@ -657,17 +709,18 @@ sections closed at the end.
    `nameDative` and `rolleDative` fields of `lib/domain/profiles.ts`. Each role carries the
    letter swatch of its profile, so the reader can match left and right. No Magmakammer or
    Symptom rows. No change to the client's Mapping or Roadmap sheets was needed for this.
-6. **Feedback zur Wirkung** (section 6a): three cards side by side, one per instrument,
-   each with its question means and the 1–5 distribution as a small stacked bar. The two
-   three-question forms also show the mean total and its Wirkungsstufe with the client's
-   interpretation, and carry the copy button for their public link. Under the cards a
-   closed `<details>` holds the table of all four Wirkungsstufen. It follows the Roadmap
-   because it measures whether those measures worked.
+6. **Feedback zur Wirkung** (section 6a): two cards side by side, 1.A and 1.B, each with
+   its question means, the 1–5 distribution as a small stacked bar and the copy button for
+   its public link. 1.B also shows the mean total and its Wirkungsstufe with the client's
+   interpretation. Under the cards a closed `<details>` holds the table of all four
+   Wirkungsstufen. It follows the Roadmap because it measures whether those measures
+   worked. Form 2 is not here: it is a survey of its own that only the admin sees
+   (section 12).
 7. **Antworten-Übersicht**: per statement the mean and the 1–5 distribution as a small
    horizontal stacked bar, grouped by block with the profile name as group heading.
    Replaces the Google Forms response summary.
-8. **Profile Gewichtung**, closed by default inside a `<details>` (protocol item 16: the
-   client reads the summary without these charts and wants them as detail further down).
+8. **Profile Gewichtung**, starts closed (protocol item 16: the client reads the summary
+   without these charts and wants them as detail further down).
    - „Wie oft ein Profil dominant oder zweitdominant ist": one bar pair per profile, both
      bars in that profile's color, the Zweitprofil bar hatched and outlined so the two
      series differ in pattern too. Value labels at the bar ends, axis ticks
@@ -676,9 +729,9 @@ sections closed at the end.
      value labels with one decimal.
    - „Häufigkeit je Profil": Profil | Dominant | Zweitprofil | Ø gewichtet. The text
      alternative for both charts.
-9. **Teilnehmer**, last: TanStack Table inside a `<details>` that is closed in anonymous
-   surveys and open in named ones, because the single rows are what a team lead needs and
-   what everyone else scrolls past. Columns: Teilnehmer (name in named mode, otherwise
+9. **Teilnehmer**, last: TanStack Table. The section starts closed in anonymous surveys
+   and open in named ones, because the single rows are what a team lead needs and what
+   everyone else scrolls past. Columns: Teilnehmer (name in named mode, otherwise
    „Teilnehmer n" by submission order), Zeitpunkt, weighted A–F (one decimal, raw block sum
    as a muted secondary line), Dominant, Zweit, Ampel. Sortable. Expanding a row shows the
    two Roadmap chapters for that ordered pair under its Mischprofil name. Reproduces the
@@ -773,10 +826,9 @@ Decisions taken so the build can start. Each one is cheap to change later.
       („gar nicht" … „voll und ganz"). Ask the client whether he wants other words.
     - The trust question stays anonymous even in a named survey. It is a pulse about the
       survey itself, and the person has just given their name one screen earlier.
-    - `journey` and `leader` follow the survey's own mode: in a named survey `journey`
-      asks the participant's name and `leader` asks which participant is being assessed.
-      In an anonymous survey neither asks for a name, so the leader form is then a
-      judgement about the group rather than about one person. Confirm with him.
+    - `journey` follows the survey's mode: in a named survey it asks the participant's
+      name, in an anonymous survey it asks none. `leader` always asks which participant
+      is being assessed, because a leader survey is always named (item 20).
     - The two end-of-journey forms are separate public links that the organization shares
       when the journey ends. The app does not send them, and it does not track who was
       invited.
@@ -792,6 +844,29 @@ Decisions taken so the build can start. Each one is cheap to change later.
     rather than „Überlasteter". The app still shows our provisional wording, so the German
     did not change when the translation files were added. Decide whether to adopt his
     wording; it is a one-line change per profile in `lib/i18n/de.json` and `en.json`.
+20. **The three feedback forms, second round (WhatsApp 2026-09-12, built 2026-09-14)**.
+    The client wrote that the three forms are for different moments and people: 1.A for
+    the participants right after the questionnaire, 1.B for the participants at the end
+    of the whole process, 2 for the bosses and consultants at the end of the whole
+    process. The demo only covers the first diagnosis, so 1.B and 2 are not reached in
+    it. Decisions of the user:
+    - 1.A is the form that matters. It stays on the thank-you page, and the dashboard now
+      also offers its link with a copy button, so the organization can send it right
+      after the survey.
+    - 1.B stays on the dashboard as a taste of what can be sent after the workshops. It
+      was already sendable; nothing changed.
+    - Form 2 leaves the normal dashboard. The people who answer it are the organization's
+      login holders, and only the admin may send it to them, so it is a survey kind of
+      its own that only the admin can create through the „Befragungsart" dropdown. The
+      organization never sees a leader survey in its list; its results page is admin-only.
+      Confirm with the client whether the organization should see the leader results too.
+    - A leader survey is always named. The user decided on 2026-09-14 that an anonymous
+      option for the organization makes no sense. The form asks „Name des Teilnehmenden"
+      and stores only that name, not the responder's; the dialog shows no mode choice for
+      this kind.
+    - The client also asked for an „ein/ausblenden" button on the feedback section.
+      Built on 2026-09-14 for every dashboard section (section 13). Which tables move
+      further down (protocol item 21) is still open.
 
 ## 16. Working rules for Claude in this repo
 
@@ -808,5 +883,6 @@ Decisions taken so the build can start. Each one is cheap to change later.
 - Commands: `pnpm dev`, `pnpm build`, `pnpm start`, `pnpm typecheck`, `pnpm lint`,
   `pnpm test`, `pnpm db:push`, `pnpm db:seed`.
 - `pnpm db:fake <token> [responses]` fills any survey with made-up answers and feedback,
-  so a demo organization does not have to be filled in by hand. It only adds rows, and it
-  refuses the reference evaluation.
+  so a demo organization does not have to be filled in by hand. A resonance survey gets
+  responses plus trust and journey rows; a leader survey gets only leader rows. It only
+  adds rows, and it refuses the reference evaluation.

@@ -4,6 +4,7 @@ import { SurveyFlow } from "@/components/survey/survey-flow";
 import { t } from "@/lib/i18n";
 import { getSurveyByToken } from "@/lib/queries";
 import { isReferenceOrganization } from "@/lib/reference-org";
+import { hasQuestionnaire } from "@/lib/survey-kind";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,8 @@ export default async function PublicSurveyPage({ params }: PageProps<"/s/[token]
   const { token } = await params;
   const survey = await getSurveyByToken(token);
   if (!survey) notFound();
+  // A leader survey has no questionnaire; its link is the feedback form under /f/.
+  if (!hasQuestionnaire(survey.kind)) notFound();
 
   // The reference run is fixed at the client's 15 answers, so this link only explains
   // itself instead of collecting a sixteenth one.

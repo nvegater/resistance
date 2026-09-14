@@ -1,6 +1,7 @@
 "use client";
 
 import { ProfileTag } from "@/components/domain/profile";
+import { ResultsSection } from "@/components/results/results-section";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -23,16 +24,11 @@ export function ItemSummary({ results }: { results: SurveyResults }) {
   const statsByCode = new Map(results.itemStats.map((stat) => [stat.code, stat]));
 
   return (
-    <section aria-labelledby="antworten-titel" className="space-y-4">
-      <div>
-        <h2 id="antworten-titel" className="text-xl font-semibold tracking-tight">
-          {t.results.items.title}
-        </h2>
-        <p className="mt-1 max-w-prose text-muted-foreground">
-          {t.results.items.description}
-        </p>
-      </div>
-
+    <ResultsSection
+      id="antworten-titel"
+      title={t.results.items.title}
+      description={t.results.items.description}
+    >
       <div className="grid gap-4 xl:grid-cols-2">
         {BLOCKS.map((block) => (
           <Card key={block.profile}>
@@ -103,7 +99,7 @@ export function ItemSummary({ results }: { results: SurveyResults }) {
           </Card>
         ))}
       </div>
-    </section>
+    </ResultsSection>
   );
 }
 

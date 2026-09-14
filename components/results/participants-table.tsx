@@ -17,6 +17,7 @@ import {
 import { AmpelBadge } from "@/components/domain/ampel";
 import { ProfileTag } from "@/components/domain/profile";
 import { RoadmapEntry } from "@/components/results/roadmap";
+import { ResultsSection } from "@/components/results/results-section";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AMPEL_SEVERITY } from "@/lib/domain/mapping";
@@ -165,117 +166,101 @@ export function ParticipantsTable({
   });
 
   return (
-    <section aria-labelledby="teilnehmer-titel" className="space-y-4">
-      <div>
-        <h2 id="teilnehmer-titel" className="text-xl font-semibold tracking-tight">
-          {t.results.participants.title}
-        </h2>
-        <p className="mt-1 max-w-prose text-muted-foreground">
-          {t.results.participants.description}
-        </p>
-      </div>
-
-      {/* Closed by default: in an anonymous survey nobody needs the single rows to
-          read the dashboard, and open they push everything else off the screen. */}
-      <details open={mode === "named"} className="group">
-        <summary className="inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
-          <ChevronRightIcon
-            aria-hidden="true"
-            className="size-4 transition-transform group-open:rotate-90"
-          />
-          {data.length === 1
-            ? t.results.participants.toggleOne
-            : fill(t.results.participants.toggleMany, { count: data.length })}
-        </summary>
-
-        <Card className="mt-4">
-          <CardContent className="overflow-x-auto pt-6">
-            <table className="w-full caption-bottom text-sm">
-              <caption className="sr-only">{t.results.participants.tableCaption}</caption>
-              <thead>
-                {table.getHeaderGroups().map((group) => (
-                  <tr key={group.id} className="border-b">
-                    {group.headers.map((header) => {
-                      const sorted = header.column.getIsSorted();
-                      return (
-                        <th
-                          key={header.id}
-                          scope="col"
-                          className="px-2 py-2 text-left align-bottom font-medium text-muted-foreground"
-                          aria-sort={
-                            sorted === "asc"
-                              ? "ascending"
-                              : sorted === "desc"
-                                ? "descending"
-                                : header.column.getCanSort()
-                                  ? "none"
-                                  : undefined
-                          }
-                        >
-                          {header.isPlaceholder ? null : header.column.getCanSort() ? (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="lg"
-                              className="h-9 px-2"
-                              onClick={header.column.getToggleSortingHandler()}
-                            >
-                              <table.FlexRender header={header} />
-                              {sorted === "asc" ? (
-                                <ChevronDownIcon className="rotate-180" aria-hidden="true" />
-                              ) : sorted === "desc" ? (
-                                <ChevronDownIcon aria-hidden="true" />
-                              ) : (
-                                <ChevronsUpDownIcon aria-hidden="true" />
-                              )}
-                              <span className="sr-only">{t.results.participants.sort}</span>
-                            </Button>
-                          ) : (
-                            <table.FlexRender header={header} />
-                          )}
-                        </th>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => {
-                  const card = roadmapByPair.get(row.original.orderedPair);
-                  return (
-                    <Fragment key={row.id}>
-                      <tr className="border-b">
-                        {row.getAllCells().map((cell) => (
-                          <td key={cell.id} className="px-2 py-2 align-top">
-                            <table.FlexRender cell={cell} />
-                          </td>
-                        ))}
-                      </tr>
-                      <tr
-                        id={`teilnehmer-details-${row.id}`}
-                        hidden={!row.getIsExpanded()}
-                        className="border-b bg-muted/40"
+    <ResultsSection
+      id="teilnehmer-titel"
+      title={t.results.participants.title}
+      description={t.results.participants.description}
+      defaultOpen={mode === "named"}
+    >
+      {/* Starts closed in an anonymous survey: nobody needs the single rows to read
+          the dashboard, and open they push everything else off the screen. */}
+      <Card>
+        <CardContent className="overflow-x-auto pt-6">
+          <table className="w-full caption-bottom text-sm">
+            <caption className="sr-only">{t.results.participants.tableCaption}</caption>
+            <thead>
+              {table.getHeaderGroups().map((group) => (
+                <tr key={group.id} className="border-b">
+                  {group.headers.map((header) => {
+                    const sorted = header.column.getIsSorted();
+                    return (
+                      <th
+                        key={header.id}
+                        scope="col"
+                        className="px-2 py-2 text-left align-bottom font-medium text-muted-foreground"
+                        aria-sort={
+                          sorted === "asc"
+                            ? "ascending"
+                            : sorted === "desc"
+                              ? "descending"
+                              : header.column.getCanSort()
+                                ? "none"
+                                : undefined
+                        }
                       >
-                        <td colSpan={row.getAllCells().length} className="px-4 py-4">
-                          <h3 className="mb-3 font-medium">{card?.muster.name}</h3>
-                          {card ? <RoadmapEntry card={card} mode={mode} compact /> : null}
+                        {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="lg"
+                            className="h-9 px-2"
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            <table.FlexRender header={header} />
+                            {sorted === "asc" ? (
+                              <ChevronDownIcon className="rotate-180" aria-hidden="true" />
+                            ) : sorted === "desc" ? (
+                              <ChevronDownIcon aria-hidden="true" />
+                            ) : (
+                              <ChevronsUpDownIcon aria-hidden="true" />
+                            )}
+                            <span className="sr-only">{t.results.participants.sort}</span>
+                          </Button>
+                        ) : (
+                          <table.FlexRender header={header} />
+                        )}
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => {
+                const card = roadmapByPair.get(row.original.orderedPair);
+                return (
+                  <Fragment key={row.id}>
+                    <tr className="border-b">
+                      {row.getAllCells().map((cell) => (
+                        <td key={cell.id} className="px-2 py-2 align-top">
+                          <table.FlexRender cell={cell} />
                         </td>
-                      </tr>
-                    </Fragment>
-                  );
-                })}
-                {data.length === 0 ? (
-                  <tr>
-                    <td colSpan={columns.length} className="px-2 py-6 text-muted-foreground">
-                      {t.app.noResponsesYet}
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      </details>
-    </section>
+                      ))}
+                    </tr>
+                    <tr
+                      id={`teilnehmer-details-${row.id}`}
+                      hidden={!row.getIsExpanded()}
+                      className="border-b bg-muted/40"
+                    >
+                      <td colSpan={row.getAllCells().length} className="px-4 py-4">
+                        <h3 className="mb-3 font-medium">{card?.muster.name}</h3>
+                        {card ? <RoadmapEntry card={card} mode={mode} compact /> : null}
+                      </td>
+                    </tr>
+                  </Fragment>
+                );
+              })}
+              {data.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className="px-2 py-6 text-muted-foreground">
+                    {t.app.noResponsesYet}
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
+    </ResultsSection>
   );
 }

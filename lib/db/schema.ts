@@ -21,6 +21,12 @@ export const survey = pgTable("survey", {
     .notNull()
     .references(() => organization.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
+  /**
+   * "resonance" or "leader". A resonance survey asks the 18 statements and carries the
+   * two participant feedback forms. A leader survey holds only the Führungskraft-Feedback,
+   * which the admin sends to the organization's login holders. See lib/survey-kind.ts.
+   */
+  kind: text("kind").notNull().default("resonance").$type<"resonance" | "leader">(),
   /** "anonymous" or "named". Decides whether a participant name is asked for. */
   mode: text("mode").notNull().$type<"anonymous" | "named">(),
   /** The url-safe part of the public link /s/[token]. */

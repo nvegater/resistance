@@ -6,6 +6,7 @@ import { FEEDBACK_KINDS, type FeedbackKind } from "@/lib/domain/feedback";
 import { t } from "@/lib/i18n";
 import { getSurveyByToken } from "@/lib/queries";
 import { isReferenceOrganization } from "@/lib/reference-org";
+import { feedbackKindsOf } from "@/lib/survey-kind";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,10 @@ export async function generateMetadata({
   return { title: known ? t.feedback[known].title : t.feedbackForm.notFound };
 }
 
-/** The end-of-journey feedback forms. The organization shares these links itself. */
+/**
+ * The feedback forms. A resonance token opens the trust and journey forms, which the
+ * organization sends itself; a leader token opens only form 2, which the admin sends.
+ */
 export default async function FeedbackPage({ params }: PageProps<"/f/[token]/[kind]">) {
   const { token, kind } = await params;
   const known = asKind(kind);
@@ -31,6 +35,8 @@ export default async function FeedbackPage({ params }: PageProps<"/f/[token]/[ki
 
   const survey = await getSurveyByToken(token);
   if (!survey) notFound();
+  // A leader token only answers form 2, a resonance token only the two participant forms.
+  if (!feedbackKindsOf(survey.kind).includes(known)) notFound();
 
   if (isReferenceOrganization(survey.organizationId)) {
     return (
@@ -60,9 +66,13 @@ export default async function FeedbackPage({ params }: PageProps<"/f/[token]/[ki
       <Alert>
         <AlertTitle>{t.survey.privacyTitle}</AlertTitle>
         <AlertDescription>
-          {survey.mode === "anonymous"
-            ? t.survey.privacyAnonymous
-            : t.survey.privacyNamed}
+          {/* Form 2 records the name of the participant it is about, not the name of
+              the person answering, so it has a privacy note of its own. */}
+          {known === "leader"
+            ? t.feedbackForm.privacyLeader
+            : survey.mode === "anonymous"
+              ? t.survey.privacyAnonymous
+              : t.survey.privacyNamed}
         </AlertDescription>
       </Alert>
 
